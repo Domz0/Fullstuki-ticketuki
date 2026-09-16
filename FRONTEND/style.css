@@ -28,7 +28,7 @@
 }
 /* Mi Pago */
 .tabla_central {
-  width: 80%;
+  width: 50%;
   border-spacing: 0px;
 }
 .div_contenedor {
@@ -76,7 +76,7 @@
 /* Confirmacion Pago */
 .tabla_confirmacion {
   border-spacing: 0;
-  width: 80%;
+  width: 40%;
   background-color: rgb(255, 255, 255);
   border-radius: 5px;
   border: 1px solid rgb(232, 232, 235);
@@ -104,7 +104,7 @@
   background-color: rgb(255, 255, 255);
   border-radius: 5px;
   border: 1px solid rgb(232, 232, 235);
-  width: 80%;
+  width: 40%;
 }
 .qr {
   width: 100px;
