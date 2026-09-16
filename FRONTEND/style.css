@@ -106,3 +106,9 @@
   border: 1px solid rgb(232, 232, 235);
   width: 80%;
 }
+.qr {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+  padding: 12px;
+}
