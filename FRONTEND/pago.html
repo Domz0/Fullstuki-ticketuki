@@ -4,24 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pago</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
-  <body style="background-color: rgb(244, 244, 245)">
+  <body class="fondo">
     <center>
-      <table>
+      <table class="tabla_central">
         <td>
-          <table cellspacing="10" style="width: 555px">
+          <table class="tabla_comun">
             <tr>
               <td>
-                <div
-                  style="
-                    background-color: rgb(255, 255, 255);
-                    border-radius: 5px;
-                    border: 1px solid rgb(232, 232, 235);
-                    padding: 10px;
-                  "
-                >
-                  <table cellspacing="5" style="width: 100%">
-                    <caption style="text-align: left">
+                <div class="div_contenedor">
+                  <table class="tabla_interior">
+                    <caption class="texto_izq">
                       <b>Datos del Usuario/a</b>
                     </caption>
                     <tr>
@@ -30,12 +24,7 @@
                           type="text"
                           name="nombre"
                           placeholder="Nombre"
-                          style="
-                            width: 260px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 8px;
-                          "
+                          class="inputs"
                         />
                       </td>
 
@@ -44,12 +33,7 @@
                           type="text"
                           name="apellido"
                           placeholder="Apellido"
-                          style="
-                            width: 260px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 8px;
-                          "
+                          class="inputs"
                         />
                       </td>
                     </tr>
@@ -60,12 +44,7 @@
                           type="text"
                           name="direccion"
                           placeholder="Dirección"
-                          style="
-                            width: 260px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 8px;
-                          "
+                          class="inputs"
                         />
                       </td>
 
@@ -74,12 +53,7 @@
                           type="email"
                           name="correo"
                           placeholder="Correo electrónico"
-                          style="
-                            width: 260px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 8px;
-                          "
+                          class="inputs"
                         />
                       </td>
                     </tr>
@@ -90,16 +64,9 @@
 
             <tr>
               <td>
-                <div
-                  style="
-                    background-color: rgb(255, 255, 255);
-                    border-radius: 5px;
-                    border: 1px solid rgb(232, 232, 235);
-                    padding: 10px;
-                  "
-                >
-                  <table cellspacing="5">
-                    <caption style="text-align: left">
+                <div class="div_contenedor">
+                  <table class="tabla_interior">
+                    <caption class="texto_izq">
                       <b>Convenio Corporativo</b>
                     </caption>
                     <tr>
@@ -108,12 +75,7 @@
                           type="text"
                           name="correo"
                           placeholder="Codigo"
-                          style="
-                            width: 545px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 8px;
-                          "
+                          class="inputs"
                         />
                       </td>
                     </tr>
@@ -127,32 +89,18 @@
 
             <tr>
               <td>
-                <div
-                  style="
-                    border-radius: 5px;
-                    border: 1px solid rgb(232, 232, 235);
-                    background-color: rgb(255, 255, 255);
-                    padding: 10px;
-                  "
-                >
+                <div class="div_contenedor">
                   <b>Metodo de pago</b>
                   <br />
-                  <table cellspacing="5" style="width: 545">
+                  <table class="tabla_interior">
                     <tr>
-                      <td>
-                        <div
-                          style="
-                            width: 267px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 5px;
-                          "
-                        >
-                          <table style="width: 100%">
+                      <td class="div_interior_tabla">
+                        <div class="div_radio">
+                          <table class="tabla_radio">
                             <tr>
                               <td>Débito / Crédito</td>
 
-                              <td style="text-align: right">
+                              <td class="texto_der">
                                 <input
                                   type="radio"
                                   name="metodo_pago"
@@ -164,20 +112,13 @@
                         </div>
                       </td>
 
-                      <td>
-                        <div
-                          style="
-                            width: 267px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 5px;
-                          "
-                        >
-                          <table style="width: 100%">
+                      <td class="div_interior_tabla">
+                        <div class="div_radio">
+                          <table class="tabla_radio">
                             <tr>
                               <td>Mercado pago</td>
 
-                              <td style="text-align: right">
+                              <td class="texto_der">
                                 <input
                                   type="radio"
                                   name="metodo_pago"
@@ -190,20 +131,13 @@
                       </td>
                     </tr>
                     <tr>
-                      <td>
-                        <div
-                          style="
-                            width: 267px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 5px;
-                          "
-                        >
-                          <table style="width: 100%">
+                      <td class="div_interior_tabla">
+                        <div class="div_radio">
+                          <table class="tabla_radio">
                             <tr>
                               <td>PayPal</td>
 
-                              <td style="text-align: right">
+                              <td class="texto_der">
                                 <input
                                   type="radio"
                                   name="metodo_pago"
@@ -215,20 +149,13 @@
                         </div>
                       </td>
 
-                      <td>
-                        <div
-                          style="
-                            width: 267px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 5px;
-                          "
-                        >
-                          <table style="width: 100%">
+                      <td class="div_interior_tabla">
+                        <div class="div_radio">
+                          <table class="tabla_radio">
                             <tr>
                               <td>Apple Pay / Google Pay</td>
 
-                              <td style="text-align: right">
+                              <td class="texto_der">
                                 <input
                                   type="radio"
                                   name="metodo_pago"
@@ -241,20 +168,13 @@
                       </td>
                     </tr>
                     <tr>
-                      <td>
-                        <div
-                          style="
-                            width: 267px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 5px;
-                          "
-                        >
-                          <table style="width: 100%">
+                      <td class="div_interior_tabla">
+                        <div class="div_radio">
+                          <table class="tabla_radio">
                             <tr>
                               <td>Yape / Plin</td>
 
-                              <td style="text-align: right">
+                              <td class="texto_der">
                                 <input
                                   type="radio"
                                   name="metodo_pago"
@@ -266,20 +186,13 @@
                         </div>
                       </td>
 
-                      <td>
-                        <div
-                          style="
-                            width: 267px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 5px;
-                          "
-                        >
-                          <table style="width: 100%">
+                      <td class="div_interior_tabla">
+                        <div class="div_radio">
+                          <table class="tabla_radio">
                             <tr>
                               <td>Transferencia Bancaria</td>
 
-                              <td style="text-align: right">
+                              <td class="texto_der">
                                 <input
                                   type="radio"
                                   name="metodo_pago"
@@ -295,19 +208,14 @@
                   <br />
                   <b>Datos de la Tarjeta</b>
                   <br />
-                  <table cellspacing="5" style="width: 100%">
+                  <table class="tabla_interior">
                     <tr>
                       <td colspan="2">
                         <input
                           type="text"
                           name="correo"
                           placeholder="Digitos de tarjeta"
-                          style="
-                            width: 545px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 8px;
-                          "
+                          class="inputs"
                         />
                       </td>
                     </tr>
@@ -317,12 +225,7 @@
                           type="text"
                           name="correo"
                           placeholder="Fecha de vencimiento"
-                          style="
-                            width: 260px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 8px;
-                          "
+                          class="inputs"
                         />
                       </td>
                       <td>
@@ -330,12 +233,7 @@
                           type="text"
                           name="correo"
                           placeholder="CVV"
-                          style="
-                            width: 260px;
-                            border-radius: 5px;
-                            border: 1px solid rgb(232, 232, 235);
-                            padding: 8px;
-                          "
+                          class="inputs"
                         />
                       </td>
                     </tr>
@@ -346,16 +244,8 @@
           </table>
         </td>
         <td valign="top">
-          <div
-            style="
-              background-color: rgb(255, 255, 255);
-              border-radius: 5px;
-              border: 1px solid rgb(232, 232, 235);
-              padding: 10px;
-              margin-top: 10px;
-            "
-          >
-            <table cellspacing="10">
+          <div class="resumen_compra">
+            <table class="tabla_comun">
               <caption>
                 <b>Resumen de compra</b>
               </caption>
@@ -364,32 +254,34 @@
                   <div
                     style="width: 60px; height: 60px; border: 1px solid black"
                   >
-                    imagen evento
+                    <center>imagen evento</center>
                   </div>
                 </td>
-                <td style="text-align: left">
+                <td class="texto_izq">
                   <b>Festival de rock en vivo</b><br />
                   <small>25/09/2027 - 22:30 hrs</small>
                 </td>
               </tr>
               <tr>
                 <td>Ubicacion</td>
-                <td style="text-align: right">Cancha General</td>
+                <td class="texto_der">Cancha General</td>
               </tr>
               <tr>
                 <td>2 x entradas</td>
-                <td style="text-align: right">$90.000</td>
+                <td class="texto_der">$90.000</td>
               </tr>
               <tr>
                 <td>extra</td>
-                <td style="text-align: right">$9.000</td>
+                <td class="texto_der">$9.000</td>
               </tr>
               <tr>
                 <td>Total</td>
-                <td style="text-align: right">$99.000</td>
+                <td class="texto_der">$99.000</td>
               </tr>
               <tr>
-                <td><button type="button">comprar</button></td>
+                <td colspan="2">
+                  <button type="button" class="boton_comprar">Comprar</button>
+                </td>
               </tr>
             </table>
           </div>
