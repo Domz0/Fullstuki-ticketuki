@@ -1,0 +1,88 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirmación de pago</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="pagina_confirmacion">
+    <main class="confirmacion">
+      <header class="confirmacion_encabezado">
+        <h1>Compra confirmada</h1>
+      </header>
+      <div class="confirmacion_tarjeta">
+        <div class="confirmacion_acceso">
+          <div class="qr">Aquí va un QR</div>
+          <dl class="confirmacion_identificador">
+            <dt class="confirmacion_etiqueta">CODIGO DE ACCESO</dt>
+            <dd class="confirmacion_codigo">TKI-8F42-9C1D</dd>
+          </dl>
+          <p>Un QR por entrada. Se escanea en el acceso del recinto.</p>
+        </div>
+        <div class="confirmacion_compra confirmacion_datos">
+          <dl class="confirmacion_fila">
+            <div class="confirmacion_campo">
+              <dt>ORDEN</dt>
+              <dd>TKI-2026-004821</dd>
+            </div>
+            <div class="confirmacion_campo">
+              <dt>EVENTO</dt>
+              <dd>Festival de rock en vivo</dd>
+            </div>
+          </dl>
+
+          <dl class="confirmacion_fila">
+            <div class="confirmacion_campo">
+              <dt>FECHA Y HORA</dt>
+              <dd>Sáb 14 nov, 20:00</dd>
+            </div>
+            <div class="confirmacion_campo">
+              <dt>RECINTO</dt>
+              <dd>Estadio Nacional</dd>
+            </div>
+          </dl>
+
+          <dl class="confirmacion_fila">
+            <div class="confirmacion_campo">
+              <dt>ÁREA</dt>
+              <dd>Cancha General</dd>
+            </div>
+            <div class="confirmacion_campo">
+              <dt>CANTIDAD</dt>
+              <dd>2 entradas</dd>
+            </div>
+          </dl>
+
+          <dl class="confirmacion_fila">
+            <div class="confirmacion_campo">
+              <dt>MÉTODO DE PAGO</dt>
+              <dd>Tarjeta crédito/débito</dd>
+            </div>
+            <div class="confirmacion_campo">
+              <dt>TOTAL PAGADO</dt>
+              <dd>$99.000</dd>
+            </div>
+          </dl>
+          <div style="width: 100%; border: solid rgb(133, 133, 144) 1px"></div>
+          <div class="botonera">
+            <div class="boton morado">Descargar PDF</div>
+            <div class="boton">Agregar a Wallet</div>
+            <div class="boton">Ver mis entradas</div>
+            <div class="boton">Volver a home</div>
+          </div>
+        </div>
+      </div>
+      <div class="confirmacion_recomendacion">
+        <b>RECOMENDACION</b>
+        <p>
+          Guarda tu código de acceso. Lo necesitarás para ingresar al evento.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

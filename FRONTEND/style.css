@@ -18,7 +18,15 @@
   padding: 5px;
 }
 .fondo {
-  background-color: rgb(244, 244, 245);
+  background-color: rgb(11, 11, 14);
+
+  /*background-color: rgb(244, 244, 245);*/
+
+  /* Fuente general */
+  font-family: Arial, Helvetica, sans-serif;
+
+  /* Color general del texto */
+  color: rgb(230, 230, 235);
 }
 .texto_der {
   text-align: right;
@@ -77,12 +85,15 @@
 .tabla_confirmacion {
   border-spacing: 0;
   width: 40%;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(17, 17, 22);
+  /*background-color: rgb(255, 255, 255);*/
   border-radius: 5px;
   border: 1px solid rgb(232, 232, 235);
 }
 .td_confirmacion_izq {
-  background-color: rgb(240, 240, 242);
+  background-color: rgb(14, 14, 19);
+
+  /*background-color: rgb(240, 240, 242);*/
   width: 25%;
   padding: 20px;
   box-sizing: border-box;
@@ -101,17 +112,13 @@
   text-align: left;
   border-spacing: 10px;
   margin-top: 10px;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(17, 17, 22);
+  /*background-color: rgb(255, 255, 255);*/
   border-radius: 5px;
   border: 1px solid rgb(232, 232, 235);
   width: 40%;
 }
-.qr {
-  width: 100px;
-  height: 100px;
-  border: 1px solid black;
-  padding: 12px;
-}
+
 /* Mi cuenta */
 .tabla_datos_usuario {
   width: 80%;
@@ -142,4 +149,21 @@
   width: 100%;
   border-radius: 5px;
   box-sizing: border-box;
+}
+.contenedor_row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 10px;
+}
+.contenedor_column {
+  display: flex;
+  flex-direction: column;
+}
+
+.contenedor_row div {
+  flex: 1;
+}
+.contenedor_column div {
+  flex: 1;
 }
