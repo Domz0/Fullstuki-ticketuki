@@ -1,0 +1,51 @@
+.flex_V {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: rgb(17, 17, 22);
+  padding: 15px;
+  border-bottom: 1px solid lightgray;
+  font-family: "IBM Plex Sans", sans-serif;
+}
+.flex_H {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  justify-content: space-between;
+}
+.flex_H b {
+  flex: 1;
+  color: white;
+}
+.header_buscador {
+  flex: 1;
+  min-width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 6px;
+  background-color: rgb(14, 14, 19);
+  color: rgb(230, 230, 235);
+  font-family: inherit;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.bloque_simple {
+  padding: 6px 12px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 5px;
+  background-color: rgb(14, 14, 19);
+  font-size: 12px;
+  color: white;
+}
+
+.quiero_ver {
+  background: repeating-linear-gradient(
+    45deg,
+    white 0px,
+    white 10px,
+    lightgray 10px,
+    lightgray 20px
+  );
+}
