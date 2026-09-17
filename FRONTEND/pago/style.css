@@ -1,0 +1,263 @@
+﻿.pagina_pago {
+  margin: 0;
+  min-height: 100vh;
+  background-color: rgb(11, 11, 14);
+  color: rgb(230, 230, 235);
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.pagina_pago * {
+  box-sizing: border-box;
+}
+/* grandote formu y resumen*/
+.pago {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  width: 50%;
+  min-width: 900px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 24px;
+}
+/*datos comprador*/
+.pago_formulario {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.pago_bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 10px;
+  background-color: rgb(17, 17, 22);
+}
+.pago_bloque h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+.pago_fila {
+  display: flex;
+  gap: 12px;
+}
+.pago_caja {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  gap: 6px;
+}
+.pago_caja label {
+  color: rgb(133, 133, 144);
+  font-size: 12px;
+}
+.pago_caja input {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  padding: 10px 12px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 6px;
+  background-color: rgb(14, 14, 19);
+  color: rgb(230, 230, 235);
+  font-size: 13px;
+}
+.pago_factura {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(150, 150, 163);
+  font-size: 12px;
+}
+.pago_factura input {
+  margin: 0;
+}
+/* codigo descuernto */
+.pago_descuento {
+  border-color: rgb(146, 84, 245);
+  background-color: rgb(17, 17, 22);
+}
+.pago_descuento h2 {
+  color: rgb(146, 84, 245);
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+/*texto*/
+.pago_sugerencia {
+  margin: 0;
+  color: rgb(133, 133, 144);
+  font-size: 11px;
+  line-height: 1.6;
+}
+/* metodo pago*/
+.pago_metodos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pago_opcion {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 58px;
+  padding: 12px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 7px;
+  background-color: rgb(14, 14, 19);
+  cursor: pointer;
+}
+.pago_opcion_texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.pago_opcion_texto small {
+  color: rgb(133, 133, 144);
+  font-size: 11px;
+  font-weight: 400;
+}
+.pago_opcion input {
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: rgb(139, 92, 246);
+}
+.separador {
+  width: 100%;
+  border: 1px solid rgb(41, 41, 50);
+}
+.pago_tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pago_tarjeta input {
+  font-family: monospace;
+}
+/*cuotas*/
+.pago_cuotas {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pago_cuotas p {
+  margin: 0;
+  color: rgb(133, 133, 144);
+  font-size: 12px;
+}
+.pago_cuotas .pago_fila {
+  gap: 8px;
+}
+.pago_cuota {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 8px 14px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 6px;
+  background-color: rgb(14, 14, 19);
+  color: rgb(150, 150, 163);
+  font-size: 11px;
+  font-weight: 400;
+  text-align: center;
+}
+/* deje fijo este porque no se aun como hacerlo dinamico */
+.pago_cuota_marcada {
+  border-color: rgb(139, 92, 246);
+  color: rgb(230, 230, 235);
+}
+
+/*Resumen compra*/
+.resumen_compra {
+  flex: 0 0 30%;
+  min-width: 0;
+}
+.resumen_evento {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.resumen_imagen {
+  flex-shrink: 0;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 4px;
+  width: 62px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 12px;
+}
+.resumen_evento_texto {
+  min-width: 0;
+}
+.resumen_evento_texto b {
+  font-size: 13px;
+}
+.resumen_evento_texto p {
+  margin: 6px 0 0;
+  color: rgb(133, 133, 144);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.resumen_detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  color: rgb(150, 150, 163);
+  font-size: 13px;
+}
+.resumen_fila {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.resumen_fila dd {
+  margin: 0;
+  text-align: right;
+  color: rgb(230, 230, 235);
+}
+.resumen_total strong {
+  font-size: 22px;
+  font-weight: 700;
+}
+.boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 6px;
+  color: rgb(230, 230, 235);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.boton.morado {
+  background-color: rgb(139, 92, 246);
+}
+.boton_comprar {
+  width: 100%;
+  min-height: 48px;
+}

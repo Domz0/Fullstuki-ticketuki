@@ -167,7 +167,11 @@
 
 .boton {
   display: flex;
-  border: solid white 1px;
+  padding: 0;
+  background-color: transparent;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
   aspect-ratio: 2.5/1;
   width: 25%;
   text-align: center;
