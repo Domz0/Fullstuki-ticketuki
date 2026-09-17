@@ -1,51 +1,74 @@
+﻿.flex_H {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
 .flex_V {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  padding: 12px 20px;
   background-color: rgb(17, 17, 22);
-  padding: 15px;
-  border-bottom: 1px solid lightgray;
+  color: rgb(230, 230, 235);
+  border-bottom: 1px solid rgb(41, 41, 50);
   font-family: "IBM Plex Sans", sans-serif;
 }
-.flex_H {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  width: 100%;
+.header_superior {
   justify-content: space-between;
 }
-.flex_H b {
-  flex: 1;
-  color: white;
-}
 .header_buscador {
+  overflow: hidden;
   flex: 1;
-  min-width: 100%;
+  min-width: 0;
   padding: 10px 12px;
   border: 1px solid rgb(41, 41, 50);
   border-radius: 6px;
-  background-color: rgb(14, 14, 19);
+  background-color: rgb(23, 23, 28);
   color: rgb(230, 230, 235);
   font-family: inherit;
   font-size: 12px;
-  box-sizing: border-box;
+}
+.header_izquierda {
+  width: 40%;
+}
+.header_derecha a {
+  text-decoration: none; /* quita el subrayado */
+  color: rgb(150, 150, 163);
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+}
+.header_categorias {
+  gap: 6px;
 }
 
-.bloque_simple {
+.categoria {
   padding: 6px 12px;
   border: 1px solid rgb(41, 41, 50);
   border-radius: 5px;
-  background-color: rgb(14, 14, 19);
+  background-color: rgb(23, 23, 28);
   font-size: 12px;
-  color: white;
+  font-weight: bold;
+}
+.mi_cuenta_bloque {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 30px;
+  background-color: rgb(17, 17, 22);
 }
 
-.quiero_ver {
-  background: repeating-linear-gradient(
-    45deg,
-    white 0px,
-    white 10px,
-    lightgray 10px,
-    lightgray 20px
-  );
+.mi_cuenta_circulo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgb(41, 41, 50);
+  color: rgb(150, 150, 163);
+  font-size: 10px;
 }
