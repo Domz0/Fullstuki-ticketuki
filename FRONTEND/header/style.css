@@ -1,12 +1,10 @@
-﻿.flex_H {
-  display: flex;
-  flex-direction: row;
+﻿@import url("../css/comun.css");
+
+.header_fila {
   align-items: center;
   gap: 16px;
 }
-.flex_V {
-  display: flex;
-  flex-direction: column;
+.header_contenedor {
   gap: 12px;
   padding: 12px 20px;
   background-color: rgb(17, 17, 22);
@@ -15,12 +13,13 @@
   font-family: "IBM Plex Sans", sans-serif;
 }
 .header_superior {
+  min-width: 900px;
   justify-content: space-between;
 }
 .header_buscador {
   overflow: hidden;
   flex: 1;
-  min-width: 0;
+  min-width: 100;
   padding: 10px 12px;
   border: 1px solid rgb(41, 41, 50);
   border-radius: 6px;
@@ -34,8 +33,6 @@
   font-size: 24px;
 }
 .header_derecha a {
-  text-decoration: none; /* quita el subrayado */
-  color: rgb(150, 150, 163);
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 14px;
   font-weight: bold;
@@ -52,27 +49,19 @@
   font-weight: bold;
 }
 .mi_cuenta_bloque {
-  display: flex;
   align-items: center;
   gap: 8px;
   padding: 4px 12px 4px 4px;
-  border: 1px solid rgb(41, 41, 50);
   border-radius: 30px;
-  background-color: rgb(17, 17, 22);
 }
 .mi_cuenta_circulo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 24px;
   height: 24px;
   border-radius: 50%;
   background-color: rgb(41, 41, 50);
-  color: rgb(150, 150, 163);
   font-size: 10px;
 }
 .header_tuki {
-  display: flex;
   align-items: center;
   flex-shrink: 0;
 }
