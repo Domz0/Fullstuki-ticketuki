@@ -1,18 +1,11 @@
+﻿@import url("../css/comun.css");
+
 /* Confirmación de pago con Flexbox */
 .pagina_confirmacion {
-  margin: 0;
   min-height: 100vh;
-  background-color: rgb(11, 11, 14);
-  color: rgb(230, 230, 235);
-  font-family: "IBM Plex Sans", sans-serif;
-}
-.pagina_confirmacion * {
-  box-sizing: border-box; /*incluye padding y borde en el tamaño*/
 }
 .confirmacion {
   /*bloque superior e inferior*/
-  display: flex;
-  flex-direction: column;
   gap: 16px;
   width: 100%;
   min-width: 600px;
@@ -22,9 +15,6 @@
 }
 .confirmacion_encabezado {
   /*flex superior*/
-
-  display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 16px;
   margin-bottom: 16px;
@@ -37,36 +27,25 @@
 }
 /*div que une zona iz y der*/
 .confirmacion_tarjeta {
-  display: flex;
   overflow: hidden; /*recorta el fondo interior en las esquinas redondeadas*/
-  border: 1px solid rgb(41, 41, 50);
   border-radius: 12px;
-  background-color: rgb(17, 17, 22);
 }
 
 /*zona izquierda*/
 .confirmacion_acceso {
-  display: flex;
   flex: 0 0 34%;
-  flex-direction: column;
   align-items: center;
   padding: 28px;
   border-right: 1px dashed rgb(41, 41, 50);
-  /*para que me retes pauli, saludos*/
   background-color: rgb(14, 14, 19);
   text-align: center;
 }
 .confirmacion_acceso p {
   margin: 16px 0 0;
-  color: rgb(133, 133, 144);
   font-size: 12px;
   line-height: 1.6;
 }
 .qr {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
   width: 186px;
   max-width: 100%;
   height: auto;
@@ -87,7 +66,6 @@
   font-weight: bold;
 }
 .confirmacion_etiqueta {
-  color: rgb(133, 133, 144);
   font-family: monospace;
   font-size: 10px;
 }
@@ -107,20 +85,15 @@
   font-size: 16px;
 }
 .confirmacion_datos {
-  display: flex;
-  flex-direction: column;
   gap: 20px;
   margin: 0;
 }
 .confirmacion_campo {
-  display: flex;
   flex: 1;
-  flex-direction: column;
   gap: 8px;
   min-width: 0;
 }
 .confirmacion_campo dt {
-  color: rgb(133, 133, 144);
   font-family: monospace;
   font-size: 10px;
 }
@@ -130,59 +103,37 @@
   line-height: 1.5;
 }
 .confirmacion_fila {
-  display: flex;
   gap: 24px;
   margin: 0;
 }
 /*zona de recomendacion*/
 .confirmacion_recomendacion {
-  display: flex;
   align-items: baseline;
   gap: 16px;
   padding: 16px 20px;
-  border: 1px solid rgb(41, 41, 50);
   border-radius: 8px;
-  background-color: rgb(17, 17, 22);
 }
 .confirmacion_recomendacion b {
-  color: rgb(146, 84, 245);
   font-family: monospace;
   font-size: 13px;
 }
 .confirmacion_recomendacion p {
   margin: 0;
-  color: rgb(150, 150, 163);
   font-size: 13px;
   line-height: 1.6;
 }
-.separador {
-  width: 100%;
-  border: 1px solid rgb(41, 41, 50);
-}
 .botonera {
-  display: flex;
-  flex-direction: row;
   gap: 10px;
 }
 
 .boton {
-  display: flex;
   padding: 0;
   background-color: transparent;
   color: inherit;
   font-family: inherit;
-  cursor: pointer;
   aspect-ratio: 2.5/1;
   width: 25%;
   text-align: center;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  border: 1px solid rgb(41, 41, 50);
-  border-radius: 6px;
-}
-.boton.morado {
-  background-color: rgb(139, 92, 246);
 }
 
 /*marcelini me hizo entrar en crisis al mostrar flex, 
@@ -199,7 +150,5 @@ gap -> separacion
 margin: 0 auto -> es centra horizontalmente
 box-sizing: border-box -> te controla a los div y otras cosas, lo aprendi a la mala
 overflow: hidden -> esconde lo que se sale
-
-
 
 */

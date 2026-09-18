@@ -1,5 +1,4 @@
-﻿/* Base compartida; aquí quedan los detalles propios del footer */
-@import url("../css/comun.css");
+﻿@import url("../css/comun.css");
 
 .pagina_footer {
   padding: 12px 8px;
