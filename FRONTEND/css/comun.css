@@ -1,0 +1,72 @@
+/*fondo de cada pagina*/
+.pagina {
+  margin: 0;
+  background-color: rgb(11, 11, 14);
+  color: rgb(230, 230, 235);
+  font-family: "IBM Plex Sans", sans-serif;
+}
+.pagina * {
+  box-sizing: border-box;
+}
+/*  Flex horizontal*/
+.flex_H {
+  display: flex;
+  flex-direction: row;
+}
+/*  flex vertical*/
+.flex_V {
+  display: flex;
+  flex-direction: column;
+}
+.flex_centrado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/*  paneles generales*/
+.panel {
+  display: flex;
+  border: 1px solid rgb(41, 41, 50);
+  background-color: rgb(17, 17, 22);
+}
+/*  estilo de fieldsets*/
+.fieldset_base {
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 6px;
+  background-color: rgb(14, 14, 19);
+}
+/*  color de texto chiquito*/
+.texto_small {
+  color: rgb(133, 133, 144);
+}
+/* esta en el header */
+.texto_secundario {
+  color: rgb(150, 150, 163);
+}
+.texto_morado {
+  color: rgb(146, 84, 245);
+}
+/* divisor fancy */
+.separador {
+  width: 100%;
+  border: 1px solid rgb(41, 41, 50);
+}
+/*la idea general de los botones */
+.boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+/* el que deje en pago y que vi a marcelin usar en el login */
+.boton.morado {
+  background-color: rgb(139, 92, 246);
+}
+/*formato para los enlaces*/
+.enlace {
+  color: rgb(150, 150, 163);
+  text-decoration: none;
+}
