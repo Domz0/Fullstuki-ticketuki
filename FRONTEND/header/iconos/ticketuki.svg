@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="124" height="104" viewBox="19.3 19.1 124 104" fill="none">
+  <title>Ticket morado con personaje</title>
+  <defs>
+    <linearGradient id="papel" x1="-44" y1="-34" x2="40" y2="34" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ECA0D5" />
+      <stop offset="1" stop-color="#D37BC5" />
+    </linearGradient>
+    <clipPath id="interior">
+      <path d="M-42-32H42Q48-32 48-26V-13C35-13 35 3 48 3V22Q48 28 42 28H-42Q-48 28-48 22V8C-35 8-35-8-48-8V-26Q-48-32-42-32Z" />
+    </clipPath>
+  </defs>
+
+  <!-- Ticket inclinado -->
+  <g transform="translate(82 73) rotate(-21)">
+    <path d="M-42-36H42Q52-36 52-26V-13C39-13 39 3 52 3V22Q52 32 42 32H-42Q-52 32-52 22V8C-39 8-39-8-52-8V-26Q-52-36-42-36Z"
+      transform="translate(0 2)" fill="#692379" opacity=".35" />
+    <path d="M-42-34H42Q50-34 50-26V-13C37-13 37 3 50 3V22Q50 30 42 30H-42Q-50 30-50 22V8C-37 8-37-8-50-8V-26Q-50-34-42-34Z"
+      fill="url(#papel)" stroke="#FFF9FF" stroke-width="7" stroke-linejoin="round" />
+
+    <!-- Personaje recortado dentro del ticket -->
+    <g clip-path="url(#interior)">
+      <path d="M-34 35C-38 23-32 13-28 5C-34-4-34-14-29-23C-26-16-24-13-19-10C-10-16 3-15 11-9C18-12 23-19 23-26C28-22 29-15 27-9C33-13 34-17 33-20C39-12 35-3 28 3C35 12 35 25 30 35Z" fill="#9543A4" />
+      <path d="M-30-10C-27-5-23-3-19-3M26-10C23-5 20-2 16-1" stroke="#A954B2" stroke-width="3" stroke-linecap="round" />
+      <path d="M-25 34C-30 29-31 21-27 14C-24 7-15 3-9 7C-4 9-2 13-2 15C0 8 5 4 12 5C22 5 27 12 25 20C25 28 19 34 14 37Z" fill="#E39AD3" />
+      <ellipse cx="-16" cy="18" rx="5.2" ry="6.2" transform="rotate(-10 -16 18)" fill="#873196" />
+      <ellipse cx="12" cy="17" rx="5.5" ry="6.3" transform="rotate(8 12 17)" fill="#873196" />
+      <path d="M-5 23Q-1 19 3 23L0 29Q-1 31-3 28Z" fill="#9D43AA" />
+      <path d="M-39 15L-32 13L-35 23L-42 24ZM32 13L39 15L37 24L30 23Z" fill="#A651AE" />
+    </g>
+
+    <!-- Brillos del borde superior -->
+    <path d="M-35-34H-5M5-34H24" stroke="#FFF9FF" stroke-width="7" stroke-linecap="round" />
+    <path d="M-5-30V-25M24-30V-25" stroke="#F9D7EE" stroke-width="5" stroke-linecap="round" />
+  </g>
+</svg>

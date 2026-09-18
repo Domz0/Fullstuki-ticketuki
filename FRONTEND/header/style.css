@@ -27,10 +27,11 @@
   background-color: rgb(23, 23, 28);
   color: rgb(230, 230, 235);
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
 }
 .header_izquierda {
   width: 40%;
+  font-size: 24px;
 }
 .header_derecha a {
   text-decoration: none; /* quita el subrayado */
@@ -42,13 +43,12 @@
 .header_categorias {
   gap: 6px;
 }
-
 .categoria {
   padding: 6px 12px;
   border: 1px solid rgb(41, 41, 50);
   border-radius: 5px;
   background-color: rgb(23, 23, 28);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
 }
 .mi_cuenta_bloque {
@@ -60,7 +60,6 @@
   border-radius: 30px;
   background-color: rgb(17, 17, 22);
 }
-
 .mi_cuenta_circulo {
   display: flex;
   align-items: center;
@@ -71,4 +70,14 @@
   background-color: rgb(41, 41, 50);
   color: rgb(150, 150, 163);
   font-size: 10px;
+}
+.header_tuki {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.header_tuki img {
+  display: block;
+  width: 40px;
+  height: auto;
 }
