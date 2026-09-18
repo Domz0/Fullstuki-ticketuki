@@ -1,0 +1,118 @@
+﻿.pagina_cuenta {
+  margin: 0;
+  min-height: 100vh;
+  background-color: rgb(11, 11, 14);
+  color: rgb(230, 230, 235);
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.pagina_cuenta * {
+  box-sizing: border-box;
+}
+.cuenta {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 28px;
+  width: 80%;
+  min-width: 900px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+.menu_izq {
+  display: flex;
+  flex: 0 0 26%;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 10px;
+  background-color: rgb(17, 17, 22);
+}
+.cuenta_usuario {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.cuenta_usuario_fila {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.imagen {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 50%;
+  background-color: rgb(14, 14, 19);
+  color: rgb(150, 150, 163);
+  font-weight: 700;
+}
+.cuenta_usuario h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.cuenta_usuario p {
+  margin: 0;
+  color: rgb(133, 133, 144);
+  font-size: 12px;
+}
+.separador {
+  width: 100%;
+  border: 1px solid rgb(41, 41, 50);
+}
+.enlaces {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.enlaces a {
+  padding: 8px 10px;
+  color: rgb(150, 150, 163);
+  text-decoration: none;
+  font-size: 13px;
+}
+/*entiendo que depsues de que me reten, hay que cambiar esto igual*/
+.datos_usuario {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 10px;
+  background-color: rgb(17, 17, 22);
+}
+.datos_usuario h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.cuenta_fila {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+.campo_cuenta {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 6px;
+  background-color: rgb(14, 14, 19);
+}
+.campo_cuenta legend {
+  padding: 0 4px;
+  color: rgb(133, 133, 144);
+  font-size: 12px;
+}

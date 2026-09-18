@@ -1,90 +1,68 @@
 ﻿<!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mi cuenta</title>
-
-    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="../header/style.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap"
+    />
   </head>
-  <body class="fondo">
+  <body class="pagina_cuenta">
     <div id="header"></div>
-    <center>
-      <div style="width: 80%">
-        <table>
-          <tr>
-            <td>
-              <div class="avatar"></div>
-            </td>
-            <td><h1>Camila Vergara</h1></td>
-          </tr>
-        </table>
-        <table class="tabla_datos_usuario">
-          <tr>
-            <td class="alinear_arriba columna_menu_cuenta">
-              <div class="contenedor_cuenta">
-                <a href="historial.html">Historial</a><br />
-                <a href="tickets.html">Mis tickets</a><br />
-                <a href="index.html">Cerrar sesion</a>
-              </div>
-            </td>
-            <td class="alinear_arriba" style="width: 75%">
-              <div class="contenedor_cuenta">
-                <table class="espaciado_10" style="width: 100%">
-                  <caption class="texto_izq">
-                    <b>Datos del Usuario/a</b>
-                  </caption>
-                  <tr>
-                    <td>
-                      <fieldset class="campo_cuenta">
-                        <legend>Nombre</legend>
-                        Camila
-                      </fieldset>
-                    </td>
-                    <td>
-                      <fieldset class="campo_cuenta">
-                        <legend>Apellido</legend>
-                        Vergara
-                      </fieldset>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <fieldset class="campo_cuenta">
-                        <legend>Run</legend>
-                        12345678-9
-                      </fieldset>
-                    </td>
-                    <td>
-                      <fieldset class="campo_cuenta">
-                        <legend>Fecha de Nacimiento</legend>
-                        01/04/1998
-                      </fieldset>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <fieldset class="campo_cuenta">
-                        <legend>Correo electronico</legend>
-                        correo@correo.cl
-                      </fieldset>
-                    </td>
-                    <td>
-                      <fieldset class="campo_cuenta">
-                        <legend>Numero de contacto</legend>
-                        +56912345678
-                      </fieldset>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </td>
-          </tr>
-        </table>
+    <main class="cuenta">
+      <div class="menu_izq">
+        <div class="cuenta_usuario">
+          <div class="cuenta_usuario_fila">
+            <div class="imagen">CV</div>
+            <h1>Camila Vergara</h1>
+          </div>
+          <p>Miembro desde 2023</p>
+        </div>
+        <div class="separador"></div>
+        <div class="enlaces">
+          <a href="historial.html">Mis tickets</a>
+          <a href="../home.html">Cerrar sesión</a>
+        </div>
       </div>
-    </center>
+
+      <div class="datos_usuario">
+        <h2>Datos del Usuario/a</h2>
+        <div class="cuenta_fila">
+          <fieldset class="campo_cuenta">
+            <legend>Nombre</legend>
+            Camila
+          </fieldset>
+          <fieldset class="campo_cuenta">
+            <legend>Apellido</legend>
+            Vergara
+          </fieldset>
+        </div>
+        <div class="cuenta_fila">
+          <fieldset class="campo_cuenta">
+            <legend>Run</legend>
+            12345678-9
+          </fieldset>
+          <fieldset class="campo_cuenta">
+            <legend>Fecha de Nacimiento</legend>
+            01/04/1998
+          </fieldset>
+        </div>
+        <div class="cuenta_fila">
+          <fieldset class="campo_cuenta">
+            <legend>Correo electronico</legend>
+            correo@correo.cl
+          </fieldset>
+          <fieldset class="campo_cuenta">
+            <legend>Numero de contacto</legend>
+            +56912345678
+          </fieldset>
+        </div>
+      </div>
+    </main>
     <script src="../js/header2.js"></script>
   </body>
 </html>
