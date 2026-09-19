@@ -79,7 +79,7 @@ $("#btnSesion").addEventListener("click", () => {
 });
 
 // seleccion de botones
-const opcionesCuotas = document.querySelectorAll(".cuota_ejemplo");
+const opcionesCuotas = document.querySelectorAll(".cuota");
 
 opcionesCuotas.forEach((opcion) => {
   opcion.addEventListener("click", () => {
