@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="./validaciones.js"></script>
+  </head>
+
+  <body>
+    <section class="bloque">
+      <div class="ejemplo">
+        <label for="texto">Texto:</label>
+        <input type="text" id="texto" placeholder="pongale algo" />
+        <button id="btnTexto">Comprobar texto</button>
+        <pre id="salidaTexto"></pre>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <div class="ejemplo">
+        <label for="numero">Número:</label>
+        <input type="number" id="numero" placeholder="escribe 67" />
+        <button id="btnNumero">Comprobar número</button>
+        <pre id="salidaNumero"></pre>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <div class="ejemplo">
+        <button id="btnClick">Haz click</button>
+        <pre id="salidaClick"></pre>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <form id="formEjemplo">
+        <label for="nombreForm">Nombre:</label>
+        <input type="text" id="nombreForm" placeholder="Nombre" />
+        <button type="submit">Enviar</button>
+      </form>
+      <pre id="salidaForm"></pre>
+    </section>
+
+    <section class="bloque">
+      <div class="ejemplo">
+        <label for="correo">Correo:</label>
+        <input type="text" id="correo" placeholder="nombre@dominio.cl" />
+        <button id="btnCorreo">correo?</button>
+        <pre id="salidaCorreo"></pre>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <div class="ejemplo">
+        <div class="header_ejemplo">
+          <b>Ticketuki</b>
+          <div id="zonaSesion">Iniciar sesión · Registrar usuario</div>
+        </div>
+        <button type="button" id="btnSesion">Iniciar sesión</button>
+        <pre id="salidaSesion">no iniciado</pre>
+      </div>
+      <p>esto nos puede servir despues, mejor hacer 2 home, uno sin iniciar y "iniciado"</p>
+    </section>
+
+    <section class="bloque">
+      <div class="ejemplo">
+        <div class="cuotas">
+          <button type="button" class="cuota seleccionada" aria-pressed="true">Sin cuotas</button>
+          <button type="button" class="cuota" aria-pressed="false">3 cuotas</button>
+          <button type="button" class="cuota" aria-pressed="false">6 cuotas</button>
+          <button type="button" class="cuota" aria-pressed="false">12 cuotas</button>
+        </div>
+        <pre id="salidaCuotas">esta en -> Sin cuotas</pre>
+    </section>
+  </body>
+</html>

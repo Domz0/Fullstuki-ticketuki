@@ -1,0 +1,95 @@
+﻿/* Fuente usada en el resto del proyecto */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap");
+
+body {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 24px;
+  background-color: rgb(11, 11, 14);
+  color: rgb(230, 230, 235);
+}
+* {
+  box-sizing: border-box;
+}
+
+.bloque {
+  background-color: rgb(17, 17, 22);
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+p {
+  color: rgb(150, 150, 163);
+}
+label {
+  color: rgb(133, 133, 144);
+  font-size: 13px;
+}
+input {
+  max-width: 100%;
+  padding: 10px 12px;
+  margin: 5px;
+  background-color: rgb(14, 14, 19);
+  color: rgb(230, 230, 235);
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+}
+button {
+  padding: 10px 16px;
+  margin: 5px;
+  background-color: rgb(139, 92, 246);
+  color: rgb(230, 230, 235);
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+pre {
+  min-height: 44px;
+  margin: 12px 0;
+  padding: 12px;
+  background-color: rgb(14, 14, 19);
+  color: rgb(230, 230, 235);
+  border: 1px dashed rgb(41, 41, 50);
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 13px;
+  overflow: auto;
+}
+.header_ejemplo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background-color: rgb(17, 17, 22);
+  border: 1px solid rgb(41, 41, 50);
+  border-radius: 6px;
+}
+.cuotas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cuota {
+  margin: 0;
+  background-color: rgb(17, 17, 22);
+  color: rgb(150, 150, 163);
+  border: 1px solid rgb(41, 41, 50);
+  font-size: 13px;
+  font-weight: 400;
+}
+.cuota.seleccionada {
+  border-color: rgb(139, 92, 246);
+  background-color: rgb(17, 17, 22);
+  color: rgb(230, 230, 235);
+}
