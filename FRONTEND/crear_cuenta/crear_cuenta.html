@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta</title>
+    <link rel="stylesheet" href="style.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="flex-container">
+        <section class="form-container">
+            <a class="ticketuki" href="../inicio.html"> Ticketuki</a>
+            <div class="form">
+                <form>
+                    <h2>Crea tu cuenta</h2>
+                    <p class="subtitle">Solo toma un minuto</p>
+
+                    <div class="input-container-group">
+                        <div class="input-container">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id="nombre" name="nombre" placeholder="Nombre">
+                        </div>
+                        <div class="input-container">
+                            <label for="apellido">Apellido</label>
+                            <input type="text" id="apellido" name="apellido" placeholder="Apellido">
+                        </div>
+                    </div>
+                    
+                    <div class="input-container">
+                        <label for="rut">RUT</label>
+                        <input type="text" id="rut" name="rut" placeholder="12.345.678-9">
+                    </div>
+                    <div class="input-container">
+                        <label for="mail">Correo electronico</label>
+                        <input type="text" id="mail" name="mail" placeholder="tu@correo.com">
+                    </div>
+                    <div class="input-container">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" name="password" placeholder="Minimo 8 caracteres">
+                    </div>
+                    
+                    <div class="checkbox-container">        
+                        <input type="checkbox" id="checkbox" name="checkbox" placeholder="checkbox">
+                        <label for="checkbox">Acepto los terminos y la politica de privacidad</label>
+                    </div>
+
+                    <button type="submit">Crear cuenta</button>
+
+                    <p class="crear">¿Ya tienes cuenta? <a href="../login/login.html"> Ingresar</a></p>
+                </form>
+            </div>
+        </section>
+
+        <section class="img-container">
+
+            <img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y29uY2llcnRvfGVufDB8fDB8fHww" alt="">
+        </section>
+
+    </div>
+</body>
+</html>
