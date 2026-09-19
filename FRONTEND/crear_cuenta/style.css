@@ -1,7 +1,7 @@
 /* General */
 
 *{ 
-  /* outline: solid red 1px; */
+/*    outline: solid red 1px; */
     font-family: "IBM Plex Sans", sans-serif;
     box-sizing: border-box;
 }
@@ -61,13 +61,21 @@ body {
 }
 
 form {
-    padding: 5rem;
+    padding: 2rem 5rem;
+    
     display: flex;
     flex-direction: column; 
 }
 
 form h2 {
     color: var(--tk-text);
+    margin-bottom: 0;
+}
+
+form .subtitle {
+    font-size: 0.8rem;
+    margin-top: 0;
+    color: var(--tk-text-2)
 }
 
 .input-container {
@@ -75,6 +83,15 @@ form h2 {
     flex-direction: column; 
     gap: 0.5rem;
     margin-bottom: 1rem;
+}
+
+.input-container-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.input-container-group, .input-container {
+    flex:1;
 }
 
 .input-container label {
@@ -96,11 +113,9 @@ form h2 {
     box-shadow: 0 0 0 3px var(--tk-border);
 }
 
-form .olvidar {
+.checkbox-container {
     font-size: 0.8rem;
-    font-weight: 500;
-    display: flex;
-    justify-content: right;
+    color: var(--tk-dim);
 }
 
 form button {
@@ -127,11 +142,12 @@ form .crear {
     font-size: 0.8rem;
 }
 
-.crear a, .olvidar{
+.crear a{
     color: var(--tk-accent);
     font-weight: 700;
     text-decoration: none;
 }
+
 
 /* Img */
 
