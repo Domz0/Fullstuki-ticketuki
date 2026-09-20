@@ -1,0 +1,390 @@
+
+:root {
+  --ancho: 1600px;
+  --lado: 32px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: "IBM Plex Sans", Inter, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.contenido {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 24px var(--lado) 0;
+}
+
+/* ---------- botones ---------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.boton--morado {
+  background: var(--color-morado);
+  color: var(--color-blanco);
+}
+
+.boton--morado:hover {
+  background: var(--color-morado-oscuro);
+}
+
+.boton--borde {
+  border: 1px solid var(--color-linea-suave);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+}
+
+.boton--borde:hover {
+  background: var(--color-superficie);
+}
+
+/* portada */
+
+.portada {
+  position: relative;
+  aspect-ratio: 16 / 6;
+  min-height: 420px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--color-fondo);
+}
+
+.portada__imagen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.portada__velo {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(3, 4, 6, 0.55) 0%,
+      rgba(4, 5, 7, 0.25) 35%,
+      rgba(4, 5, 7, 0.95) 100%
+    ),
+    linear-gradient(90deg, rgba(3, 4, 6, 0.75), transparent 60%);
+}
+
+.portada__texto {
+  position: absolute;
+  right: 44px;
+  bottom: 44px;
+  left: 44px;
+}
+
+.portada__etiqueta {
+  margin: 0;
+  color: var(--color-morado-claro);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.portada__titulo {
+  margin: 16px 0 12px;
+  font-size: clamp(38px, 4vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.portada__datos {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: 17px;
+}
+
+.portada__cta {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+/* proximos eventos*/
+
+.eventos {
+  margin-top: 44px;
+}
+
+.eventos__encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.eventos__titulo {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.eventos__resultados {
+  color: var(--color-texto-tenue);
+  font-size: 14px;
+}
+
+.eventos__grilla {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.tarjeta {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-linea);
+  border-radius: 12px;
+  background: var(--color-fondo-alto);
+}
+
+.tarjeta:hover {
+  border-color: var(--color-linea-suave);
+}
+
+.tarjeta__imagen {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  border-bottom: 1px solid var(--color-linea);
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.02) 0 6px,
+      transparent 6px 12px
+    ),
+    var(--color-fondo-alto);
+}
+
+.tarjeta__tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 9px;
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  border-radius: 6px;
+  background: rgba(61, 30, 95, 0.45);
+  color: var(--color-morado-texto);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tarjeta__placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--color-texto-tenue);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tarjeta__cuerpo {
+  padding: 16px;
+}
+
+.tarjeta__nombre {
+  margin: 0 0 10px;
+  font-size: 16px;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+
+.tarjeta__dato {
+  margin: 0 0 6px;
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+}
+
+.tarjeta__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.tarjeta__precio {
+  font-size: 15px;
+}
+
+.tarjeta__ver {
+  color: var(--color-morado-claro);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  .eventos__grilla {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .portada {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 860px) {
+  :root {
+    --lado: 16px;
+  }
+
+  .contenido {
+    padding-top: 16px;
+  }
+
+  .portada {
+    aspect-ratio: auto;
+    min-height: 0;
+    border: 1px solid var(--color-linea);
+    border-radius: 14px;
+  }
+
+  .portada__imagen {
+    position: relative;
+    height: 260px;
+  }
+
+  .portada__velo {
+    bottom: auto;
+    height: 260px;
+    background: linear-gradient(
+      180deg,
+      rgba(3, 4, 6, 0.35) 0%,
+      rgba(4, 5, 7, 0.2) 45%,
+      var(--color-fondo-alto) 100%
+    );
+  }
+
+  .portada__texto {
+    position: static;
+    padding: 0 20px 22px;
+    background: var(--color-fondo-alto);
+  }
+
+  .portada__titulo {
+    font-size: 34px;
+  }
+
+  .portada__datos {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .portada__cta {
+    margin-top: 20px;
+  }
+
+  .portada__cta .boton {
+    flex: 1;
+  }
+
+  .eventos {
+    margin-top: 28px;
+  }
+
+  .eventos__resultados {
+    display: none;
+  }
+
+ .eventos__grilla {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .tarjeta {
+    display: grid;
+    grid-template-columns: 118px 1fr;
+  }
+
+  .tarjeta__imagen {
+    aspect-ratio: auto;
+    border-right: 1px solid var(--color-linea);
+    border-bottom: 0;
+  }
+
+  .tarjeta__tag {
+    position: static;
+    display: block;
+    margin-bottom: 6px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-morado-claro);
+  }
+
+  .tarjeta__placeholder {
+    font-size: 10px;
+  }
+
+  .tarjeta__cuerpo {
+    padding: 14px;
+  }
+
+  .tarjeta__nombre {
+    margin-bottom: 6px;
+    font-size: 15px;
+  }
+
+  .tarjeta__pie {
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .portada__cta {
+    flex-direction: column;
+  }
+
+  .portada__cta .boton {
+    width: 100%;
+  }
+}

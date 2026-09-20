@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ticketuki · Eventos</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="listado.css" />
+
+    <script src="../../componentes/header/header.js"></script>
+    <script src="../../componentes/footer/footer.js"></script>
+    <script src="listado.js" defer></script>
+  </head>
+
+  <body data-pagina="buscar">
+    <!-- Componente: header/header.html -->
+    <div id="header"></div>
+
+    <main class="contenido">
+      <!-- ============ Ruta (solo escritorio) ============ -->
+      <nav class="miga" aria-label="Ruta de navegación">
+        <a class="miga__enlace" href="../../index.html">Home</a>
+        <span class="miga__separador" aria-hidden="true">/</span>
+        <span class="miga__actual" data-categoria-nombre>Música</span>
+      </nav>
+
+      <!-- ============ Cabecera de la categoría ============ -->
+      <section class="categoria">
+        <a class="categoria__volver" href="../../index.html" aria-label="Volver al inicio">
+          <span aria-hidden="true">←</span>
+        </a>
+
+        <div class="categoria__texto">
+          <h1 class="categoria__titulo">Música</h1>
+          <p class="categoria__conteo">
+            <span data-conteo>5</span> <span data-plural="evento">eventos</span> en
+            <span data-ciudad>Santiago</span>
+          </p>
+        </div>
+
+        <button class="categoria__favorito" type="button" aria-label="Guardar esta categoría">
+          <span aria-hidden="true">♡</span>
+        </button>
+      </section>
+
+      <!-- ============ Buscador acotado a la categoría ============ -->
+      <form class="busqueda" role="search" onsubmit="return false;">
+        <span class="busqueda__lupa" aria-hidden="true"></span>
+        <input
+        class="busqueda__campo"
+        type="search"
+        data-busqueda
+        aria-label="Buscar en esta categoría"
+        placeholder="Buscar en esta categoría"
+        />
+      </form>
+
+      <!-- ============ Chips resumen (móvil) ============ -->
+      <div class="chips">
+        <button class="chips__chip chips__chip--filtros" type="button" data-abre-panel>
+          Filtros <span class="chips__contador" data-activos>0</span>
+        </button>
+        <button class="chips__chip" type="button" data-abre-panel data-resumen="subcategoria">
+          Subcategoría
+        </button>
+        <button class="chips__chip" type="button" data-abre-panel data-resumen="ciudad">
+          Ciudad
+        </button>
+        <button class="chips__chip" type="button" data-abre-panel data-resumen="plazo">
+          Fecha
+        </button>
+        <button class="chips__chip" type="button" data-abre-panel data-resumen="recinto">
+          Recinto
+        </button>
+      </div>
+
+      <!-- ============ Filtros + resultados ============ -->
+      <div class="listado">
+        <!-- El mismo panel es barra lateral en escritorio y hoja inferior en móvil -->
+        <div class="panel" data-panel hidden>
+          <div class="panel__fondo" data-cierra-panel></div>
+
+          <div class="panel__caja" role="dialog" aria-modal="true" aria-label="Filtros">
+            <span class="panel__asa" aria-hidden="true"></span>
+
+            <div class="panel__encabezado">
+              <h2 class="panel__titulo">Filtros</h2>
+              <button class="panel__limpiar" type="button" data-limpiar>Limpiar todo</button>
+            </div>
+
+            <div class="panel__grupo">
+              <p class="panel__subtitulo">Subcategoría</p>
+              <div class="panel__opciones" data-grupo="subcategoria"></div>
+            </div>
+
+            <div class="panel__grupo">
+              <p class="panel__subtitulo">Ciudad</p>
+              <div class="panel__opciones" data-grupo="ciudad"></div>
+            </div>
+
+            <div class="panel__grupo">
+              <p class="panel__subtitulo">Fecha</p>
+              <div class="panel__opciones" data-grupo="plazo">
+                <button class="panel__opcion" type="button" value="1">Esta semana</button>
+                <button class="panel__opcion" type="button" value="2">Este mes</button>
+                <button class="panel__opcion" type="button" value="3">Próximos 3 meses</button>
+              </div>
+            </div>
+
+            <div class="panel__grupo">
+              <p class="panel__subtitulo">Recinto</p>
+              <div class="panel__opciones" data-grupo="recinto"></div>
+            </div>
+
+            <button class="panel__boton" type="button" data-cierra-panel>
+              Ver <span data-conteo>5</span> <span data-plural="evento">eventos</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="listado__columna">
+          <div class="resultados__barra">
+            <p class="resultados__conteo">
+              <span class="resultados__movil">
+                <span data-conteo>5</span> <span data-plural="resultado">resultados</span>
+              </span>
+              <span class="resultados__escritorio">
+                <span data-conteo>5</span> <span data-plural="evento">eventos</span>
+                en <span data-categoria-nombre>Música</span>
+              </span>
+            </p>
+
+            <label class="orden">
+              <span class="orden__texto">Ordenar por</span>
+              <select class="selector" data-orden aria-label="Ordenar por">
+                <option value="fecha">Fecha más próxima</option>
+                <option value="precio">Precio</option>
+              </select>
+            </label>
+          </div>
+
+          <section class="resultados" data-lista>
+            <article
+            class="resultado"
+            data-categoria="musica"
+            data-subcategoria="Rock"
+            data-ciudad="Santiago"
+            data-recinto="Estadio Nacional"
+            data-plazo="1"
+            data-precio="35000"
+            >
+            <div class="resultado__imagen">
+              <span class="resultado__placeholder">Imagen</span>
+            </div>
+            <div class="resultado__cuerpo">
+              <h2 class="resultado__nombre">Festival de rock en vivo</h2>
+              <p class="resultado__dato">Estadio Nacional · Sáb 14 nov</p>
+              <div class="resultado__etiquetas">
+                <span class="resultado__etiqueta">Rock</span>
+                <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+              </div>
+            </div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$35.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article
+          class="resultado"
+          data-categoria="musica"
+          data-subcategoria="Electrónica"
+          data-ciudad="Santiago"
+          data-recinto="Santander Arena"
+          data-plazo="2"
+          data-precio="28000"
+          >
+          <div class="resultado__imagen">
+            <span class="resultado__placeholder">Imagen</span>
+          </div>
+          <div class="resultado__cuerpo">
+            <h2 class="resultado__nombre">Concierto de música electrónica</h2>
+            <p class="resultado__dato">Santander Arena · Vie 20 nov</p>
+            <div class="resultado__etiquetas">
+              <span class="resultado__etiqueta">Electrónica</span>
+              <span class="resultado__etiqueta resultado__etiqueta--estado">Últimas</span>
+            </div>
+          </div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$28.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+        </article>
+
+        <article
+        class="resultado"
+        data-categoria="musica"
+        data-subcategoria="Sinfónico"
+        data-ciudad="Santiago"
+        data-recinto="Teatro Municipal"
+        data-plazo="2"
+        data-precio="24000"
+        >
+        <div class="resultado__imagen">
+          <span class="resultado__placeholder">Imagen</span>
+        </div>
+        <div class="resultado__cuerpo">
+          <h2 class="resultado__nombre">Tributo sinfónico en vivo</h2>
+          <p class="resultado__dato">Teatro Municipal · Sáb 28 nov</p>
+          <div class="resultado__etiquetas">
+            <span class="resultado__etiqueta">Sinfónico</span>
+            <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+          </div>
+        </div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$24.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+      </article>
+
+      <article
+      class="resultado"
+      data-categoria="musica"
+      data-subcategoria="Jazz"
+      data-ciudad="Santiago"
+      data-recinto="Santander Arena"
+      data-plazo="3"
+      data-precio="15000"
+      >
+      <div class="resultado__imagen">
+        <span class="resultado__placeholder">Imagen</span>
+      </div>
+      <div class="resultado__cuerpo">
+        <h2 class="resultado__nombre">Noche de jazz y blues</h2>
+        <p class="resultado__dato">Santander Arena · Jue 3 dic</p>
+        <div class="resultado__etiquetas">
+          <span class="resultado__etiqueta">Jazz</span>
+          <span class="resultado__etiqueta resultado__etiqueta--agotado">Agotado</span>
+        </div>
+      </div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$15.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+    </article>
+
+    <article
+    class="resultado"
+    data-categoria="musica"
+    data-subcategoria="Urbano"
+    data-ciudad="Santiago"
+    data-recinto="Estadio Nacional"
+    data-plazo="3"
+    data-precio="20000"
+    >
+    <div class="resultado__imagen">
+      <span class="resultado__placeholder">Imagen</span>
+    </div>
+    <div class="resultado__cuerpo">
+      <h2 class="resultado__nombre">Festival urbano al aire libre</h2>
+      <p class="resultado__dato">Estadio Nacional · Vie 12 dic</p>
+      <div class="resultado__etiquetas">
+        <span class="resultado__etiqueta">Urbano</span>
+        <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+      </div>
+    </div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$20.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+  </article>
+
+  <article
+  class="resultado"
+  data-categoria="artes"
+  data-subcategoria="Teatro"
+  data-ciudad="Santiago"
+  data-recinto="Teatro Municipal"
+  data-plazo="1"
+  data-precio="12000"
+  >
+  <div class="resultado__imagen">
+    <span class="resultado__placeholder">Imagen</span>
+  </div>
+  <div class="resultado__cuerpo">
+    <h2 class="resultado__nombre">Obra de teatro clásica</h2>
+    <p class="resultado__dato">Teatro Municipal · Jue 12 nov</p>
+    <div class="resultado__etiquetas">
+      <span class="resultado__etiqueta">Teatro</span>
+      <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+    </div>
+  </div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$12.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="artes"
+data-subcategoria="Danza"
+data-ciudad="Santiago"
+data-recinto="Teatro Municipal"
+data-plazo="2"
+data-precio="20000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Ballet contemporáneo</h2>
+  <p class="resultado__dato">Teatro Municipal · Sáb 28 nov</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Danza</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Últimas</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$20.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="artes"
+data-subcategoria="Musical"
+data-ciudad="Santiago"
+data-recinto="Santander Arena"
+data-plazo="3"
+data-precio="32000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Musical de Broadway</h2>
+  <p class="resultado__dato">Santander Arena · Vie 5 dic</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Musical</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$32.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="artes"
+data-subcategoria="Ópera"
+data-ciudad="Valparaíso"
+data-recinto="Teatro Municipal"
+data-plazo="3"
+data-precio="18000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Ópera en el puerto</h2>
+  <p class="resultado__dato">Teatro Municipal · Dom 14 dic</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Ópera</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$18.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="deportes"
+data-subcategoria="Fútbol"
+data-ciudad="Santiago"
+data-recinto="Estadio Nacional"
+data-plazo="2"
+data-precio="18000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Clásico de fútbol local</h2>
+  <p class="resultado__dato">Estadio Nacional · Dom 16 nov</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Fútbol</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Últimas</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$18.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="deportes"
+data-subcategoria="Básquetbol"
+data-ciudad="Santiago"
+data-recinto="Estadio Nacional"
+data-plazo="2"
+data-precio="14000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Final de básquetbol</h2>
+  <p class="resultado__dato">Estadio Nacional · Sáb 22 nov</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Básquetbol</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$14.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="deportes"
+data-subcategoria="Tenis"
+data-ciudad="Santiago"
+data-recinto="Estadio Nacional"
+data-plazo="3"
+data-precio="22000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Torneo de tenis internacional</h2>
+  <p class="resultado__dato">Estadio Nacional · 2 al 8 dic</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Tenis</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$22.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="deportes"
+data-subcategoria="Atletismo"
+data-ciudad="Concepción"
+data-recinto="Estadio Nacional"
+data-plazo="3"
+data-precio="9000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Maratón ciudad de Concepción</h2>
+  <p class="resultado__dato">Estadio Nacional · Dom 7 dic</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Atletismo</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$9.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="ferias"
+data-subcategoria="Tecnología"
+data-ciudad="Santiago"
+data-recinto="Espacio Riesco"
+data-plazo="2"
+data-precio="15000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Expo tecnología y videojuegos</h2>
+  <p class="resultado__dato">Espacio Riesco · 21 al 23 nov</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Tecnología</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Últimas</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$15.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="ferias"
+data-subcategoria="Gastronomía"
+data-ciudad="Santiago"
+data-recinto="Espacio Riesco"
+data-plazo="2"
+data-precio="8000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Feria gastronómica de invierno</h2>
+  <p class="resultado__dato">Espacio Riesco · Sáb 29 nov</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Gastronomía</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$8.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="ferias"
+data-subcategoria="Libros"
+data-ciudad="Santiago"
+data-recinto="Espacio Riesco"
+data-plazo="3"
+data-precio="5000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Feria del libro</h2>
+  <p class="resultado__dato">Espacio Riesco · 5 al 14 dic</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Libros</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$5.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<article
+class="resultado"
+data-categoria="ferias"
+data-subcategoria="Diseño"
+data-ciudad="Valparaíso"
+data-recinto="Espacio Riesco"
+data-plazo="3"
+data-precio="6000"
+>
+<div class="resultado__imagen">
+  <span class="resultado__placeholder">Imagen</span>
+</div>
+<div class="resultado__cuerpo">
+  <h2 class="resultado__nombre">Expo diseño y oficios</h2>
+  <p class="resultado__dato">Espacio Riesco · 6 al 8 dic</p>
+  <div class="resultado__etiquetas">
+    <span class="resultado__etiqueta">Diseño</span>
+    <span class="resultado__etiqueta resultado__etiqueta--estado">Disponible</span>
+  </div>
+</div>
+            <div class="resultado__compra">
+              <span class="resultado__desde">Desde</span>
+              <strong class="resultado__precio">$6.000</strong>
+              <a class="resultado__ver" href="../evento/evento.html">
+                Ver entradas <span aria-hidden="true">→</span>
+              </a>
+            </div>
+</article>
+
+<p class="resultados__vacio" data-vacio hidden>
+  No hay eventos que coincidan con esos filtros.
+</p>
+</section>
+</div>
+</div>
+    </main>
+
+    <!-- Componente: footer/footer.html -->
+    <div id="footer"></div>
+  </body>
+</html>

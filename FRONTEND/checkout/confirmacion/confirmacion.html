@@ -1,0 +1,98 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirmación de pago</title>
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap"
+    />
+    <link rel="stylesheet" href="confirmacion.css" />
+  </head>
+  <body class="pagina pagina_confirmacion" data-pagina="checkout" data-sesion="cliente">
+    <div id="header"></div>
+
+    <main class="flex_V confirmacion">
+      <header class="flex_V confirmacion_encabezado">
+        <h1>Compra confirmada</h1>
+      </header>
+      <div class="flex_H panel confirmacion_tarjeta">
+        <div class="flex_V confirmacion_acceso">
+          <div class="flex_centrado qr">Aquí va un QR</div>
+          <dl class="confirmacion_identificador">
+            <dt class="texto_small confirmacion_etiqueta">CODIGO DE ACCESO</dt>
+            <dd class="confirmacion_codigo">TKI-8F42-9C1D</dd>
+          </dl>
+          <p class="texto_small">
+            Un QR por entrada. Se escanea en el acceso del recinto.
+          </p>
+        </div>
+        <div class="flex_V confirmacion_compra confirmacion_datos">
+          <h2>Datos de la compra</h2>
+          <dl class="flex_H confirmacion_fila">
+            <div class="flex_V confirmacion_campo">
+              <dt class="texto_small">ORDEN</dt>
+              <dd>TKI-2026-004821</dd>
+            </div>
+            <div class="flex_V confirmacion_campo">
+              <dt class="texto_small">EVENTO</dt>
+              <dd>Festival de rock en vivo</dd>
+            </div>
+          </dl>
+
+          <dl class="flex_H confirmacion_fila">
+            <div class="flex_V confirmacion_campo">
+              <dt class="texto_small">FECHA Y HORA</dt>
+              <dd>Sáb 14 nov, 20:00</dd>
+            </div>
+            <div class="flex_V confirmacion_campo">
+              <dt class="texto_small">RECINTO</dt>
+              <dd>Estadio Nacional</dd>
+            </div>
+          </dl>
+
+          <dl class="flex_H confirmacion_fila">
+            <div class="flex_V confirmacion_campo">
+              <dt class="texto_small">ÁREA</dt>
+              <dd>Cancha General</dd>
+            </div>
+            <div class="flex_V confirmacion_campo">
+              <dt class="texto_small">CANTIDAD</dt>
+              <dd>2 entradas</dd>
+            </div>
+          </dl>
+
+          <dl class="flex_H confirmacion_fila">
+            <div class="flex_V confirmacion_campo">
+              <dt class="texto_small">MÉTODO DE PAGO</dt>
+              <dd>Tarjeta crédito/débito</dd>
+            </div>
+            <div class="flex_V confirmacion_campo">
+              <dt class="texto_small">TOTAL PAGADO</dt>
+              <dd>$99.000</dd>
+            </div>
+          </dl>
+          <div class="separador"></div>
+          <div class="flex_H botonera">
+            <button class="boton morado boton_descargar">Descargar PDF</button>
+            <button class="boton boton_wallet">Agregar a Wallet</button>
+            <button class="boton boton_entradas">Ver mis entradas</button>
+            <button class="boton boton_home">Volver a home</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex_H panel confirmacion_recomendacion">
+        <b class="texto_morado">RECOMENDACION</b>
+        <p class="texto_secundario">
+          Guarda tu código de acceso. Lo necesitarás para ingresar al evento.
+        </p>
+      </div>
+    </main>
+
+    <div id="footer"></div>
+    <script src="../../componentes/header/header.js"></script>
+    <script src="../../componentes/footer/footer.js"></script>
+  </body>
+</html>

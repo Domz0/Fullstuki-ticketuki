@@ -1,0 +1,325 @@
+* {
+    outline: solid red 1px; 
+    box-sizing: border-box;
+}
+
+:root {
+    --ancho: 1600px;
+    --lado: 32px;
+}
+
+
+body {
+    margin: 0;
+    background: var(--color-fondo);
+    color: var(--color-texto);
+    font-family: "IBM Plex Sans", Inter, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    letter-spacing: -0.01em;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/* main */
+
+.evento_container {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    margin: 0 auto;
+    padding: 2rem var(--lado);
+}
+
+.evento_contenido {
+    flex: 1;
+    min-width: none;
+}
+
+.evento_sidebar {
+    flex: 0 0 320px;
+    border: 1px solid var(--color-linea);
+    background: var(--color-fondo-alto);
+    padding: 0.1rem 1rem;
+    border-radius: 6px;
+    position: sticky;
+    top: 2rem;
+}
+
+/* Botones */
+
+.btn_activo {
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    background-color: var(--color-morado);
+    font-weight: 700;
+    color: var(--color-texto);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn_inactivo {
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    background-color: var(--color-linea);
+    font-weight: 700;
+    color: var(--color-texto-apagado);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+/* tags */
+
+.evento_tag_group {
+    display: flex;
+    flex: 1;
+    gap: 1rem;
+}
+
+.evento_tag {
+    padding: 0.1rem 0.6rem;
+    border: 1px solid rgba(139, 92, 246, 0.5);
+    border-radius: 6px;
+    background: rgba(61, 30, 95, 0.45);
+    color: var(--color-morado-texto);
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* evento texto */
+
+.evento_texto_titulo {
+    font-size: 2rem;
+}
+
+.evento_texto_detalle {
+    color: var(--color-texto-apagado);
+}
+
+/* evento detalle */
+
+.evento_detalle_group {
+    display: flex;
+    flex: 1;
+    gap: 1rem;
+}
+
+.evento_detalle {
+    border: 1px solid var(--color-linea);
+    background: var(--color-fondo-alto);
+    padding: 0.1rem 1rem;
+    border-radius: 6px;
+}
+
+.evento_detalle .detalle_titulo {
+    color: var(--color-texto-apagado);
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.evento_detalle .detalle_texto {
+    font-size: 0.8rem;
+}
+
+/* Evento fecha */
+
+
+.evento_fecha {
+    display: flex;
+    border: 1px solid var(--color-linea);
+    background: var(--color-fondo-alto);
+    padding: 0.1rem 1rem;
+    border-radius: 6px;
+    gap: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.evento_fecha .fecha_info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 4rem;
+    margin: 0.2rem;
+}
+
+.fecha_info .day {
+    font-size: 1.2rem;
+    margin: 0.2rem;
+    letter-spacing: 0.1em;
+}
+
+.fecha_info .month {
+    font-size: 0.7rem;
+    margin: 0.2rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-texto-apagado);
+}
+
+
+.evento_fecha .fecha_detalle {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 0.2rem;
+}
+
+.fecha_detalle .detalle_fecha{
+    
+    margin: 0.2rem;
+}
+
+.fecha_detalle .detalle_recinto{
+    color: var(--color-texto-apagado);
+    font-size: 0.8rem;
+    margin: 0.2rem;
+}
+
+.evento_fecha .fecha_accion {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+
+.fecha_accion .estado {
+    color: var(--color-texto-apagado);
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+    
+/* Recinto */
+
+.recinto_item {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-linea);
+    background: var(--color-fondo-alto);
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.recinto_item .recinto_imagen {
+    position: relative;
+    aspect-ratio: 10 / 2;
+    border-radius: 6px;
+    background: repeating-linear-gradient(-45deg,rgba(255, 255, 255, 0.02) 0 6px, transparent 6px 12px), var(--color-fondo-alto);
+}
+
+.recinto_placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--color-texto-tenue);
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.recinto_detalle {
+    display: flex;
+    font-size: 0.8rem;
+    color: var(--color-texto-apagado);
+    margin-bottom: 0rem;
+    justify-content: space-between;
+}
+
+.elegir {
+    color: var(--color-morado-claro);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Sidebar */
+
+.sidebar_label {
+    font-size: 0.8rem;
+    margin-bottom: 0rem;
+    color: var(--color-texto-apagado);
+}
+
+.sidebar_precio {
+    margin: 0rem;
+}
+
+.sidebar_detalle {
+    margin-top: 0rem;
+    font-size: 0.8rem;
+    color: var(--color-texto-apagado);
+}
+
+.sidebar_button {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+
+.btn-comprar {
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    background-color: var(--color-morado);
+    font-weight: 700;
+    color: var(--color-texto);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-favoritos {
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    background-color:  var(--color-superficie);
+    font-weight: 700;
+    color: var(--color-texto);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar_lista {    
+    padding-left: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-top: solid var(--color-linea) 2px;
+    border-bottom: solid var(--color-linea) 2px;
+
+}
+
+.sidebar_lista li {
+    font-size: 0.8rem;
+    color: var(--color-texto-apagado);
+    padding: 0.2rem;
+}
+
+
+
+.sidebar-descuento {
+    font-size: 0.8rem;
+    color: var(--color-texto-apagado);
+}
+
+.convenios {
+    color: var(--color-morado-claro);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+

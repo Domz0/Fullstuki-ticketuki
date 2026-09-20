@@ -1,0 +1,841 @@
+
+:root {
+  --ancho: 1600px;
+  --lado: 32px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: "IBM Plex Sans", Inter, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.contenido {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 24px var(--lado) 0;
+}
+
+/* ============================================================
+   Cabecera de la categoría
+   ============================================================ */
+
+.categoria {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.categoria__volver,
+.categoria__favorito {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--color-linea);
+  border-radius: 12px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.categoria__volver:hover,
+.categoria__favorito:hover {
+  border-color: var(--color-linea-suave);
+}
+
+.categoria__texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.categoria__titulo {
+  margin: 0;
+  font-size: clamp(28px, 2.4vw, 34px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.categoria__conteo {
+  margin: 4px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 15px;
+}
+
+/* ============================================================
+   Buscador de la categoría
+   ============================================================ */
+
+.busqueda {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  margin-top: 20px;
+  padding: 0 16px;
+  border: 1px solid var(--color-linea);
+  border-radius: 12px;
+  background: var(--color-fondo-alto);
+}
+
+.busqueda__lupa {
+  position: relative;
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-texto-tenue);
+  border-radius: 50%;
+}
+
+.busqueda__lupa::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  bottom: -2px;
+  width: 6px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--color-texto-tenue);
+  transform: rotate(45deg);
+}
+
+.busqueda__campo {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 15px;
+}
+
+.busqueda__campo::placeholder {
+  color: var(--color-texto-tenue);
+}
+
+/* ============================================================
+   Chips resumen — solo móvil
+   ============================================================ */
+
+.chips {
+  display: none;
+  gap: 10px;
+  margin-top: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chips__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--color-linea);
+  border-radius: 12px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto-suave);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.chips__chip.is-activo {
+  border-color: var(--color-morado);
+  background: var(--color-morado-fondo);
+  color: var(--color-morado-texto);
+}
+
+.chips__chip--filtros {
+  border-color: var(--color-morado);
+  background: var(--color-morado);
+  color: var(--color-blanco);
+  font-weight: 600;
+}
+
+.chips__contador {
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 13px;
+}
+
+/* Sin filtros activos el contador no aporta nada. */
+.chips__chip--filtros:not(.is-activo) .chips__contador {
+  display: none;
+}
+
+/* ============================================================
+   Ruta (breadcrumb) — solo escritorio
+   ============================================================ */
+
+.miga {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--color-texto-tenue);
+  font-size: 14px;
+}
+
+.miga__enlace {
+  color: var(--color-texto-apagado);
+  text-decoration: none;
+}
+
+.miga__enlace:hover {
+  color: var(--color-texto);
+}
+
+/* ============================================================
+   Distribucion: filtros a la izquierda, resultados a la derecha
+   ============================================================ */
+
+.listado {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.listado__columna {
+  min-width: 0;
+}
+
+/* En escritorio estos controles son de la maqueta movil. */
+.categoria__volver,
+.categoria__favorito,
+.categoria__conteo,
+.busqueda,
+.resultados__movil {
+  display: none;
+}
+
+/* ============================================================
+   Orden
+   ============================================================ */
+
+.orden {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.orden__texto {
+  color: var(--color-texto-apagado);
+  font-size: 14px;
+}
+
+.selector {
+  height: 42px;
+  padding: 0 38px 0 16px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background-color: var(--color-superficie);
+  /* Flecha propia, para que se vea igual en todos los navegadores. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='%23727585' d='M0 0h10L5 6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 10px 6px;
+  color: var(--color-texto-suave);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  appearance: none;
+  color-scheme: dark;
+}
+
+.selector:hover {
+  border-color: var(--color-linea-suave);
+}
+
+.selector:focus-visible {
+  outline: 2px solid var(--color-morado);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Barra de resultados
+   ============================================================ */
+
+.resultados__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 18px;
+}
+
+.resultados__conteo {
+  color: var(--color-texto-apagado);
+  font-size: 14px;
+}
+
+/* ============================================================
+   Resultados
+   ============================================================ */
+
+.resultados {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.resultado {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr) 180px;
+  gap: 20px;
+  padding: 16px;
+  border: 1px solid var(--color-linea);
+  border-radius: 14px;
+  background: var(--color-fondo-alto);
+}
+
+.resultado:hover {
+  border-color: var(--color-linea-suave);
+}
+
+/* display:grid le gana al hidden del navegador, hay que declararlo. */
+.resultado[hidden] {
+  display: none;
+}
+
+.resultado__imagen {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  border-radius: 10px;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.02) 0 6px,
+      transparent 6px 12px
+    ),
+    var(--color-fondo-alto);
+}
+
+.resultado__placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--color-texto-tenue);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.resultado__cuerpo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 4px 4px 4px 0;
+}
+
+.resultado__nombre {
+  margin: 0 0 8px;
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.resultado__dato {
+  margin: 0 0 14px;
+  color: var(--color-texto-apagado);
+  font-size: 15px;
+}
+
+.resultado__etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.resultado__etiqueta {
+  padding: 5px 10px;
+  border: 1px solid var(--color-linea);
+  border-radius: 7px;
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.resultado__etiqueta--estado {
+  border-color: rgba(139, 92, 246, 0.55);
+  background: var(--color-morado-fondo);
+  color: var(--color-morado-texto);
+}
+
+.resultado__etiqueta--agotado {
+  border-color: var(--color-linea-suave);
+  background: var(--color-superficie);
+  color: var(--color-texto-tenue);
+}
+
+/* Columna derecha: "Desde", precio y boton, como en la maqueta 1e. */
+.resultado__compra {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  padding-right: 4px;
+  text-align: right;
+}
+
+.resultado__desde {
+  color: var(--color-texto-tenue);
+  font-size: 13px;
+}
+
+.resultado__precio {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.resultado__ver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  background: var(--color-morado);
+  color: var(--color-blanco);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.resultado__ver:hover {
+  background: var(--color-morado-oscuro);
+}
+
+/* La flecha es del enlace movil; en el boton de escritorio sobra. */
+.resultado__ver span {
+  display: none;
+}
+
+.resultados__vacio {
+  margin: 0;
+  padding: 48px 20px;
+  border: 1px dashed var(--color-linea-suave);
+  border-radius: 14px;
+  color: var(--color-texto-apagado);
+  font-size: 15px;
+  text-align: center;
+}
+
+/* ============================================================
+   Panel de filtros
+   Escritorio: barra lateral fija en el flujo (maqueta 1e).
+   Movil: hoja que sube desde abajo (maqueta M3b).
+   ============================================================ */
+
+/* En escritorio se ve siempre, aunque traiga el atributo hidden. */
+.panel,
+.panel[hidden] {
+  display: block;
+}
+
+.panel__fondo,
+.panel__asa,
+.panel__boton {
+  display: none;
+}
+
+.panel__fondo {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 4, 6, 0.6);
+}
+
+.panel__caja {
+  position: relative;
+  width: 100%;
+  padding: 18px;
+  border: 1px solid var(--color-linea);
+  border-radius: 14px;
+  background: var(--color-fondo-alto);
+}
+
+.panel__grupo:last-of-type {
+  margin-bottom: 0;
+}
+
+.panel__asa {
+  display: block;
+  width: 44px;
+  height: 4px;
+  margin: 0 auto 16px;
+  border-radius: 999px;
+  background: var(--color-linea-suave);
+}
+
+.panel__encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.panel__titulo {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.panel__limpiar {
+  border: 0;
+  background: transparent;
+  color: var(--color-morado-claro);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.panel__grupo {
+  margin-bottom: 22px;
+}
+
+.panel__subtitulo {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.panel__opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.panel__opcion {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 14px;
+  border: 1px solid var(--color-linea);
+  border-radius: 12px;
+  background: var(--color-superficie);
+  color: var(--color-texto-apagado);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.panel__opcion.is-activo {
+  border-color: var(--color-morado);
+  background: var(--color-morado-fondo);
+  color: var(--color-morado-texto);
+}
+
+.panel__boton {
+  width: 100%;
+  height: 54px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--color-morado);
+  color: var(--color-blanco);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.panel__boton:hover {
+  background: var(--color-morado-oscuro);
+}
+
+/* Evita que el fondo se desplace con el panel abierto. */
+body.sin-scroll {
+  overflow: hidden;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .listado {
+    grid-template-columns: 212px minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  /* La barra lateral se angosta: el encabezado se apila si no cabe. */
+  .panel__encabezado {
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+
+  .panel__limpiar {
+    font-size: 14px;
+  }
+
+  .resultado {
+    grid-template-columns: 150px minmax(0, 1fr) 150px;
+    gap: 16px;
+  }
+
+  .resultado__precio {
+    font-size: 20px;
+  }
+}
+
+/* Entre 861 y 960 la barra lateral aprieta demasiado: la tarjeta pasa a dos
+   columnas y el bloque de compra baja bajo el cuerpo. */
+@media (max-width: 960px) and (min-width: 861px) {
+  .resultado {
+    grid-template-columns: 130px minmax(0, 1fr);
+  }
+
+  .resultado__imagen {
+    grid-row: 1 / span 2;
+  }
+
+  .resultado__compra {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    text-align: left;
+  }
+
+  .resultado__desde {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  :root {
+    --lado: 16px;
+  }
+
+  .contenido {
+    padding-top: 16px;
+  }
+
+  /* La ruta es de escritorio; en movil manda la flecha de retroceso. */
+  .miga {
+    display: none;
+  }
+
+  .categoria {
+    gap: 12px;
+  }
+
+  .categoria__volver,
+  .categoria__favorito {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .categoria__titulo {
+    font-size: 26px;
+  }
+
+  .categoria__conteo {
+    display: block;
+    font-size: 14px;
+  }
+
+  .busqueda {
+    display: flex;
+    height: 48px;
+    margin-top: 16px;
+  }
+
+  /* En movil mandan los chips y el panel. */
+  .chips {
+    display: flex;
+  }
+
+  .listado {
+    display: block;
+    margin-top: 0;
+  }
+
+  .resultados__barra {
+    margin: 20px 0 14px;
+  }
+
+  .resultados__movil {
+    display: inline;
+  }
+
+  .resultados__escritorio {
+    display: none;
+  }
+
+  .orden__texto {
+    display: none;
+  }
+
+  .selector {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  /* ---- El panel vuelve a ser la hoja que sube desde abajo ---- */
+
+  .panel {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .panel[hidden] {
+    display: none;
+  }
+
+  .panel__fondo,
+  .panel__asa,
+  .panel__boton {
+    display: block;
+  }
+
+  .panel__caja {
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
+    border-radius: 20px 20px 0 0;
+  }
+
+  .panel__grupo:last-of-type {
+    margin-bottom: 22px;
+  }
+
+  .panel__opcion {
+    /* 44px es el minimo tactil que pide la maqueta. */
+    min-height: 44px;
+    padding: 0 18px;
+    font-size: 15px;
+  }
+
+  /* ---- Tarjetas ---- */
+
+  .resultados {
+    gap: 12px;
+  }
+
+  .resultado {
+    grid-template-columns: 118px minmax(0, 1fr);
+    gap: 14px;
+    padding: 12px;
+  }
+
+  /* La imagen ocupa las dos filas: cuerpo arriba, precio abajo. */
+  .resultado__imagen {
+    grid-row: 1 / span 2;
+    aspect-ratio: 1;
+  }
+
+  .resultado__nombre {
+    margin-bottom: 6px;
+    font-size: 17px;
+  }
+
+  .resultado__dato {
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .resultado__etiqueta {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  /* En movil el precio y el enlace van en una fila bajo el cuerpo. */
+  .resultado__compra {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 0;
+    text-align: left;
+  }
+
+  .resultado__desde {
+    display: none;
+  }
+
+  .resultado__precio {
+    font-size: 18px;
+  }
+
+  .resultado__ver {
+    height: auto;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-morado-claro);
+    font-size: 14px;
+  }
+
+  .resultado__ver:hover {
+    background: transparent;
+  }
+
+  .resultado__ver span {
+    display: inline;
+  }
+}
+
+@media (max-width: 420px) {
+  /* Imagen un poco más angosta para que precio y enlace sigan en una fila. */
+  .resultado {
+    grid-template-columns: 104px 1fr;
+  }
+}
+
+@media (max-width: 360px) {
+  .resultado {
+    grid-template-columns: 92px 1fr;
+  }
+
+  .resultado__compra {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

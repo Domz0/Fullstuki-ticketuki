@@ -1,0 +1,97 @@
+/* 
+  Todos los colores se definen aqui y los componentes los consumen con var(--color-*). 
+   No escribir hex sueltos. 
+*/
+
+:root {
+  --color-fondo:           #0b0b0e;   /* fondo de la pagina */
+  --color-fondo-alto:      #111116;   /* tarjetas y paneles */
+  --color-superficie:      #1d1d24;   /* campos de formulario */
+  --color-linea:           #26262f;   /* bordes y separadores */
+  --color-linea-suave:     #3a3a46;   /* bordes destacados */
+  --color-texto:           #e8e8ee;   /* texto principal */
+  --color-texto-suave:     #c8c8d4;   /* texto secundario */
+  --color-texto-apagado:   #9a9aa8;   /* texto de apoyo */
+  --color-texto-tenue:     #6a6a78;   /* placeholders e iconos */
+  --color-morado:          #8b5cf6;   /* color de marca */
+  --color-morado-claro:    #a78bfa;   /* marca sobre fondo oscuro */
+  --color-morado-oscuro:   #7c4df0;   /* hover de botones */
+  --color-morado-fondo:    #14111d;   /* fondo de avisos de marca */
+  --color-morado-borde:    #3d2f66;   /* borde de avisos */
+  --color-morado-texto:    #c9bdf0;   /* texto sobre fondo morado */
+  --color-error:           #ff8a8a;   /* mensajes de error */
+  --color-blanco:          #fff;      /* blanco puro */
+}
+
+/*fondo de cada pagina*/
+.pagina {
+  margin: 0;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: "IBM Plex Sans", sans-serif;
+}
+.pagina * {
+  box-sizing: border-box;
+}
+/*  Flex horizontal*/
+.flex_H {
+  display: flex;
+  flex-direction: row;
+}
+/*  flex vertical*/
+.flex_V {
+  display: flex;
+  flex-direction: column;
+}
+.flex_centrado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/*  paneles generales*/
+.panel {
+  display: flex;
+  border: 1px solid var(--color-linea);
+  background-color: var(--color-fondo-alto);
+}
+/*  estilo de fieldsets*/
+.fieldset_base {
+  border: 1px solid var(--color-linea);
+  border-radius: 6px;
+  background-color: var(--color-fondo-alto);
+}
+/*  color de texto chiquito*/
+.texto_small {
+  color: var(--color-texto-tenue);
+}
+/* esta en el header */
+.texto_secundario {
+  color: var(--color-texto-apagado);
+}
+.texto_morado {
+  color: var(--color-morado);
+}
+/* divisor fancy */
+.separador {
+  width: 100%;
+  border: 1px solid var(--color-linea);
+}
+/*la idea general de los botones */
+.boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-linea);
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+/* el que deje en pago y que vi a marcelin usar en el login */
+.boton.morado {
+  background-color: var(--color-morado);
+}
+/*formato para los enlaces*/
+.enlace {
+  color: var(--color-texto-apagado);
+  text-decoration: none;
+}

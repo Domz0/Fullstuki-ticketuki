@@ -1,0 +1,72 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi cuenta</title>
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="mi-cuenta.css" />
+    <link rel="stylesheet" href="../../componentes/header/header.css" />
+    <link rel="stylesheet" href="../../componentes/footer/footer.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap"
+    />
+  </head>
+  <body class="pagina pagina_cuenta" data-pagina="cuenta" data-sesion="cliente">
+    <div id="header"></div>
+    <main class="flex_H cuenta">
+      <div class="flex_V panel menu_izq">
+        <div class="flex_V cuenta_usuario">
+          <div class="flex_H cuenta_usuario_fila">
+            <div class="flex_centrado texto_secundario imagen">CV</div>
+            <h1>Camila Vergara</h1>
+          </div>
+          <p class="texto_small">Miembro desde 2023</p>
+        </div>
+        <div class="separador"></div>
+        <div class="flex_V enlaces">
+          <a class="enlace" href="historial.html">Mis tickets</a>
+          <a class="enlace" href="../../index.html">Cerrar sesión</a>
+        </div>
+      </div>
+
+      <div class="flex_V panel datos_usuario">
+        <h2>Datos del Usuario/a</h2>
+        <div class="flex_H cuenta_fila">
+          <fieldset class="fieldset_base campo_cuenta">
+            <legend class="texto_small">Nombre</legend>
+            Camila
+          </fieldset>
+          <fieldset class="fieldset_base campo_cuenta">
+            <legend class="texto_small">Apellido</legend>
+            Vergara
+          </fieldset>
+        </div>
+        <div class="flex_H cuenta_fila">
+          <fieldset class="fieldset_base campo_cuenta">
+            <legend class="texto_small">Run</legend>
+            12345678-9
+          </fieldset>
+          <fieldset class="fieldset_base campo_cuenta">
+            <legend class="texto_small">Fecha de Nacimiento</legend>
+            01/04/1998
+          </fieldset>
+        </div>
+        <div class="flex_H cuenta_fila">
+          <fieldset class="fieldset_base campo_cuenta">
+            <legend class="texto_small">Correo electronico</legend>
+            correo@correo.cl
+          </fieldset>
+          <fieldset class="fieldset_base campo_cuenta">
+            <legend class="texto_small">Numero de contacto</legend>
+            +56912345678
+          </fieldset>
+        </div>
+      </div>
+    </main>
+    <div id="footer"></div>
+    <script src="../../componentes/header/header.js"></script>
+    <script src="../../componentes/footer/footer.js"></script>
+  </body>
+</html>

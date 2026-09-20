@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="componentes/convenios/convenios.css" />
+
+<section class="convenios" aria-label="Convenios con empresas">
+  <h2 class="convenios__titulo">Beneficios con tus tarjetas</h2>
+
+  <div class="carrusel" data-carrusel>
+    <div
+      class="carrusel__pista"
+      data-pista
+      role="region"
+      aria-roledescription="carrusel"
+      aria-label="Convenios vigentes"
+      tabindex="0"
+    >
+      <!-- convenio 1 -->
+      <article
+        class="convenio convenio--banco-de-chile"
+        role="group"
+        aria-roledescription="convenio"
+        aria-label="Convenio Banco de Chile"
+      >
+        <div class="convenio__cabecera">
+          <span class="convenio__marca">
+            <img
+              class="convenio__logo"
+              src="assets/Banco_de_Chile_Logo.png"
+              alt="Banco de Chile"
+            />
+          </span>
+
+          <p class="convenio__antetitulo">Exclusivo pagando con tus</p>
+          <h3 class="convenio__titulo">Tarjetas del Chile</h3>
+        </div>
+
+        <div class="convenio__beneficios">
+          <div class="beneficio">
+            <div class="beneficio__cupon">
+              <p class="beneficio__cifra">20<span class="beneficio__signo">%</span> dcto</p>
+              <p class="beneficio__detalle">En el valor de tu entrada</p>
+            </div>
+          </div>
+
+          <span class="convenio__mas" aria-hidden="true">+</span>
+
+          <div class="beneficio">
+            <div class="beneficio__cupon">
+              <p class="beneficio__previo">Paga en</p>
+              <p class="beneficio__cifra beneficio__cifra--cuotas">3, 9 ó 12</p>
+              <p class="beneficio__resalte">Cuotas sin interés</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="convenio__nota">
+          Hasta agotar stock de 10.000 entradas (máximo 4 entradas por cliente).
+          Para compra de $100.000 · CAE 1,47% · 12 cuotas de $8.333 · Costo
+          total $100.792. Para comprar con descuento debes ingresar a
+          ticketuki.cl y pagar con tu tarjeta del Banco de Chile. Revisa
+          términos y condiciones en ticketuki.cl
+        </p>
+      </article>
+    </div>
+
+    <div class="carrusel__puntos" data-puntos role="tablist" aria-label="Ir a un convenio"></div>
+  </div>
+</section>

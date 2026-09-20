@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ticketuki · Home</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="css/base.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="css/index.css" />
+
+    <script src="componentes/header/header.js"></script>
+    <script src="componentes/footer/footer.js"></script>
+    <script src="componentes/convenios/convenios.js"></script>
+  </head>
+
+  <body data-pagina="inicio" data-categoria="todos">
+    <div id="header"></div>
+
+    <main class="contenido">
+      <section class="portada" aria-label="Evento destacado">
+        <img
+          class="portada__imagen"
+          src="assets/3.png"
+          alt="Público en un concierto frente al escenario"
+        />
+        <div class="portada__velo" aria-hidden="true"></div>
+
+        <div class="portada__texto">
+          <p class="portada__etiqueta">Destacado · Música</p>
+          <h1 class="portada__titulo">Lollapalooza 2026</h1>
+          <p class="portada__datos">
+            Estadio Nacional · Sáb 14 nov, 20:00 · Desde $35.000
+          </p>
+
+          <div class="portada__cta">
+            <a class="boton boton--morado" href="catalogo/evento/evento.html">Ver evento</a>
+            <a class="boton boton--borde" href="https://www.youtube.com/watch?v=c1eojidXyUU">Ver tráiler</a>
+          </div>
+        </div>
+      </section>
+
+      <!------------------------- proximos eventos----------------------- -->
+      <section class="eventos">
+        <div class="eventos__encabezado">
+          <h2 class="eventos__titulo">Próximos eventos</h2>
+        </div>
+
+        <div class="eventos__grilla">
+          <article class="tarjeta">
+            <div class="tarjeta__imagen">
+              <span class="tarjeta__placeholder"></span>
+            </div>
+            <div class="tarjeta__cuerpo">
+              <span class="tarjeta__tag">Música</span>
+              <h3 class="tarjeta__nombre">Festival de rock en vivo</h3>
+              <p class="tarjeta__dato">Estadio Nacional</p>
+              <p class="tarjeta__dato">Sáb 14 nov, 20:00</p>
+              <div class="tarjeta__pie">
+                <strong class="tarjeta__precio">$35.000</strong>
+                <a class="tarjeta__ver" href="catalogo/evento/evento.html">Ver <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="tarjeta">
+            <div class="tarjeta__imagen">
+              <span class="tarjeta__placeholder"></span>
+            </div>
+            <div class="tarjeta__cuerpo">
+              <span class="tarjeta__tag">Música</span>
+              <h3 class="tarjeta__nombre">Concierto de música electrónica</h3>
+              <p class="tarjeta__dato">Santander Arena</p>
+              <p class="tarjeta__dato">Vie 20 nov, 22:00</p>
+              <div class="tarjeta__pie">
+                <strong class="tarjeta__precio">$28.000</strong>
+                <a class="tarjeta__ver" href="catalogo/evento/evento.html">Ver <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="tarjeta">
+            <div class="tarjeta__imagen">
+              <span class="tarjeta__placeholder"></span>
+            </div>
+            <div class="tarjeta__cuerpo">
+              <span class="tarjeta__tag">Artes y Teatro</span>
+              <h3 class="tarjeta__nombre">Obra de teatro clásica</h3>
+              <p class="tarjeta__dato">Teatro Municipal</p>
+              <p class="tarjeta__dato">Jue 12 nov, 19:30</p>
+              <div class="tarjeta__pie">
+                <strong class="tarjeta__precio">$12.000</strong>
+                <a class="tarjeta__ver" href="catalogo/evento/evento.html">Ver <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="tarjeta">
+            <div class="tarjeta__imagen">
+              <span class="tarjeta__placeholder"></span>
+            </div>
+            <div class="tarjeta__cuerpo">
+              <span class="tarjeta__tag">Deportes</span>
+              <h3 class="tarjeta__nombre">Clásico de fútbol local</h3>
+              <p class="tarjeta__dato">Estadio Nacional</p>
+              <p class="tarjeta__dato">Dom 16 nov, 16:00</p>
+              <div class="tarjeta__pie">
+                <strong class="tarjeta__precio">$18.000</strong>
+                <a class="tarjeta__ver" href="catalogo/evento/evento.html">Ver <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="tarjeta">
+            <div class="tarjeta__imagen">
+              <span class="tarjeta__placeholder"></span>
+            </div>
+            <div class="tarjeta__cuerpo">
+              <span class="tarjeta__tag">Ferias &amp; Expos</span>
+              <h3 class="tarjeta__nombre">Feria del libro</h3>
+              <p class="tarjeta__dato">Espacio Riesco</p>
+              <p class="tarjeta__dato">5 al 14 dic</p>
+              <div class="tarjeta__pie">
+                <strong class="tarjeta__precio">$5.000</strong>
+                <a class="tarjeta__ver" href="catalogo/evento/evento.html">Ver <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="tarjeta">
+            <div class="tarjeta__imagen">
+              <span class="tarjeta__placeholder"></span>
+            </div>
+            <div class="tarjeta__cuerpo">
+              <span class="tarjeta__tag">Ferias &amp; Expos</span>
+              <h3 class="tarjeta__nombre">Expo tecnología y videojuegos</h3>
+              <p class="tarjeta__dato">Espacio Riesco</p>
+              <p class="tarjeta__dato">21 al 23 nov</p>
+              <div class="tarjeta__pie">
+                <strong class="tarjeta__precio">$15.000</strong>
+                <a class="tarjeta__ver" href="catalogo/evento/evento.html">Ver <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="tarjeta">
+            <div class="tarjeta__imagen">
+              <span class="tarjeta__placeholder"></span>
+            </div>
+            <div class="tarjeta__cuerpo">
+              <span class="tarjeta__tag">Artes y Teatro</span>
+              <h3 class="tarjeta__nombre">Ballet contemporáneo</h3>
+              <p class="tarjeta__dato">Teatro Municipal</p>
+              <p class="tarjeta__dato">Sáb 28 nov, 20:00</p>
+              <div class="tarjeta__pie">
+                <strong class="tarjeta__precio">$20.000</strong>
+                <a class="tarjeta__ver" href="catalogo/evento/evento.html">Ver <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="tarjeta">
+            <div class="tarjeta__imagen">
+              <span class="tarjeta__placeholder"></span>
+            </div>
+            <div class="tarjeta__cuerpo">
+              <span class="tarjeta__tag">Deportes</span>
+              <h3 class="tarjeta__nombre">Torneo de tenis internacional</h3>
+              <p class="tarjeta__dato">Estadio Nacional</p>
+              <p class="tarjeta__dato">2 al 8 dic</p>
+              <div class="tarjeta__pie">
+                <strong class="tarjeta__precio">$22.000</strong>
+                <a class="tarjeta__ver" href="catalogo/evento/evento.html">Ver <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- convenios -->
+      <div id="convenios"></div>
+    </main>
+
+    <!-- footer-->
+    <div id="footer"></div>
+  </body>
+</html>

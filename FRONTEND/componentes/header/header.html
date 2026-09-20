@@ -1,0 +1,74 @@
+<!--
+  Componente header. Lo inyecta header/header.js dentro de <div id="header"></div>.
+
+  Las rutas se escriben relativas a la carpeta FRONTEND (sin ../), porque
+  header/header.js las reescribe contra la raíz del frontend. Así el mismo archivo
+  sirve igual desde index.html que desde catalogo/listado/listado.html.
+
+  La pagina decide qué se muestra con dos atributos en su <body>:
+    data-pagina    -> marca la pestaña de la barra movil (inicio, buscar, entradas, cuenta)
+    data-categoria -> marca el chip de categoría (si no viene ?categoria= en la url)
+    data-sesion    -> "invitado" (por defecto) o "cliente"
+-->
+<link rel="stylesheet" href="componentes/header/header.css" />
+
+<header class="cabecera">
+  <div class="cabecera__barra">
+    <a class="cabecera__marca" href="index.html">Ticketuki</a>
+
+    <form class="buscador" role="search" onsubmit="return false">
+      <span class="buscador__lupa" aria-hidden="true"></span>
+      <label class="buscador__etiqueta" for="buscador-campo" hidden>Buscar</label>
+      <input
+        class="buscador__campo"
+        id="buscador-campo"
+        type="search"
+        name="q"
+        placeholder="Busca eventos, artistas, recintos o ciudades"
+      />
+    </form>
+
+    <!-- visitante sin sesión -->
+    <nav class="menu" data-sesion="invitado" aria-label="Acceso">
+      <a class="menu__enlace" href="index.html">Inicio</a>
+      <a class="menu__enlace" href="cuenta/crear-cuenta/crear-cuenta.html">Crear cuenta</a>
+      <a class="menu__enlace" href="cuenta/login/login.html">Iniciar sesión</a>
+    </nav>
+
+    <!-- con sesión iniciada -->
+    <nav class="menu" data-sesion="cliente" aria-label="Mi cuenta" hidden>
+      <a class="menu__enlace" href="index.html">Inicio</a>
+      <a class="menu__enlace" href="cuenta/mi-cuenta/mi-cuenta.html">Mis entradas</a>
+      <a class="menu__cuenta" href="cuenta/mi-cuenta/mi-cuenta.html">
+        <span class="menu__avatar">CV</span>
+        <span class="menu__cuenta-texto">Mi cuenta</span>
+      </a>
+    </nav>
+  </div>
+
+  <nav class="categorias" aria-label="Categorías">
+    <a class="categorias__chip" data-categoria="musica" href="catalogo/listado/listado.html?categoria=musica">Música</a>
+    <a class="categorias__chip" data-categoria="artes" href="catalogo/listado/listado.html?categoria=artes">Artes y Teatro</a>
+    <a class="categorias__chip" data-categoria="deportes" href="catalogo/listado/listado.html?categoria=deportes">Deportes</a>
+    <a class="categorias__chip" data-categoria="ferias" href="catalogo/listado/listado.html?categoria=ferias">Ferias &amp; Expos</a>
+  </nav>
+</header>
+
+<nav class="barra-movil" aria-label="Navegación">
+  <a class="barra-movil__item" data-pagina="inicio" href="index.html">
+    <span class="barra-movil__icono" aria-hidden="true"></span>
+    Inicio
+  </a>
+  <a class="barra-movil__item" data-pagina="buscar" href="catalogo/listado/listado.html?categoria=musica">
+    <span class="barra-movil__icono" aria-hidden="true"></span>
+    Buscar
+  </a>
+  <a class="barra-movil__item" data-pagina="entradas" href="cuenta/mi-cuenta/mi-cuenta.html">
+    <span class="barra-movil__icono" aria-hidden="true"></span>
+    Entradas
+  </a>
+  <a class="barra-movil__item" data-pagina="cuenta" href="cuenta/mi-cuenta/mi-cuenta.html">
+    <span class="barra-movil__icono" aria-hidden="true"></span>
+    Cuenta
+  </a>
+</nav>
