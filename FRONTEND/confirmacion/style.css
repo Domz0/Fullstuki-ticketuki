@@ -8,7 +8,6 @@
   /*bloque superior e inferior*/
   gap: 16px;
   width: 100%;
-  min-width: 600px;
   max-width: 900px;
   margin: 0 auto;
   padding: 80px 24px;
@@ -152,3 +151,16 @@ box-sizing: border-box -> te controla a los div y otras cosas, lo aprendi a la m
 overflow: hidden -> esconde lo que se sale
 
 */
+
+@media (max-width: 1023px) {
+  .confirmacion {
+    min-width: 0;
+    max-width: 100%;
+    padding: 40px 16px;
+  }
+}
+@media (min-width: 1024px) {
+  .confirmacion {
+    min-width: 600px;
+  }
+}
