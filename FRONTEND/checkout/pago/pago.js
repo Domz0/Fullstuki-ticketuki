@@ -115,3 +115,23 @@ botonesPagar.forEach((boton) => {
     }
   });
 });
+
+// ----- resumen de la compra -----
+// Los datos los dejo la pantalla de entradas en localStorage.
+
+const escribirResumen = (selector, texto) => {
+  document.querySelectorAll(selector).forEach((nodo) => {
+    nodo.textContent = texto;
+  });
+};
+
+if (localStorage.getItem("compraArea")) {
+  escribirResumen("[data-resumen-evento]", localStorage.getItem("compraEvento"));
+  escribirResumen("[data-resumen-fecha]", localStorage.getItem("compraFecha"));
+  escribirResumen("[data-resumen-recinto]", localStorage.getItem("compraRecinto"));
+  escribirResumen("[data-resumen-area]", localStorage.getItem("compraArea"));
+  escribirResumen("[data-resumen-linea]", localStorage.getItem("compraLinea"));
+  escribirResumen("[data-resumen-subtotal]", localStorage.getItem("compraSubtotal"));
+  escribirResumen("[data-resumen-cargo]", localStorage.getItem("compraCargo"));
+  escribirResumen("[data-resumen-total]", localStorage.getItem("compraTotal"));
+}

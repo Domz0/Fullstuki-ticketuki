@@ -262,17 +262,17 @@
               <div class="separador"></div>
 
               <div class="resumen_fila">
-                <span>2 × entrada</span>
-                <strong>$90.000</strong>
+                <span data-resumen-linea>2 × entrada</span>
+                <strong data-resumen-subtotal>$90.000</strong>
               </div>
 
               <div class="resumen_fila">
                 <span>Cargo por servicio</span>
-                <strong>$9.000</strong>
+                <strong data-resumen-cargo>$9.000</strong>
               </div>
 
               <button type="button" class="boton morado boton_comprar_mobile">
-                Pagar $99.000
+                Pagar <span data-resumen-total>$99.000</span>
               </button>
             </div>
           </div>
@@ -284,30 +284,35 @@
         <div class="resumen_evento">
           <div class="resumen_imagen">imagen evento</div>
           <div class="resumen_evento_texto">
-            <b>Festival de rock en vivo</b>
-            <p>Sáb 14 nov, 20:00<br />Estadio Nacional</p>
+            <b data-resumen-evento>Festival de rock en vivo</b>
+            <p>
+              <span data-resumen-fecha>Sáb 14 nov, 20:00</span><br />
+              <span data-resumen-recinto>Estadio Nacional</span>
+            </p>
           </div>
         </div>
         <div class="separador"></div>
         <dl class="resumen_detalles">
           <div class="resumen_fila">
             <dt>Área</dt>
-            <dd>Cancha General</dd>
+            <dd data-resumen-area>Cancha General</dd>
           </div>
           <div class="resumen_fila">
-            <dt>2 × entrada</dt>
-            <dd>$90.000</dd>
+            <dt data-resumen-linea>2 × entrada</dt>
+            <dd data-resumen-subtotal>$90.000</dd>
           </div>
           <div class="resumen_fila">
             <dt>Cargo por servicio</dt>
-            <dd>$9.000</dd>
+            <dd data-resumen-cargo>$9.000</dd>
           </div>
         </dl>
         <div class="separador"></div>
         <div class="resumen_fila resumen_total">
-          <b>Total</b><strong>$99.000</strong>
+          <b>Total</b><strong data-resumen-total>$99.000</strong>
         </div>
-        <button class="boton morado boton_comprar">Pagar $99.000</button>
+        <button class="boton morado boton_comprar">
+          Pagar <span data-resumen-total>$99.000</span>
+        </button>
         <p class="resumen_nota">
           Pago protegido. Las entradas llegan a tu correo y a Mis entradas.
         </p>

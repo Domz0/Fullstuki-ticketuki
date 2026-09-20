@@ -5,6 +5,7 @@
 const $ = (selector) => document.querySelector(selector);
 
 const MAXIMO = 6;
+const EVENTO = "Festival de rock en vivo";
 
 const FECHAS = {
   "14 nov": { largo: "Sáb 14 nov, 20:00", corto: "Sáb 14 nov" },
@@ -100,6 +101,20 @@ const pintarResumen = () => {
 
   $('[data-paso="-1"]').disabled = cantidad === 1;
   $('[data-paso="1"]').disabled = cantidad === MAXIMO;
+
+  guardarCompra(subtotal, cargo);
+};
+
+// La pantalla de pago lee estos datos para mostrar la misma compra.
+const guardarCompra = (subtotal, cargo) => {
+  localStorage.setItem("compraEvento", EVENTO);
+  localStorage.setItem("compraFecha", fecha.largo);
+  localStorage.setItem("compraRecinto", recinto.nombre);
+  localStorage.setItem("compraArea", sector.nombre);
+  localStorage.setItem("compraLinea", `${cantidad} × entrada`);
+  localStorage.setItem("compraSubtotal", pesos(subtotal));
+  localStorage.setItem("compraCargo", pesos(cargo));
+  localStorage.setItem("compraTotal", pesos(subtotal + cargo));
 };
 
 // ---------- elegir un area ----------
@@ -126,6 +141,7 @@ document.querySelectorAll("[data-paso]").forEach((boton) => {
 
 // ---------- al abrir la pagina ----------
 
+$("[data-evento]").textContent = EVENTO;
 $("[data-detalle-largo]").textContent = `${fecha.largo} · ${recinto.nombre}`;
 $("[data-detalle-corto]").textContent = `${recinto.nombre} · ${fecha.corto}`;
 pintarMapa();
