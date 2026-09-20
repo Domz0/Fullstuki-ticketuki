@@ -1,27 +1,26 @@
 /* General */
 
-*{ 
-/*    outline: solid red 1px; */
-    font-family: "IBM Plex Sans", sans-serif;
-    box-sizing: border-box;
+* {
+  /*    outline: solid red 1px; */
+  font-family: "IBM Plex Sans", sans-serif;
+  box-sizing: border-box;
 }
 
 body {
-    width: 100%;
-    height: 100vh;
-    margin: 0;
-    border: 0;
-    padding: 0;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  border: 0;
+  padding: 0;
 }
 
-.flex-container{
-    display: flex;
+.flex-container {
+  display: flex;
 }
 
 :root {
-    --tk-surface-2: var(--color-superficie);
-    --tk-text-2: var(--color-texto-suave);
-    
+  --tk-surface-2: var(--color-superficie);
+  --tk-text-2: var(--color-texto-suave);
 }
 
 /*
@@ -35,127 +34,125 @@ body {
 
 /* Forms */
 
-
 .form-container {
-    background-color: var(--color-fondo);
-    width: 50%;
-    height: 100vh;
+  background-color: var(--color-fondo);
+  width: 50%;
+  height: 100vh;
 }
 
 .ticketuki {
-    padding: 1rem;
-    font-weight: 700;
-    display: inline-block;
-    text-decoration: none;
-    color: var(--color-texto);
+  padding: 1rem;
+  font-weight: 700;
+  display: inline-block;
+  text-decoration: none;
+  color: var(--color-texto);
 }
 
 form {
-    padding: 2rem 5rem;
-    
-    display: flex;
-    flex-direction: column; 
+  padding: 2rem 5rem;
+
+  display: flex;
+  flex-direction: column;
 }
 
 form h2 {
-    color: var(--color-texto);
-    margin-bottom: 0;
+  color: var(--color-texto);
+  margin-bottom: 0;
 }
 
 form .subtitle {
-    font-size: 0.8rem;
-    margin-top: 0;
-    color: var(--tk-text-2)
+  font-size: 0.8rem;
+  margin-top: 0;
+  color: var(--tk-text-2);
 }
 
 .input-container {
-    display: flex;
-    flex-direction: column; 
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .input-container-group {
-    display: flex;
-    gap: 1rem;
+  display: flex;
+  gap: 1rem;
 }
 
-.input-container-group, .input-container {
-    flex:1;
+.input-container-group,
+.input-container {
+  flex: 1;
 }
 
 .input-container label {
-    font-size: 0.8rem;
-    color: var(--tk-text-2);
+  font-size: 0.8rem;
+  color: var(--tk-text-2);
 }
 
 .input-container input {
-    padding: 0.8rem;
-    border-radius: 0.5rem;
-    border: solid var(--color-linea) 1px;
-    background-color: var(--tk-surface-2);
-    color: var(--color-texto);
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  border: solid var(--color-linea) 1px;
+  background-color: var(--tk-surface-2);
+  color: var(--color-texto);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .input-container input:focus {
-    box-shadow: 0 0 0 3px var(--color-linea);
+  box-shadow: 0 0 0 3px var(--color-linea);
 }
 
 .checkbox-container {
-    font-size: 0.8rem;
-    color: var(--color-texto-apagado);
+  font-size: 0.8rem;
+  color: var(--color-texto-apagado);
 }
 
 form button {
-    padding: 0.8rem;
-    margin-top: 1rem;
-    border-radius: 0.5rem;
-    background-color: var(--color-morado);
-    font-weight: 700;
-    color: var(--tk-text-2);
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-morado);
+  font-weight: 700;
+  color: var(--tk-text-2);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 form button:hover {
-    background-color: var(--color-morado-oscuro);
+  background-color: var(--color-morado-oscuro);
 }
 
 form .crear {
-    display: flex;
-    color: var(--tk-text-2);
-    justify-content: center;
-    gap: 0.3rem;
-    font-size: 0.8rem;
+  display: flex;
+  color: var(--tk-text-2);
+  justify-content: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
 }
 
-.crear a{
-    color: var(--color-morado);
-    font-weight: 700;
-    text-decoration: none;
+.crear a {
+  color: var(--color-morado);
+  font-weight: 700;
+  text-decoration: none;
 }
-
 
 /* Img */
 
 .img-container {
-    background-color: var(--color-fondo);
-    width: 50%;
-    height: 100vh;
+  background-color: var(--color-fondo);
+  width: 50%;
+  height: 100vh;
 }
 
 img {
-    
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    filter: blur(2px);
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  filter: blur(2px);
 }
-
-
 
 /*
 @media (max-width: 1023px) {
@@ -164,3 +161,10 @@ img {
 @media (max-width: 1024px) {
 }
 */
+
+/*me tome el archivo >:) */
+.mensaje_validacion {
+  margin: 0;
+  font-size: 11px;
+  color: var(--color-texto-tenue);
+}
