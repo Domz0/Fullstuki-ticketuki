@@ -158,6 +158,21 @@ overflow: hidden -> esconde lo que se sale
     max-width: 100%;
     padding: 40px 16px;
   }
+
+  .confirmacion_tarjeta {
+    flex-direction: column;
+  }
+
+  .confirmacion_acceso {
+    flex: none;
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px dashed rgb(41, 41, 50);
+  }
+
+  .confirmacion_compra {
+    width: 100%;
+  }
 }
 @media (min-width: 1024px) {
   .confirmacion {
