@@ -1,0 +1,658 @@
+/*
+  Checkout paso 1: eleccion de area (maqueta 1g-1j escritorio / 1v movil).
+  El plano y la leyenda los aporta componentes/recinto/recinto.css.
+*/
+
+:root {
+  --ancho: 1600px;
+  --lado: 32px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: "IBM Plex Sans", Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.entradas {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 20px var(--lado) 0;
+}
+
+/* ============================================================
+   Botones
+   ============================================================ */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 8px;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.boton--morado {
+  border-color: var(--color-morado);
+  background: var(--color-morado);
+  color: var(--color-blanco);
+}
+
+.boton--morado:hover {
+  background: var(--color-morado-oscuro);
+}
+
+/* ============================================================
+   Barra superior (móvil)
+   ============================================================ */
+
+.tope {
+  /* En escritorio el contexto lo da la cabecera de la página. */
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 10px var(--lado);
+  border-bottom: 1px solid var(--color-linea);
+  background: var(--color-fondo-alto);
+}
+
+.tope__volver {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 9px;
+  background: var(--color-superficie);
+  font-size: 16px;
+}
+
+.tope__texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.tope__titulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tope__detalle {
+  overflow: hidden;
+  margin: 2px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tope__tiempo {
+  flex: 0 0 auto;
+  margin: 0;
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+/* ============================================================
+   Cabecera
+   ============================================================ */
+
+.cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 18px 0 16px;
+}
+
+.cabeza__titulo {
+  margin: 0;
+  font-size: clamp(22px, 1.8vw, 26px);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.cabeza__detalle {
+  margin: 4px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+}
+
+.variantes {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.variantes__rotulo {
+  margin: 0;
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.variantes__grupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.variante {
+  height: 30px;
+  padding: 0 14px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 8px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.variante:hover {
+  border-color: var(--color-morado);
+}
+
+.variante.is-activo {
+  border-color: var(--color-morado);
+  background: var(--color-morado);
+  color: var(--color-blanco);
+}
+
+/* ============================================================
+   Columnas
+   ============================================================ */
+
+.entradas__columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ---------- plano ---------- */
+
+.plano {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+}
+
+.plano__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.zoom {
+  display: flex;
+  gap: 6px;
+}
+
+.zoom__boton {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 7px;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.zoom__boton:hover:not(:disabled) {
+  border-color: var(--color-morado);
+}
+
+.zoom__boton:disabled {
+  color: var(--color-texto-tenue);
+  cursor: not-allowed;
+}
+
+.plano__lienzo {
+  min-width: 0;
+}
+
+.plano__nota {
+  margin: 0;
+  color: var(--color-texto-tenue);
+  font-size: 12px;
+}
+
+/* ---------- selección ---------- */
+
+.seleccion {
+  position: sticky;
+  top: 20px;
+  padding: 16px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+}
+
+.seleccion__titulo {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.seleccion__vacio {
+  display: grid;
+  place-items: center;
+  margin: 0 0 14px;
+  padding: 26px 18px;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  background: var(--color-fondo);
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.seleccion__vacio[hidden],
+.compra[hidden] {
+  display: none;
+}
+
+.seleccion__area {
+  padding: 12px 14px;
+  border: 1px solid var(--color-morado-borde);
+  border-radius: 8px;
+  background: var(--color-morado-fondo);
+}
+
+.seleccion__nombre {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.seleccion__unidad {
+  margin: 3px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}
+
+.seleccion__rotulo {
+  margin: 16px 0 8px;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}
+
+/* ---------- cantidad ---------- */
+
+.cantidad {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cantidad__boton {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 8px;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cantidad__boton:hover:not(:disabled) {
+  border-color: var(--color-morado);
+}
+
+.cantidad__boton:disabled {
+  color: var(--color-texto-tenue);
+  cursor: not-allowed;
+}
+
+.cantidad__valor {
+  min-width: 22px;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cantidad__tope {
+  color: var(--color-texto-tenue);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- totales ---------- */
+
+.totales {
+  margin: 16px 0 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--color-linea);
+}
+
+.totales__fila {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--color-texto-apagado);
+  font-size: 12.5px;
+}
+
+.totales__fila + .totales__fila {
+  margin-top: 6px;
+}
+
+.totales__fila dd {
+  margin: 0;
+}
+
+.totales__fila--total {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-linea);
+  color: var(--color-texto);
+}
+
+.totales__fila--total dt {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.totales__fila--total dd {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.seleccion__continuar {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.seleccion__tiempo {
+  margin: 14px 0 0;
+  color: var(--color-texto-tenue);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- listado de áreas ---------- */
+
+.areas {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font: inherit;
+  text-align: left;
+}
+
+button.area {
+  cursor: pointer;
+}
+
+button.area:hover {
+  border-color: var(--color-linea-suave);
+  background: var(--color-superficie);
+}
+
+.area.is-activo {
+  border-color: var(--color-morado);
+}
+
+.area__nombre {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.area__precio {
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.area--agotada {
+  color: var(--color-texto-tenue);
+  cursor: not-allowed;
+}
+
+.area--agotada .area__nombre {
+  font-weight: 400;
+}
+
+.area--agotada .area__precio {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Con un área elegida el panel muestra el resumen en vez del listado. */
+@media (min-width: 861px) {
+  body.con-seleccion .areas {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Barra de compra (móvil)
+   ============================================================ */
+
+.compra {
+  /* En escritorio manda el panel lateral. */
+  display: none;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 60;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 12px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-linea);
+  background: rgba(14, 15, 20, 0.97);
+  backdrop-filter: blur(8px);
+}
+
+.compra__datos {
+  min-width: 0;
+}
+
+.compra__nombre {
+  overflow: hidden;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compra__unidad {
+  margin: 2px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}
+
+.compra__accion {
+  grid-column: 1 / -1;
+  height: 48px;
+  font-size: 15px;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .entradas__columnas {
+    grid-template-columns: minmax(0, 1fr) 290px;
+    gap: 18px;
+  }
+
+  .cabeza {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 860px) {
+  :root {
+    --lado: 16px;
+  }
+
+  .entradas {
+    /* Deja aire para la barra de compra fija. */
+    padding: 14px var(--lado) 120px;
+  }
+
+  .tope {
+    display: flex;
+  }
+
+  /* El stepper va bajo la barra superior, centrado como en los demas pasos. */
+  .pasos {
+    margin-bottom: 12px;
+  }
+
+  .cabeza__texto,
+  .variantes__rotulo,
+  .zoom {
+    display: none;
+  }
+
+  .cabeza {
+    margin: 0 0 12px;
+  }
+
+  .variantes,
+  .variantes__grupo {
+    width: 100%;
+  }
+
+  .variante {
+    flex: 1;
+    padding: 0 8px;
+  }
+
+  .entradas__columnas {
+    display: block;
+  }
+
+  .plano {
+    gap: 12px;
+    padding: 10px;
+  }
+
+  /* La leyenda baja bajo el plano, como en la maqueta móvil. */
+  .plano__lienzo {
+    order: 1;
+  }
+
+  .plano__barra {
+    order: 2;
+  }
+
+  .plano__nota {
+    order: 3;
+    font-size: 11px;
+  }
+
+  .seleccion {
+    position: static;
+    margin-top: 12px;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  /* El resumen y el contador viven en la barra fija de abajo. */
+  .seleccion__titulo,
+  .seleccion__vacio,
+  .seleccion__detalle,
+  .seleccion__tiempo {
+    display: none;
+  }
+
+  .area {
+    padding: 12px 14px;
+  }
+
+  .compra {
+    display: grid;
+  }
+}
+
+@media (max-width: 420px) {
+  .variante {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+  }
+
+  .compra__accion {
+    font-size: 14px;
+  }
+}

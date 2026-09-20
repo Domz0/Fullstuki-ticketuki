@@ -11,15 +11,20 @@
   box-sizing: border-box;
 }
 /* grandote formu y resumen*/
+/* la barra de pasos comparte el ancho del contenido */
+.pago,
+.pago_pasos {
+  max-width: 1600px;
+  margin: 0 auto;
+}
 .pago {
   display: flex;
   align-items: flex-start;
   gap: 28px;
-  width: 50%;
-  min-width: 900px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 18px 24px;
+  padding: 18px 32px 32px;
+}
+.pago_pasos {
+  padding: 20px 32px 0;
 }
 /*datos comprador*/
 .pago_formulario {
@@ -100,6 +105,19 @@
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
+.pago_codigo_fila {
+  display: flex;
+  gap: 8px;
+}
+.pago_codigo_fila input {
+  flex: 1;
+  min-width: 0;
+}
+.pago_aplicar {
+  flex-shrink: 0;
+  border-color: var(--color-morado);
+  background-color: var(--color-morado);
+}
 /*texto*/
 .pago_sugerencia {
   margin: 0;
@@ -125,6 +143,19 @@
   border-radius: 7px;
   background-color: var(--color-fondo-alto);
   cursor: pointer;
+}
+.pago_opcion_logo {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-linea);
+  border-radius: 5px;
+  background-color: var(--color-superficie);
+}
+/*deja la ultima opcion a media fila, sin ser clicable*/
+.pago_hueco {
+  flex: 1;
+  min-width: 0;
 }
 .pago_opcion_texto {
   display: flex;
@@ -195,8 +226,17 @@
 
 /*Resumen compra*/
 .resumen_compra {
-  flex: 0 0 30%;
+  position: sticky;
+  top: 20px;
+  flex: 0 0 340px;
   min-width: 0;
+}
+.resumen_nota {
+  margin: 0;
+  color: var(--color-texto-tenue);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
 }
 .resumen_evento {
   display: flex;
@@ -275,12 +315,18 @@
 }
 
 @media (max-width: 1023px) {
-  .pago {
-    flex-direction: column;
+  .pago,
+  .pago_pasos {
     width: 100%;
     min-width: 0;
     max-width: 100%;
+  }
+  .pago {
+    flex-direction: column;
     padding: 16px;
+  }
+  .pago_pasos {
+    padding: 16px 16px 0;
   }
   .pago_formulario {
     order: 2;
@@ -291,9 +337,14 @@
     width: 100%;
   }
   .resumen_compra {
+    position: static;
+    flex: none;
     order: 1;
     width: 100%;
     padding: 14px;
+  }
+  .resumen_nota {
+    display: none;
   }
   .resumen_compra > h2,
   .resumen_compra > .separador,
@@ -394,13 +445,6 @@
 @media (min-width: 1024px) {
   .pago {
     flex-direction: row;
-  }
-  .pago_codigo_fila {
-    display: flex;
-    flex-direction: column;
-  }
-  .pago_aplicar {
-    display: none;
   }
 }
 .pago_opcion_marcada {

@@ -9,6 +9,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap"
     />
+    <link rel="stylesheet" href="../../componentes/pasos/pasos.css" />
     <link rel="stylesheet" href="confirmacion.css" />
     <script type="module" src="./confirmacion.js"></script>
   </head>
@@ -16,8 +17,12 @@
     class="pagina pagina_confirmacion"
     data-pagina="checkout"
     data-sesion="cliente"
+    data-paso="confirmacion"
   >
     <div id="header"></div>
+
+    <!-- Componente: pasos/pasos.js -->
+    <div class="confirmacion_pasos" id="pasos"></div>
 
     <main class="flex_V confirmacion">
       <header class="flex_V confirmacion_encabezado">
@@ -100,5 +105,6 @@
     <div id="footer"></div>
     <script src="../../componentes/header/header.js"></script>
     <script src="../../componentes/footer/footer.js"></script>
+    <script src="../../componentes/pasos/pasos.js"></script>
   </body>
 </html>

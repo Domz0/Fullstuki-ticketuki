@@ -267,4 +267,12 @@
   body {
     padding-bottom: 76px;
   }
+
+  body[data-barra-movil="oculta"] .barra-movil {
+    display: none;
+  }
+
+  body[data-barra-movil="oculta"] {
+    padding-bottom: 0;
+  }
 }

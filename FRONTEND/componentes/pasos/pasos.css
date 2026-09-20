@@ -1,0 +1,111 @@
+/*
+  Componente pasos: barra de progreso del checkout.
+  El markup lo genera componentes/pasos/pasos.js.
+*/
+
+.pasos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* El resumen corto es para movil; en escritorio se lee la lista completa. */
+.pasos__resumen {
+  display: none;
+  margin: 0;
+  color: var(--color-texto-apagado);
+  font-size: 14px;
+}
+
+.pasos__lista {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.paso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-texto-apagado);
+  font-size: 16px;
+}
+
+/* Linea que une un paso con el siguiente. */
+.paso:not(:last-child)::after {
+  content: "";
+  width: 55px;
+  height: 1px;
+  background: var(--color-linea);
+}
+
+.paso__numero {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.paso.is-activo {
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+/* El paso en curso y los ya cumplidos comparten el circulo de marca. */
+.paso.is-activo .paso__numero,
+.paso.is-completo .paso__numero {
+  border-color: var(--color-morado);
+  background: var(--color-morado);
+  color: var(--color-blanco);
+}
+
+.paso.is-completo:not(:last-child)::after {
+  background: var(--color-morado-borde);
+}
+
+/* ---------- movil ---------- */
+
+@media (max-width: 860px) {
+  .pasos {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .pasos__resumen {
+    display: block;
+  }
+
+  .pasos__lista {
+    gap: 6px;
+  }
+
+  /* Cada paso pasa a ser una barrita de avance. */
+  .paso {
+    display: block;
+    width: 26px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-linea);
+  }
+
+  .paso:not(:last-child)::after,
+  .paso__numero,
+  .paso__nombre {
+    display: none;
+  }
+
+  .paso.is-activo,
+  .paso.is-completo {
+    background: var(--color-morado);
+  }
+}

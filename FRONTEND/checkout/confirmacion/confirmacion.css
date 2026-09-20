@@ -2,6 +2,17 @@
 .pagina_confirmacion {
   min-height: 100vh;
 }
+/*barra de pasos: mismo ancho que la tarjeta*/
+.confirmacion_pasos {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 24px 0;
+}
+/*con la barra de pasos encima sobra el aire de 80px del bloque*/
+.confirmacion_pasos + .confirmacion {
+  padding-top: 18px;
+}
 .confirmacion {
   /*bloque superior e inferior*/
   gap: 16px;
@@ -151,6 +162,10 @@ overflow: hidden -> esconde lo que se sale
 */
 
 @media (max-width: 1023px) {
+  .confirmacion_pasos {
+    max-width: 100%;
+    padding: 16px 16px 0;
+  }
   .confirmacion {
     min-width: 0;
     max-width: 100%;

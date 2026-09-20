@@ -1,0 +1,202 @@
+/*
+  Componente recinto: planta del recinto y leyenda.
+  El alto de las filas y la posicion de cada sector los pone recinto.js con
+  estilos en linea, porque dependen del recinto que se este mostrando.
+*/
+
+.mapa {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo);
+}
+
+/* Rotulo del escenario o del acceso principal. */
+.mapa__acceso {
+  display: grid;
+  place-items: center;
+  margin: 0;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  background: var(--color-superficie);
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.mapa__sector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 8px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto);
+  font: inherit;
+  text-align: center;
+}
+
+button.mapa__sector {
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+button.mapa__sector:hover {
+  border-color: var(--color-morado);
+  background: var(--color-superficie);
+}
+
+button.mapa__sector:focus-visible {
+  outline: 2px solid var(--color-morado);
+  outline-offset: 2px;
+}
+
+.mapa__nombre {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* En escritorio manda el nombre largo; el corto entra en pantallas angostas. */
+.mapa__nombre--corto {
+  display: none;
+}
+
+.mapa__precio {
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- estados ---------- */
+
+.mapa__sector.is-activo {
+  border-color: var(--color-morado);
+  background: var(--color-morado);
+  color: var(--color-blanco);
+}
+
+.mapa__sector.is-activo .mapa__precio {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.mapa__sector--agotada {
+  border-color: var(--color-linea);
+  background: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.05) 0 5px,
+      transparent 5px 10px
+    ),
+    var(--color-fondo-alto);
+  color: var(--color-texto-tenue);
+  cursor: not-allowed;
+}
+
+.mapa__sector--agotada .mapa__nombre {
+  font-weight: 400;
+}
+
+.mapa__sector--agotada .mapa__precio {
+  color: var(--color-texto-tenue);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Vista previa del detalle: solo lectura, texto mas chico. */
+.mapa--vista {
+  gap: 6px;
+  padding: 10px;
+  pointer-events: none;
+}
+
+.mapa--vista .mapa__nombre {
+  font-size: 10px;
+}
+
+.mapa--vista .mapa__precio {
+  font-size: 9px;
+}
+
+/* ---------- leyenda ---------- */
+
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.leyenda__item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}
+
+.leyenda__marca {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 3px;
+  background: var(--color-fondo-alto);
+}
+
+.leyenda__marca--activa {
+  border-color: var(--color-morado);
+  background: var(--color-morado);
+}
+
+.leyenda__marca--agotada {
+  border-radius: 999px;
+  background: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.08) 0 3px,
+      transparent 3px 6px
+    ),
+    var(--color-fondo-alto);
+}
+
+/* ---------- movil ---------- */
+
+@media (max-width: 860px) {
+  .mapa {
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .mapa__nombre {
+    display: none;
+  }
+
+  .mapa__nombre--corto {
+    display: block;
+  }
+
+  .leyenda {
+    gap: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .mapa__nombre--corto {
+    font-size: 10px;
+  }
+
+  .mapa__precio {
+    font-size: 9px;
+  }
+}

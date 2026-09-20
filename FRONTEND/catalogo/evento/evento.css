@@ -1,345 +1,636 @@
-* {
-/*    outline: solid red 1px; */
-    box-sizing: border-box;
-}
+/*
+  Detalle de evento (maqueta 1f escritorio / 1u movil).
+  El mapa del recinto lo aporta componentes/recinto/recinto.css.
+*/
 
 :root {
-    --ancho: 1600px;
-    --lado: 32px;
+  --ancho: 1600px;
+  --lado: 32px;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+}
 
 body {
-    margin: 0;
-    background: var(--color-fondo);
-    color: var(--color-texto);
-    font-family: "IBM Plex Sans", Inter, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    letter-spacing: -0.01em;
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: "IBM Plex Sans", Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  letter-spacing: -0.01em;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-
-/* main */
+button {
+  font: inherit;
+}
 
 .evento {
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 24px var(--lado) 0;
+}
+
+.evento__subtitulo {
+  margin: 28px 0 12px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   Botones y enlaces
+   ============================================================ */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 18px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 8px;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.boton:hover {
+  border-color: var(--color-morado);
+}
+
+.boton--morado {
+  border-color: var(--color-morado);
+  background: var(--color-morado);
+  color: var(--color-blanco);
+}
+
+.boton--morado:hover {
+  background: var(--color-morado-oscuro);
+}
+
+.enlace-morado {
+  color: var(--color-morado-claro);
+  font-weight: 600;
+}
+
+.enlace-morado:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   Tráiler
+   ============================================================ */
+
+.trailer {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 12 / 5;
+  overflow: hidden;
+  border: 1px solid var(--color-linea);
+  border-radius: 12px;
+  background: linear-gradient(160deg, #15151d, #0d0d12);
+}
+
+.trailer__volver {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  /* La flecha es el retroceso de la maqueta móvil; en escritorio manda el header. */
+  display: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgba(10, 10, 14, 0.7);
+  color: var(--color-texto);
+  font-size: 18px;
+}
+
+.trailer__play {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  border: 1.5px solid var(--color-texto-suave);
+  border-radius: 999px;
+  background: rgba(10, 10, 14, 0.45);
+  cursor: pointer;
+}
+
+.trailer__play:hover {
+  border-color: var(--color-morado-claro);
+}
+
+/* Triángulo de "play" sin imagen: un borde izquierdo sólido. */
+.trailer__triangulo {
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 15px solid var(--color-texto);
+}
+
+.trailer__rotulo {
+  position: absolute;
+  top: calc(50% + 44px);
+  margin: 0;
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.trailer__linea {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--color-linea);
+}
+
+.trailer__avance {
+  display: block;
+  width: 22%;
+  height: 100%;
+  background: var(--color-morado);
+}
+
+/* ============================================================
+   Columnas
+   ============================================================ */
+
+.evento__columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 32px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+.evento__principal {
+  min-width: 0;
+}
+
+/* ---------- etiquetas ---------- */
+
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.etiqueta {
+  padding: 4px 9px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 6px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* La primera etiqueta es la categoría y va con el color de marca. */
+.etiquetas .etiqueta:first-child {
+  border-color: var(--color-morado-borde);
+  background: var(--color-morado-fondo);
+  color: var(--color-morado-texto);
+}
+
+.evento__titulo {
+  margin: 0;
+  font-size: clamp(26px, 2.2vw, 32px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.evento__bajada {
+  max-width: 62ch;
+  margin: 10px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* ---------- ficha técnica ---------- */
+
+.fichas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0 0;
+}
+
+.ficha {
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  background: var(--color-fondo-alto);
+}
+
+.ficha__rotulo {
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ficha__dato {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+/* ============================================================
+   Fechas
+   ============================================================ */
+
+.fechas__lista {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fecha {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  background: var(--color-fondo-alto);
+}
+
+.fecha__dia {
+  display: grid;
+  flex: 0 0 auto;
+  justify-items: center;
+  width: 46px;
+  margin: 0;
+  padding-right: 14px;
+  border-right: 1px solid var(--color-linea);
+}
+
+.fecha__numero {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.fecha__mes {
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fecha__texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.fecha__horario {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.fecha__recinto {
+  margin: 2px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}
+
+.fecha__estado {
+  margin: 0;
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fecha__accion {
+  flex: 0 0 auto;
+  height: 34px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.fecha__accion--inactiva {
+  border-color: var(--color-linea);
+  background: var(--color-linea);
+  color: var(--color-texto-apagado);
+  cursor: not-allowed;
+}
+
+.fecha--agotada .fecha__numero,
+.fecha--agotada .fecha__horario {
+  color: var(--color-texto-apagado);
+}
+
+/* ============================================================
+   Recinto
+   ============================================================ */
+
+.recinto__tarjeta {
+  padding: 14px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+}
+
+.recinto__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+}
+
+.recinto__enlace {
+  color: var(--color-morado-claro);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.recinto__enlace:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   Panel de compra
+   ============================================================ */
+
+.reserva {
+  position: sticky;
+  top: 24px;
+  padding: 18px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+}
+
+.reserva__rotulo {
+  margin: 0;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}
+
+.reserva__precio {
+  margin: 4px 0 0;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.reserva__nota {
+  margin: 4px 0 16px;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}
+
+.reserva__botones {
+  display: grid;
+  gap: 8px;
+}
+
+.reserva__comprar,
+.reserva__favorito {
+  width: 100%;
+  height: 44px;
+}
+
+.reserva__lista {
+  margin: 18px 0 0;
+  padding: 18px 0 0;
+  border-top: 1px solid var(--color-linea);
+  list-style: none;
+}
+
+.reserva__lista li {
+  position: relative;
+  padding: 0 0 0 16px;
+  color: var(--color-texto-apagado);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.reserva__lista li + li {
+  margin-top: 8px;
+}
+
+.reserva__lista li::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-morado);
+}
+
+.reserva__convenios {
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-linea);
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Barra de compra (móvil)
+   ============================================================ */
+
+.compra {
+  /* En escritorio manda el panel lateral de reserva. */
+  display: none;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 60;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-linea);
+  background: rgba(14, 15, 20, 0.97);
+  backdrop-filter: blur(8px);
+}
+
+.compra__precio {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.compra__desde {
+  display: block;
+  color: var(--color-texto-apagado);
+  font-size: 11px;
+}
+
+.compra__monto {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.compra__accion {
+  flex: 1;
+  height: 48px;
+  font-size: 15px;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .evento__columnas {
+    grid-template-columns: minmax(0, 1fr) 300px;
     gap: 24px;
+  }
 }
 
-.evento_media {
-    margin: 0 2rem;
-    margin-top: 2rem;
-}
+@media (max-width: 860px) {
+  :root {
+    --lado: 16px;
+  }
 
-.evento_media img {
-    width: 100%;
-    height: 400px; /* ajusta según lo que necesites */
-    object-fit: cover;
-    border-radius: 8px;
-    display: block;
-    
-    border: solid var(--color-linea) 1px;
-    margin-bottom: 0rem;
-}
+  .evento {
+    /* Deja aire para la barra de compra fija. */
+    padding: 0 0 96px;
+  }
 
-.evento_container {
-    display: flex;
-    gap: 2rem;
-    align-items: flex-start;
-    margin: 0 auto;
-    padding: 2rem var(--lado);
-}
+  /* El tráiler va al borde y con la flecha de retroceso encima. */
+  .trailer {
+    aspect-ratio: 4 / 3;
+    border: 0;
+    border-radius: 0;
+  }
 
-.evento_contenido {
-    flex: 1;
-    min-width: none;
-}
-
-.evento_sidebar {
-    flex: 0 0 320px;
-    border: 1px solid var(--color-linea);
-    background: var(--color-fondo-alto);
-    padding: 0.1rem 1rem;
-    border-radius: 6px;
-    position: sticky;
-    top: 2rem;
-}
-
-/* Botones */
-
-.btn_activo {
-    padding: 0.8rem;
-    border-radius: 0.5rem;
-    background-color: var(--color-morado);
-    font-weight: 700;
-    color: var(--color-texto);
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.btn_inactivo {
-    padding: 0.8rem;
-    border-radius: 0.5rem;
-    background-color: var(--color-linea);
-    font-weight: 700;
-    color: var(--color-texto-apagado);
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-
-/* tags */
-
-.evento_tag_group {
-    display: flex;
-    flex: 1;
-    gap: 1rem;
-}
-
-.evento_tag {
-    padding: 0.1rem 0.6rem;
-    border: 1px solid rgba(139, 92, 246, 0.5);
-    border-radius: 6px;
-    background: rgba(61, 30, 95, 0.45);
-    color: var(--color-morado-texto);
-    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-
-/* evento texto */
-
-.evento_texto_titulo {
-    font-size: 2rem;
-}
-
-.evento_texto_detalle {
-    color: var(--color-texto-apagado);
-}
-
-/* evento detalle */
-
-.evento_detalle_group {
-    display: flex;
-    flex: 1;
-    gap: 1rem;
-}
-
-.evento_detalle {
-    border: 1px solid var(--color-linea);
-    background: var(--color-fondo-alto);
-    padding: 0.1rem 1rem;
-    border-radius: 6px;
-}
-
-.evento_detalle .detalle_titulo {
-    color: var(--color-texto-apagado);
-    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-
-.evento_detalle .detalle_texto {
-    font-size: 0.8rem;
-}
-
-/* Evento fecha */
-
-
-.evento_fecha {
-    display: flex;
-    border: 1px solid var(--color-linea);
-    background: var(--color-fondo-alto);
-    padding: 0.1rem 1rem;
-    border-radius: 6px;
-    gap: 2rem;
-    margin-bottom: 0.5rem;
-}
-
-.evento_fecha .fecha_info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 4rem;
-    margin: 0.2rem;
-}
-
-.fecha_info .day {
-    font-size: 1.2rem;
-    margin: 0.2rem;
-    letter-spacing: 0.1em;
-}
-
-.fecha_info .month {
-    font-size: 0.7rem;
-    margin: 0.2rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-texto-apagado);
-}
-
-
-.evento_fecha .fecha_detalle {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    margin: 0.2rem;
-}
-
-.fecha_detalle .detalle_fecha{
-    
-    margin: 0.2rem;
-}
-
-.fecha_detalle .detalle_recinto{
-    color: var(--color-texto-apagado);
-    font-size: 0.8rem;
-    margin: 0.2rem;
-}
-
-.evento_fecha .fecha_accion {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-
-.fecha_accion .estado {
-    color: var(--color-texto-apagado);
-    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-    
-/* Recinto */
-
-.recinto_item {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--color-linea);
-    background: var(--color-fondo-alto);
-    padding: 1rem;
-    border-radius: 6px;
-}
-
-.recinto_item .recinto_imagen {
-    position: relative;
-    aspect-ratio: 10 / 2;
-    border-radius: 6px;
-    background: repeating-linear-gradient(-45deg,rgba(255, 255, 255, 0.02) 0 6px, transparent 6px 12px), var(--color-fondo-alto);
-}
-
-.recinto_placeholder {
-    position: absolute;
-    inset: 0;
+  .trailer__volver {
     display: grid;
-    place-items: center;
-    color: var(--color-texto-tenue);
-    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-}
+  }
 
-.recinto_detalle {
+  .trailer__rotulo {
+    top: calc(50% + 40px);
+    font-size: 10px;
+  }
+
+  .evento__columnas {
+    display: block;
+    margin-top: 0;
+    padding: 16px var(--lado) 0;
+  }
+
+  .evento__titulo {
+    font-size: 26px;
+  }
+
+  /* En móvil la ficha son filas rótulo / dato, como en la maqueta. */
+  .fichas {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .ficha {
     display: flex;
-    font-size: 0.8rem;
-    color: var(--color-texto-apagado);
-    margin-bottom: 0rem;
+    align-items: center;
     justify-content: space-between;
-}
+    gap: 12px;
+    padding: 12px 14px;
+  }
 
-.elegir {
-    color: var(--color-morado-claro);
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-}
+  .ficha__dato {
+    margin: 0;
+    text-align: right;
+  }
 
-/* Sidebar */
+  /* La fila de fecha se arma en dos líneas: el estado baja bajo el horario. */
+  .fecha {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 
-.sidebar_label {
-    font-size: 0.8rem;
-    margin-bottom: 0rem;
-    color: var(--color-texto-apagado);
-}
+  .fecha__estado {
+    order: 3;
+    width: 100%;
+    margin-top: -4px;
+    padding-left: 60px;
+  }
 
-.sidebar_precio {
-    margin: 0rem;
-}
+  .fecha__accion {
+    height: 36px;
+  }
 
-.sidebar_detalle {
-    margin-top: 0rem;
-    font-size: 0.8rem;
-    color: var(--color-texto-apagado);
-}
+  .reserva {
+    position: static;
+    margin-top: 28px;
+  }
 
-.sidebar_button {
+  /* El precio y el botón ya viven en la barra fija de abajo. */
+  .reserva__rotulo,
+  .reserva__precio,
+  .reserva__nota,
+  .reserva__botones {
+    display: none;
+  }
+
+  .reserva__lista {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .compra {
     display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+  }
 }
 
+@media (max-width: 420px) {
+  .fecha__dia {
+    width: 40px;
+    padding-right: 10px;
+  }
 
-.btn-comprar {
-    padding: 0.8rem;
-    border-radius: 0.5rem;
-    background-color: var(--color-morado);
-    font-weight: 700;
-    color: var(--color-texto);
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  .fecha__estado {
+    padding-left: 52px;
+  }
+
+  .compra__accion {
+    font-size: 14px;
+  }
 }
-
-.btn-favoritos {
-    padding: 0.8rem;
-    border-radius: 0.5rem;
-    background-color:  var(--color-superficie);
-    font-weight: 700;
-    color: var(--color-texto);
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar_lista {    
-    padding-left: 1rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    border-top: solid var(--color-linea) 2px;
-    border-bottom: solid var(--color-linea) 2px;
-
-}
-
-.sidebar_lista li {
-    font-size: 0.8rem;
-    color: var(--color-texto-apagado);
-    padding: 0.2rem;
-}
-
-
-
-.sidebar-descuento {
-    font-size: 0.8rem;
-    color: var(--color-texto-apagado);
-}
-
-.convenios {
-    color: var(--color-morado-claro);
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-

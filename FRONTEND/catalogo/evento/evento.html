@@ -1,151 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evento</title>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ticketuki · Festival de rock en vivo</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="../../css/base.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap"/>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../componentes/recinto/recinto.css" />
     <link rel="stylesheet" href="evento.css" />
 
     <script src="../../componentes/header/header.js"></script>
     <script src="../../componentes/footer/footer.js"></script>
-</head>
-<body data-pagina="buscar">
+    <script src="../../componentes/recinto/recinto.js" defer></script>
+    <script src="evento.js" defer></script>
+  </head>
+
+  <!-- data-barra-movil="oculta": en movil el pie lo ocupa la barra de compra -->
+  <body data-pagina="buscar" data-sesion="cliente" data-barra-movil="oculta">
+    <!-- Componente: header/header.html -->
     <div id="header"></div>
 
     <main class="evento">
+      <!-- ============ Tráiler ============ -->
+      <section class="trailer" aria-label="Tráiler del evento">
+        <a
+          class="trailer__volver"
+          href="../listado/listado.html?categoria=musica"
+          aria-label="Volver al listado"
+        >
+          <span aria-hidden="true">←</span>
+        </a>
 
-        <div class="evento_media">
-            <img src="../../assets/3.png" alt="">
+        <button class="trailer__play" type="button" aria-label="Reproducir tráiler">
+          <span class="trailer__triangulo" aria-hidden="true"></span>
+        </button>
+
+        <p class="trailer__rotulo">Tráiler del evento · 1:24</p>
+
+        <div class="trailer__linea" aria-hidden="true">
+          <span class="trailer__avance"></span>
         </div>
-        
-        <div class="evento_container">
+      </section>
 
-            <div class="evento_contenido">
-                <div class="evento_tag_group">
-                    <div class="evento_tag">
-                        <p>musica</p>
-                    </div>
-                    <div class="evento_tag">
-                        <p>rock</p>
-                    </div>
-                    <div class="evento_tag">
-                        <p>tuki</p>
-                    </div>
-                </div>
-            
+      <div class="evento__columnas">
+        <!-- ============ Columna principal ============ -->
+        <div class="evento__principal">
+          <p class="etiquetas">
+            <span class="etiqueta">Música</span>
+            <span class="etiqueta">Rock</span>
+          </p>
 
-                <div class="evento_texto">
-                    <h1 class="evento_texto_titulo">Lollapalooza 2026</h1>
-                    <p class="evento_texto_detalle"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias culpa ducimus voluptate! Iusto possimus quibusdam pariatur autem aliquam, nesciunt magnam eveniet error dicta expedita hic, aliquid numquam vitae commodi obcaecati?</p>
-                </div>
+          <h1 class="evento__titulo">Festival de rock en vivo</h1>
 
+          <p class="evento__bajada">
+            Tres escenarios, doce bandas y una jornada completa de música en vivo en el
+            Estadio Nacional. Apertura de puertas a las 17:00.
+          </p>
 
-                <div class="evento_detalle_group">
-                    <div class="evento_detalle">
-                        <p class="detalle_titulo">recinto</p>
-                        <p class="detalle_texto">Estadio Nacional - Ñuñoa</p>
-                    </div>
-                    <div class="evento_detalle">
-                        <p class="detalle_titulo">duracion</p>
-                        <p class="detalle_texto">8 horas - 3 escenarios</p>
-                    </div>
-                    <div class="evento_detalle">
-                        <p class="detalle_titulo">edad</p>
-                        <p class="detalle_texto">Todo publico - Menores con adulto</p>
-                    </div>         
-                </div>
-
-
-                <div class="evento_fecha_group">
-                    <h3>Fechas disponibles</h3>
-                    <div class="evento_fecha">
-                        <div class="fecha_info">
-                            <p class="day">14</p>
-                            <p class="month">nov</p>
-                        </div>
-                        <div class="fecha_detalle">
-                            <p class="detalle_fecha">Sabado - 20:00</p>
-                            <p class="detalle_recinto">Estadio Nacional</p>
-                        </div>
-                        <div class="fecha_accion">
-                            <p class="estado">disponible</p>
-                            <button class="btn_activo">Elegir area</button>
-                        </div>
-                    </div>
-                    <div class="evento_fecha">
-                        <div class="fecha_info">
-                            <p class="day">15</p>
-                            <p class="month">nov</p>
-                        </div>
-                        <div class="fecha_detalle">
-                            <p class="detalle_fecha">Domingo - 19:00</p>
-                            <p class="detalle_recinto">Estadio Nacional</p>
-                        </div>
-                        <div class="fecha_accion">
-                            <p class="estado">ultimas entradas</p>
-                            <button class="btn_activo">Elegir area</button>
-                        </div>
-                    </div>
-                    <div class="evento_fecha">
-                        <div class="fecha_info">
-                            <p class="day">21</p>
-                            <p class="month">nov</p>
-                        </div>
-                        <div class="fecha_detalle">
-                            <p class="detalle_fecha">Sabado - 20:00</p>
-                            <p class="detalle_recinto">Estadio Nacional</p>
-                        </div>
-                        <div class="fecha_accion">
-                            <p class="estado">agotado</p>
-                            <button class="btn_inactivo">Agotado</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="evento_recinto">
-                    <h3>Recinto</h3>
-                    <div class="recinto_item">
-                        <div class="recinto_imagen">
-                            <span class="recinto_placeholder">mapa del recinto - vista previa</span>
-                        </div>
-                        <p class="recinto_detalle">Estadio Nacional - 5 areas disponibles <a href="" class="elegir"> Elegir área</a> </p>
-                    </div>
-                </div>
+          <!-- ============ Ficha técnica ============ -->
+          <dl class="fichas">
+            <div class="ficha">
+              <dt class="ficha__rotulo">Recinto</dt>
+              <dd class="ficha__dato">Estadio Nacional, Ñuñoa</dd>
             </div>
-            
-
-            <div class="evento_sidebar">
-                <p class="sidebar_label">Entradas desde</p>
-                <h1 class="sidebar_precio">$35.000</h1>
-                <p class="sidebar_detalle">Precio final por entrada: $38.500 con cargo</p>
-
-                <div class="sidebar_button">
-                        
-                    <button class="btn-comprar">Elegir entradas</button>
-                    <button class="btn-favoritos">Guardar en favoritos</button>
-
-                </div>
-
-
-                <ul class="sidebar_lista">
-                    <li>Entradas digitales con QR único por persona</li>
-                    <li>Reventa oficial habilitada dentro de la plataforma</li>
-                    <li>Descuentos vigentes canjeando un código</li>
-                    <li>Cambio de titular hasta 48 horas antes</li>
-                </ul>
-
-                <p class="sidebar-descuento"> Hay descuentos vigentes de hasta 15% con algunas empresas.<a href="" class="convenios">Ver convenios</a></p>
-
-                
+            <div class="ficha">
+              <dt class="ficha__rotulo">Duración</dt>
+              <dd class="ficha__dato">8 horas · 3 escenarios</dd>
             </div>
-            
+            <div class="ficha">
+              <dt class="ficha__rotulo">Edad</dt>
+              <dd class="ficha__dato">Todo público · menores con adulto</dd>
+            </div>
+          </dl>
 
+          <!-- ============ Fechas ============ -->
+          <section class="fechas">
+            <h2 class="evento__subtitulo">Fechas disponibles</h2>
+
+            <ul class="fechas__lista">
+              <li class="fecha">
+                <p class="fecha__dia">
+                  <strong class="fecha__numero">14</strong>
+                  <span class="fecha__mes">nov</span>
+                </p>
+                <div class="fecha__texto">
+                  <p class="fecha__horario">Sábado · 20:00</p>
+                  <p class="fecha__recinto">Estadio Nacional</p>
+                </div>
+                <p class="fecha__estado">Disponible</p>
+                <a
+                  class="boton boton--morado fecha__accion"
+                  href="../../checkout/entradas/entradas.html?recinto=estadio&amp;fecha=14%20nov"
+                >
+                  Elegir área
+                </a>
+              </li>
+
+              <li class="fecha">
+                <p class="fecha__dia">
+                  <strong class="fecha__numero">15</strong>
+                  <span class="fecha__mes">nov</span>
+                </p>
+                <div class="fecha__texto">
+                  <p class="fecha__horario">Domingo · 19:00</p>
+                  <p class="fecha__recinto">Estadio Nacional</p>
+                </div>
+                <p class="fecha__estado">Últimas entradas</p>
+                <a
+                  class="boton boton--morado fecha__accion"
+                  href="../../checkout/entradas/entradas.html?recinto=estadio&amp;fecha=15%20nov"
+                >
+                  Elegir área
+                </a>
+              </li>
+
+              <li class="fecha fecha--agotada">
+                <p class="fecha__dia">
+                  <strong class="fecha__numero">21</strong>
+                  <span class="fecha__mes">nov</span>
+                </p>
+                <div class="fecha__texto">
+                  <p class="fecha__horario">Sábado · 20:00</p>
+                  <p class="fecha__recinto">Estadio Nacional</p>
+                </div>
+                <p class="fecha__estado">Agotado</p>
+                <span class="boton fecha__accion fecha__accion--inactiva">Agotado</span>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ============ Recinto ============ -->
+          <!-- El mapa lo dibuja componentes/recinto/recinto.js -->
+          <section class="recinto">
+            <h2 class="evento__subtitulo">Recinto</h2>
+
+            <div class="recinto__tarjeta">
+              <div class="recinto__mapa" data-mapa></div>
+
+              <p class="recinto__pie">
+                <span data-resumen-recinto>Estadio Nacional</span>
+                <a
+                  class="recinto__enlace"
+                  href="../../checkout/entradas/entradas.html?recinto=estadio"
+                >
+                  Elegir área <span aria-hidden="true">→</span>
+                </a>
+              </p>
+            </div>
+          </section>
         </div>
+
+        <!-- ============ Panel de compra ============ -->
+        <aside class="reserva" aria-label="Compra de entradas">
+          <p class="reserva__rotulo">Entradas desde</p>
+          <p class="reserva__precio">$35.000</p>
+          <p class="reserva__nota">Precio final por entrada: $38.500 con cargo</p>
+
+          <div class="reserva__botones">
+            <a
+              class="boton boton--morado reserva__comprar"
+              href="../../checkout/entradas/entradas.html?recinto=estadio"
+            >
+              Elegir entradas
+            </a>
+            <button class="boton reserva__favorito" type="button">Guardar en favoritos</button>
+          </div>
+
+          <ul class="reserva__lista">
+            <li>Entradas digitales con QR único por persona</li>
+            <li>Reventa oficial habilitada dentro de la plataforma</li>
+            <li>Descuentos vigentes canjeando un código</li>
+            <li>Cambio de titular hasta 48 horas antes</li>
+          </ul>
+
+          <p class="reserva__convenios">
+            Hay descuentos vigentes de hasta 15% con algunas empresas.
+            <a class="enlace-morado" href="../../componentes/convenios/convenios.html">
+              Ver convenios
+            </a>
+          </p>
+        </aside>
+      </div>
     </main>
+
+    <!-- ============ Barra de compra (solo móvil) ============ -->
+    <div class="compra">
+      <p class="compra__precio">
+        <span class="compra__desde">Desde</span>
+        <strong class="compra__monto">$35.000</strong>
+      </p>
+      <a
+        class="boton boton--morado compra__accion"
+        href="../../checkout/entradas/entradas.html?recinto=estadio"
+      >
+        Elegir entradas
+      </a>
+    </div>
+
+    <!-- Componente: footer/footer.html -->
     <div id="footer"></div>
-    
-</body>
+  </body>
 </html>

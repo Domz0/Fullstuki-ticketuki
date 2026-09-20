@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ticketuki · Elegir área</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../componentes/pasos/pasos.css" />
+    <link rel="stylesheet" href="../../componentes/recinto/recinto.css" />
+    <link rel="stylesheet" href="entradas.css" />
+
+    <script src="../../componentes/header/header.js"></script>
+    <script src="../../componentes/footer/footer.js"></script>
+    <script src="../../componentes/pasos/pasos.js" defer></script>
+    <script src="../../componentes/recinto/recinto.js" defer></script>
+    <script src="entradas.js" defer></script>
+  </head>
+
+  <!-- data-barra-movil="oculta": en movil el pie lo ocupa la barra de compra -->
+  <body
+    data-pagina="entradas"
+    data-sesion="cliente"
+    data-paso="entradas"
+    data-barra-movil="oculta"
+  >
+    <!-- Componente: header/header.html -->
+    <div id="header"></div>
+
+    <!-- ============ Barra superior (solo móvil) ============ -->
+    <div class="tope">
+      <a class="tope__volver" href="../../catalogo/evento/evento.html" aria-label="Volver al evento">
+        <span aria-hidden="true">←</span>
+      </a>
+      <div class="tope__texto">
+        <p class="tope__titulo">Elegir área</p>
+        <p class="tope__detalle" data-detalle-corto>Estadio Nacional · Sáb 14 nov</p>
+      </div>
+      <p class="tope__tiempo">09:42</p>
+    </div>
+
+    <main class="entradas">
+      <!-- Componente: pasos/pasos.js -->
+      <div id="pasos"></div>
+
+      <!-- ============ Cabecera ============ -->
+      <header class="cabeza">
+        <div class="cabeza__texto">
+          <h1 class="cabeza__titulo">Festival de rock en vivo</h1>
+          <p class="cabeza__detalle" data-detalle-largo>Sáb 14 nov, 20:00 · Estadio Nacional</p>
+        </div>
+
+        <div class="variantes">
+          <p class="variantes__rotulo">Variantes de recinto</p>
+          <!-- Los botones los genera entradas.js desde los recintos definidos -->
+          <div class="variantes__grupo" data-variantes></div>
+        </div>
+      </header>
+
+      <div class="entradas__columnas">
+        <!-- ============ Plano del recinto ============ -->
+        <section class="plano" aria-label="Plano del recinto">
+          <div class="plano__barra">
+            <div class="leyenda">
+              <span class="leyenda__item">
+                <span class="leyenda__marca" aria-hidden="true"></span> Disponible
+              </span>
+              <span class="leyenda__item">
+                <span class="leyenda__marca leyenda__marca--activa" aria-hidden="true"></span>
+                Seleccionada
+              </span>
+              <span class="leyenda__item">
+                <span class="leyenda__marca leyenda__marca--agotada" aria-hidden="true"></span>
+                Agotada
+              </span>
+            </div>
+
+            <div class="zoom">
+              <button class="zoom__boton" type="button" data-zoom="-1" aria-label="Alejar">−</button>
+              <button class="zoom__boton" type="button" data-zoom="1" aria-label="Acercar">+</button>
+            </div>
+          </div>
+
+          <div class="plano__lienzo" data-mapa></div>
+
+          <p class="plano__nota">
+            Selección por área. La ubicación exacta dentro del área se asigna al ingresar
+            al recinto.
+          </p>
+        </section>
+
+        <!-- ============ Resumen de la selección ============ -->
+        <aside class="seleccion" aria-label="Tu selección">
+          <h2 class="seleccion__titulo">Tu selección</h2>
+
+          <p class="seleccion__vacio" data-vacio>
+            Elige un área en el mapa para ver precios y continuar.
+          </p>
+
+          <div class="seleccion__detalle" data-detalle hidden>
+            <div class="seleccion__area">
+              <p class="seleccion__nombre" data-nombre></p>
+              <p class="seleccion__unidad" data-unidad></p>
+            </div>
+
+            <p class="seleccion__rotulo">Cantidad de entradas</p>
+
+            <div class="cantidad">
+              <button class="cantidad__boton" type="button" data-paso="-1" aria-label="Quitar una entrada">−</button>
+              <output class="cantidad__valor" data-cantidad>2</output>
+              <button class="cantidad__boton" type="button" data-paso="1" aria-label="Agregar una entrada">+</button>
+              <span class="cantidad__tope">Máximo 6 por compra</span>
+            </div>
+
+            <dl class="totales">
+              <div class="totales__fila">
+                <dt data-linea>2 × entrada</dt>
+                <dd data-subtotal>$90.000</dd>
+              </div>
+              <div class="totales__fila">
+                <dt>Cargo por servicio</dt>
+                <dd data-cargo>$9.000</dd>
+              </div>
+              <div class="totales__fila totales__fila--total">
+                <dt>Total</dt>
+                <dd data-total>$99.000</dd>
+              </div>
+            </dl>
+
+            <a class="boton boton--morado seleccion__continuar" href="../pago/pago.html">
+              Continuar al pago
+            </a>
+          </div>
+
+          <!-- Listado de áreas: entradas.js lo llena con los sectores del recinto -->
+          <ul class="areas" data-areas></ul>
+
+          <p class="seleccion__tiempo">Tiempo para completar la compra: 09:42</p>
+        </aside>
+      </div>
+    </main>
+
+    <!-- ============ Barra de compra (solo móvil) ============ -->
+    <div class="compra" data-compra hidden>
+      <div class="compra__datos">
+        <p class="compra__nombre" data-nombre></p>
+        <p class="compra__unidad" data-unidad></p>
+      </div>
+
+      <div class="cantidad cantidad--compacta">
+        <button class="cantidad__boton" type="button" data-paso="-1" aria-label="Quitar una entrada">−</button>
+        <output class="cantidad__valor" data-cantidad>2</output>
+        <button class="cantidad__boton" type="button" data-paso="1" aria-label="Agregar una entrada">+</button>
+      </div>
+
+      <a class="boton boton--morado compra__accion" href="../pago/pago.html">
+        Continuar · <span data-total>$99.000</span>
+      </a>
+    </div>
+
+    <!-- Componente: footer/footer.html -->
+    <div id="footer"></div>
+  </body>
+</html>

@@ -9,12 +9,22 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap"
     />
+    <link rel="stylesheet" href="../../componentes/pasos/pasos.css" />
     <link rel="stylesheet" href="pago.css" />
     <link rel="stylesheet" href="../../componentes/footer/footer.css" />
     <link rel="stylesheet" href="../../componentes/header/header.css" />
   </head>
-  <body class="pagina_pago" data-pagina="checkout" data-sesion="cliente">
+  <body
+    class="pagina_pago"
+    data-pagina="checkout"
+    data-sesion="cliente"
+    data-paso="pago"
+  >
     <div id="header"></div>
+
+    <!-- Componente: pasos/pasos.js -->
+    <div class="pago_pasos" id="pasos"></div>
+
     <main class="pago">
       <div class="pago_formulario">
         <div class="pago_bloque">
@@ -102,6 +112,7 @@
           <div class="pago_metodos">
             <div class="pago_fila">
               <div class="pago_opcion pago_opcion_marcada">
+                <span class="pago_opcion_logo" aria-hidden="true"></span>
                 <label class="pago_opcion_texto" for="metodo_debcredito">
                   Débito / Crédito
                   <small>Visa, Mastercard, Redcompra</small>
@@ -114,6 +125,7 @@
                 />
               </div>
               <div class="pago_opcion">
+                <span class="pago_opcion_logo" aria-hidden="true"></span>
                 <label class="pago_opcion_texto" for="metodo_mpago">
                   Mercado pago
                   <small>Saldo o tarjetas guardadas</small>
@@ -128,6 +140,7 @@
             </div>
             <div class="pago_fila">
               <div class="pago_opcion">
+                <span class="pago_opcion_logo" aria-hidden="true"></span>
                 <label class="pago_opcion_texto" for="metodo_paypal">
                   PayPal
                   <small>Redirige a PayPal</small>
@@ -140,6 +153,7 @@
                 />
               </div>
               <div class="pago_opcion">
+                <span class="pago_opcion_logo" aria-hidden="true"></span>
                 <label class="pago_opcion_texto" for="metodo_AGpay">
                   Apple Pay / Google Pay
                   <small>Pago con un toque</small>
@@ -154,6 +168,7 @@
             </div>
             <div class="pago_fila">
               <div class="pago_opcion">
+                <span class="pago_opcion_logo" aria-hidden="true"></span>
                 <label class="pago_opcion_texto" for="metodo_yape">
                   Yape / Plin
                   <small>Pago por celular</small>
@@ -166,6 +181,7 @@
                 />
               </div>
               <div class="pago_opcion">
+                <span class="pago_opcion_logo" aria-hidden="true"></span>
                 <label class="pago_opcion_texto" for="metodo_transferencia">
                   Transferencia Bancaria
                   <small>Cupo reservado 2 horas</small>
@@ -177,6 +193,22 @@
                   value="transferencia"
                 />
               </div>
+            </div>
+            <div class="pago_fila">
+              <div class="pago_opcion">
+                <span class="pago_opcion_logo" aria-hidden="true"></span>
+                <label class="pago_opcion_texto" for="metodo_cuotas">
+                  Cuotas sin interés
+                  <small>Hasta 12 cuotas con bancos</small>
+                </label>
+                <input
+                  id="metodo_cuotas"
+                  type="radio"
+                  name="metodo_pago"
+                  value="cuotas"
+                />
+              </div>
+              <div class="pago_hueco" aria-hidden="true"></div>
             </div>
           </div>
 
@@ -230,12 +262,12 @@
               <div class="separador"></div>
 
               <div class="resumen_fila">
-                <span>2 x entradas</span>
+                <span>2 × entrada</span>
                 <strong>$90.000</strong>
               </div>
 
               <div class="resumen_fila">
-                <span>extra</span>
+                <span>Cargo por servicio</span>
                 <strong>$9.000</strong>
               </div>
 
@@ -253,21 +285,21 @@
           <div class="resumen_imagen">imagen evento</div>
           <div class="resumen_evento_texto">
             <b>Festival de rock en vivo</b>
-            <p>25/09/2027 - 22:30 hrs</p>
+            <p>Sáb 14 nov, 20:00<br />Estadio Nacional</p>
           </div>
         </div>
         <div class="separador"></div>
         <dl class="resumen_detalles">
           <div class="resumen_fila">
-            <dt>Ubicacion</dt>
+            <dt>Área</dt>
             <dd>Cancha General</dd>
           </div>
           <div class="resumen_fila">
-            <dt>2 x entradas</dt>
+            <dt>2 × entrada</dt>
             <dd>$90.000</dd>
           </div>
           <div class="resumen_fila">
-            <dt>extra</dt>
+            <dt>Cargo por servicio</dt>
             <dd>$9.000</dd>
           </div>
         </dl>
@@ -276,12 +308,16 @@
           <b>Total</b><strong>$99.000</strong>
         </div>
         <button class="boton morado boton_comprar">Pagar $99.000</button>
+        <p class="resumen_nota">
+          Pago protegido. Las entradas llegan a tu correo y a Mis entradas.
+        </p>
       </div>
     </main>
 
     <div id="footer"></div>
     <script src="../../componentes/header/header.js"></script>
     <script src="../../componentes/footer/footer.js"></script>
+    <script src="../../componentes/pasos/pasos.js"></script>
     <script src="pago.js"></script>
   </body>
 </html>
