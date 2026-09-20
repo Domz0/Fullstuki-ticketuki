@@ -1,4 +1,3 @@
-
 .pagina_cuenta {
   min-height: 100vh;
   font-size: 14px;
@@ -77,4 +76,33 @@
 .campo_cuenta legend {
   padding: 0 4px;
   font-size: 12px;
+}
+@media (max-width: 1023px) {
+  .cuenta {
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    padding: 16px;
+    gap: 16px;
+  }
+  .menu_izq {
+    width: 100%;
+    flex: none;
+  }
+  .datos_usuario {
+    width: 100%;
+    padding: 20px;
+  }
+  .cuenta_fila {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .campo_cuenta {
+    width: 100%;
+    padding: 10px 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-radius: 0;
+  }
 }
