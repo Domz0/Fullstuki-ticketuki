@@ -92,3 +92,18 @@ opcionesCuotas.forEach((opcion) => {
     $("#salidaCuotas").textContent = "esta en -> " + opcion.textContent;
   });
 });
+
+// local storage
+
+// set
+localStorage.setItem("nombre", "Camila");
+
+// get
+const nombreGuardado = localStorage.getItem("nombre");
+console.log(nombreGuardado);
+
+// del
+localStorage.removeItem("nombre");
+
+// borrar todo, cuidadito
+// localStorage.clear();
