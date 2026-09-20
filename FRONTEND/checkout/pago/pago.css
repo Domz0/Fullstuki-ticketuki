@@ -277,6 +277,35 @@
     order: 1;
     width: 100%;
   }
+  .resumen_compra {
+    order: 1;
+    width: 100%;
+    padding: 14px;
+  }
+  .resumen_compra > h2,
+  .resumen_compra > .separador,
+  .resumen_detalles,
+  .resumen_total,
+  .boton_comprar {
+    display: none;
+  }
+  .resumen_evento {
+    align-items: center;
+  }
+  .resumen_imagen {
+    width: 54px;
+    height: 54px;
+  }
+  .resumen_evento_texto p {
+    margin-top: 4px;
+  }
+  .pago_metodos .pago_fila {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pago_opcion {
+    width: 100%;
+  }
 }
 
 @media (min-width: 1024px) {
