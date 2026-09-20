@@ -66,24 +66,8 @@ form h2 {
 }
 
 .input-container label {
+  color: var(--color-texto-suave);
   font-size: 0.8rem;
-  color: var(--tk-text-2);
-}
-
-.input-container input {
-  padding: 0.8rem;
-  border-radius: 0.5rem;
-  border: solid var(--color-linea) 1px;
-  background-color: var(--tk-surface-2);
-  color: var(--color-texto);
-  outline: none;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.input-container input:focus {
-  box-shadow: 0 0 0 3px var(--color-linea);
 }
 
 form .olvidar {

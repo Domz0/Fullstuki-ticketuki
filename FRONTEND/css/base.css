@@ -95,3 +95,27 @@
   color: var(--color-texto-apagado);
   text-decoration: none;
 }
+
+/*  campos de texto: el mismo aspecto en todo el sitio.
+    Los type="search" del buscador y los checkbox/radio quedan fuera a proposito. */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.8rem;
+  border: solid var(--color-linea) 1px;
+  border-radius: 0.5rem;
+  background-color: var(--color-superficie);
+  color: var(--color-texto);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus {
+  border-color: var(--color-morado);
+}

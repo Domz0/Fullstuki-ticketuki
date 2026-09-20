@@ -25,30 +25,34 @@
       <!-- Componente: cuenta/cuenta.js -->
       <div id="cuenta"></div>
 
-      <section class="cuenta__contenido flex_V panel datos_usuario">
-        <h2>Datos del Usuario/a</h2>
-        <div class="flex_H cuenta_fila">
-          <fieldset class="fieldset_base campo_cuenta">
-            <legend class="texto_small">Nombre</legend>
-            <span id="nombre"></span>
-          </fieldset>
-          <fieldset class="fieldset_base campo_cuenta">
-            <legend class="texto_small">Apellido</legend>
-            <span id="apellido"></span>
-          </fieldset>
-        </div>
-        <div class="flex_H cuenta_fila">
-          <fieldset class="fieldset_base campo_cuenta">
-            <legend class="texto_small">Run</legend>
-            <span id="rut"></span>
-          </fieldset>
-        </div>
-        <div class="flex_H cuenta_fila">
-          <fieldset class="fieldset_base campo_cuenta">
-            <legend class="texto_small">Correo electronico</legend>
-            <span id="correo"></span>
-          </fieldset>
-        </div>
+      <section class="cuenta__contenido">
+        <h2 class="cuenta__titulo">Datos personales</h2>
+
+        <div class="flex_V datos_usuario">
+          <div class="flex_H cuenta_fila">
+            <div class="campo_cuenta">
+              <span class="campo_cuenta__rotulo">Nombre</span>
+              <p class="campo_cuenta__valor" id="nombre"></p>
+            </div>
+            <div class="campo_cuenta">
+              <span class="campo_cuenta__rotulo">Apellido</span>
+              <p class="campo_cuenta__valor" id="apellido"></p>
+            </div>
+          </div>
+
+          <div class="flex_H cuenta_fila">
+            <div class="campo_cuenta">
+              <span class="campo_cuenta__rotulo">Run</span>
+              <p class="campo_cuenta__valor" id="rut"></p>
+            </div>
+          </div>
+
+          <div class="flex_H cuenta_fila">
+            <div class="campo_cuenta">
+              <span class="campo_cuenta__rotulo">Correo electrónico</span>
+              <p class="campo_cuenta__valor" id="correo"></p>
+            </div>
+          </div>
 
         <button type="button" id="editar_datos">Editar datos de acceso</button>
 
@@ -81,6 +85,7 @@
             <legend class="texto_small">Numero de contacto</legend>
             <span id="telefono">BORRAR? num de telefono</span>
           </fieldset> -->
+        </div>
       </section>
     </main>
     <div id="footer"></div>
