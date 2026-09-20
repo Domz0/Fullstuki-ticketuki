@@ -10,6 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap"
     />
     <link rel="stylesheet" href="confirmacion.css" />
+    <script type="module" src="./confirmacion.js"></script>
   </head>
   <body
     class="pagina pagina_confirmacion"
@@ -80,9 +81,12 @@
           </dl>
           <div class="separador"></div>
           <div class="flex_H botonera">
-            <button class="boton morado boton_descargar">Descargar PDF</button>
-            <button class="boton boton_entradas">Ver mis entradas</button>
-            <button class="boton boton_home">Volver a home</button>
+            <!-- <button class="boton morado boton_descargar">Descargar PDF</button> -->
+            <button id="btnEntradas" class="boton boton_entradas">
+              Ver mis entradas
+            </button>
+
+            <button id="btnHome" class="boton boton_home">Volver a home</button>
           </div>
         </div>
       </div>
@@ -93,7 +97,6 @@
         </p>
       </div>
     </main>
-
     <div id="footer"></div>
     <script src="../../componentes/header/header.js"></script>
     <script src="../../componentes/footer/footer.js"></script>
