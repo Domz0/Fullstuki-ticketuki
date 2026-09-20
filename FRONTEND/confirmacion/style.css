@@ -41,7 +41,7 @@
 }
 .confirmacion_acceso p {
   margin: 16px 0 0;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
 }
 .qr {
@@ -66,7 +66,7 @@
 }
 .confirmacion_etiqueta {
   font-family: monospace;
-  font-size: 10px;
+  font-size: 15px;
 }
 .confirmacion_codigo {
   margin-top: 8px;
@@ -94,7 +94,7 @@
 }
 .confirmacion_campo dt {
   font-family: monospace;
-  font-size: 10px;
+  font-size: 14px;
 }
 .confirmacion_campo dd {
   margin: 0;
@@ -158,20 +158,62 @@ overflow: hidden -> esconde lo que se sale
     max-width: 100%;
     padding: 40px 16px;
   }
-
   .confirmacion_tarjeta {
     flex-direction: column;
   }
-
   .confirmacion_acceso {
     flex: none;
     width: 100%;
+    padding: 22px 16px;
     border-right: 0;
     border-bottom: 1px dashed rgb(41, 41, 50);
   }
-
   .confirmacion_compra {
     width: 100%;
+    padding: 20px 16px;
+  }
+  .confirmacion_datos {
+    gap: 16px;
+  }
+  .confirmacion_fila {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .confirmacion_campo {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .confirmacion_campo dd {
+    text-align: right;
+  }
+  .botonera {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .boton {
+    width: auto;
+    aspect-ratio: auto;
+    min-height: 46px;
+  }
+  .boton_wallet {
+    order: 1;
+    width: 100%;
+  }
+  .boton_descargar {
+    order: 2;
+    width: 100%;
+  }
+  .boton_entradas,
+  .boton_home {
+    width: calc(50% - 5px);
+  }
+  .boton_entradas {
+    order: 3;
+  }
+  .boton_home {
+    order: 4;
   }
 }
 @media (min-width: 1024px) {
