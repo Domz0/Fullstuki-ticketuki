@@ -261,3 +261,26 @@
   width: 100%;
   min-height: 48px;
 }
+@media (max-width: 1023px) {
+  .pago {
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    padding: 16px;
+  }
+  .pago_formulario {
+    order: 2;
+    width: 100%;
+  }
+  .resumen_compra {
+    order: 1;
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pago {
+    flex-direction: row;
+  }
+}
