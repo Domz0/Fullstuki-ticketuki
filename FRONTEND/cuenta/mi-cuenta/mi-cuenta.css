@@ -3,54 +3,6 @@
   font-size: 14px;
   line-height: 1.5;
 }
-.cuenta {
-  align-items: flex-start;
-  gap: 28px;
-  width: 80%;
-  min-width: 900px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 32px 24px;
-}
-.menu_izq {
-  flex: 0 0 26%;
-  gap: 20px;
-  padding: 20px;
-  border-radius: 10px;
-}
-.cuenta_usuario {
-  align-items: flex-start;
-  gap: 8px;
-}
-.cuenta_usuario_fila {
-  align-items: center;
-  gap: 8px;
-}
-.imagen {
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--color-linea);
-  border-radius: 50%;
-  background-color: var(--color-fondo-alto);
-  font-weight: 700;
-}
-.cuenta_usuario h1 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-}
-.cuenta_usuario p {
-  margin: 0;
-  font-size: 12px;
-}
-.enlaces {
-  gap: 8px;
-}
-.enlaces a {
-  padding: 8px 10px;
-  font-size: 13px;
-}
 /*entiendo que depsues de que me reten, hay que cambiar esto igual*/
 .datos_usuario {
   flex: 1;
@@ -139,20 +91,13 @@
   color: var(--color-texto);
   border: 1px solid var(--color-linea);
 }
+
+
 @media (max-width: 1023px) {
-  .cuenta {
-    flex-direction: column;
-    width: 100%;
-    min-width: 0;
-    padding: 16px;
-    gap: 16px;
-  }
-  .menu_izq {
-    width: 100%;
-    flex: none;
-  }
   .datos_usuario {
     width: 100%;
+    min-width: 0;
+    gap: 16px;
     padding: 20px;
   }
   .cuenta_fila {

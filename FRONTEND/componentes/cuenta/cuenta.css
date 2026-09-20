@@ -1,0 +1,152 @@
+
+.cuenta {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  grid-template-areas:
+    "perfil perfil"
+    "secciones contenido";
+  gap: 20px 24px;
+  align-items: start;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px 32px 0;
+}
+
+
+#cuenta {
+  display: contents;
+}
+
+.cuenta__contenido {
+  grid-area: contenido;
+  min-width: 0;
+}
+
+/* ---------- perfil ---------- */
+
+.cuenta__perfil {
+  display: flex;
+  grid-area: perfil;
+  align-items: center;
+  gap: 14px;
+}
+
+.cuenta__avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 999px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cuenta__nombre {
+  margin: 0;
+  font-size: clamp(22px, 2vw, 26px);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.cuenta__datos {
+  margin: 3px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+}
+
+/* ---------- menu ---------- */
+
+.cuenta__secciones {
+  display: flex;
+  grid-area: secciones;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+}
+
+.cuenta__seccion {
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--color-texto-apagado);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cuenta__seccion:hover {
+  background: var(--color-superficie);
+  color: var(--color-texto);
+}
+
+.cuenta__seccion.is-activo {
+  background: var(--color-morado-fondo);
+  color: var(--color-morado-texto);
+  font-weight: 600;
+}
+
+.cuenta__seccion--salir {
+  margin-top: 6px;
+  border-top: 1px solid var(--color-linea);
+  border-radius: 0 0 7px 7px;
+  padding-top: 12px;
+  color: var(--color-texto-tenue);
+}
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 860px) {
+  .cuenta {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "perfil"
+      "secciones"
+      "contenido";
+    gap: 14px;
+    padding: 16px 16px 0;
+  }
+
+  .cuenta__nombre {
+    font-size: 20px;
+  }
+
+  .cuenta__secciones {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 6px;
+    padding: 0;
+    border: 0;
+    background: none;
+    scrollbar-width: none;
+  }
+
+  .cuenta__secciones::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cuenta__seccion {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    border: 1px solid var(--color-linea-suave);
+    border-radius: 999px;
+    background: var(--color-fondo-alto);
+    white-space: nowrap;
+  }
+
+  .cuenta__seccion--salir {
+    margin-top: 0;
+    border-top: 1px solid var(--color-linea-suave);
+    border-radius: 999px;
+    padding-top: 8px;
+  }
+}

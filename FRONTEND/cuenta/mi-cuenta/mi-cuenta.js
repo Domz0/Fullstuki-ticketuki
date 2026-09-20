@@ -10,9 +10,6 @@ const apellido = $("#apellido");
 const rut = $("#rut");
 const correo = $("#correo");
 
-const nombreCompleto = $("#nombre_completo");
-const iniciales = $("#iniciales");
-
 const nombreGuardado = localStorage.getItem("nombre");
 const apellidoGuardado = localStorage.getItem("apellido");
 const rutGuardado = localStorage.getItem("rut");
@@ -25,16 +22,6 @@ nombre.textContent = nombreGuardado;
 apellido.textContent = apellidoGuardado;
 rut.textContent = rutGuardado;
 correo.textContent = correoGuardado;
-
-nombreCompleto.textContent = nombreGuardado + " " + apellidoGuardado;
-iniciales.textContent = nombreGuardado.charAt(0) + apellidoGuardado.charAt(0);
-
-//cierre de sesion
-const cerrarSesion = $("#cerrar_sesion");
-
-cerrarSesion.addEventListener("click", () => {
-  localStorage.setItem("sesionIniciada", "false");
-});
 //editar datod de micuenta
 editarDatos.addEventListener("click", () => {
   formEditar.style.display = "block";

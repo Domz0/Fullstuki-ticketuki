@@ -12,19 +12,25 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap"
     />
+    <link rel="stylesheet" href="../../componentes/cuenta/cuenta.css" />
     <link rel="stylesheet" href="mis-entradas.css" />
 
     <script src="../../componentes/header/header.js"></script>
     <script src="../../componentes/footer/footer.js"></script>
+    <script src="../../componentes/cuenta/cuenta.js"></script>
     <script src="mis-entradas.js" defer></script>
   </head>
 
-  <body data-pagina="entradas" data-sesion="cliente">
+  <body data-pagina="entradas" data-sesion="cliente" data-seccion="entradas">
     <!-- Componente: header/header.html -->
     <div id="header"></div>
 
-    <main class="entradas">
-      <h1 class="entradas__titulo">Mis entradas</h1>
+    <main class="cuenta">
+      <!-- Componente: cuenta/cuenta.js -->
+      <div id="cuenta"></div>
+
+      <section class="cuenta__contenido entradas">
+        <h2 class="entradas__titulo">Mis entradas</h2>
 
       <!-- ============ Filtros ============ -->
       <div class="filtros" role="group" aria-label="Filtrar entradas">
@@ -170,6 +176,7 @@
           Ver eventos
         </a>
       </p>
+      </section>
     </main>
 
     <!-- Componente: footer/footer.html -->

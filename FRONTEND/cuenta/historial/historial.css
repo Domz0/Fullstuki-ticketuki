@@ -33,115 +33,12 @@ button {
   font: inherit;
 }
 
-.historial {
-  max-width: var(--ancho);
-  margin: 0 auto;
-  padding: 24px var(--lado) 0;
-}
-
-/* ============================================================
-   Perfil
-   ============================================================ */
-
-.perfil {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
-}
-
-.perfil__avatar {
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 46px;
-  height: 46px;
-  border: 1px solid var(--color-linea-suave);
-  border-radius: 999px;
-  background: var(--color-fondo-alto);
-  color: var(--color-texto-apagado);
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.perfil__nombre {
-  margin: 0;
-  font-size: clamp(22px, 2vw, 26px);
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-}
-
-.perfil__datos {
-  margin: 3px 0 0;
-  color: var(--color-texto-apagado);
-  font-size: 13px;
-}
-
-/* ============================================================
-   Columnas
-   ============================================================ */
-
-.historial__columnas {
-  display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
-  gap: 24px;
-  align-items: start;
-}
-
-/* ---------- menú ---------- */
-
-.secciones {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px;
-  border: 1px solid var(--color-linea);
-  border-radius: 10px;
-  background: var(--color-fondo-alto);
-}
-
-.seccion__item {
-  padding: 9px 12px;
-  border-radius: 7px;
-  color: var(--color-texto-apagado);
-  font-size: 13px;
-}
-
-a.seccion__item:hover {
-  background: var(--color-superficie);
-  color: var(--color-texto);
-}
-
-.seccion__item.is-activo {
-  background: var(--color-morado-fondo);
-  color: var(--color-morado-texto);
-  font-weight: 600;
-}
-
-
 /* ============================================================
    Compras
    ============================================================ */
 
 .compras__cabecera {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   margin-bottom: 12px;
-}
-
-/* La flecha de retroceso es de la pantalla movil. */
-.compras__volver {
-  display: none;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--color-linea-suave);
-  border-radius: 10px;
-  background: var(--color-fondo-alto);
-  font-size: 20px;
-  line-height: 1;
 }
 
 .compras__titulo {
@@ -222,41 +119,12 @@ a.seccion__item:hover {
   display: none;
 }
 
-/* ============================================================
-   Responsive
-   ============================================================ */
-
-@media (max-width: 1100px) {
-  .historial__columnas {
-    grid-template-columns: 180px minmax(0, 1fr);
-    gap: 18px;
-  }
-}
 
 @media (max-width: 860px) {
-  :root {
-    --lado: 16px;
-  }
-
-  /* En movil manda el titulo con su flecha: sobran el perfil y el menu lateral. */
-  .perfil,
-  .secciones {
-    display: none;
-  }
-
-  .historial__columnas {
-    display: block;
-  }
-
-  .compras__volver {
-    display: grid;
-  }
-
   .compras__titulo {
     font-size: 20px;
   }
 
-  /* Cada fila pasa a ser una tarjeta. */
   .tabla,
   .tabla tbody,
   .tabla td {
@@ -327,7 +195,7 @@ a.seccion__item:hover {
     text-align: right;
   }
 
-  /* En la tarjeta el boton se explica solo. */
+
   .tabla__boleta {
     height: 36px;
     padding: 0 14px;

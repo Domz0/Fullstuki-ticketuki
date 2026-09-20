@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mi cuenta</title>
     <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="../../componentes/cuenta/cuenta.css" />
     <link rel="stylesheet" href="mi-cuenta.css" />
     <link rel="stylesheet" href="../../componentes/header/header.css" />
     <link rel="stylesheet" href="../../componentes/footer/footer.css" />
@@ -13,36 +14,18 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap"
     />
   </head>
-  <body class="pagina pagina_cuenta" data-pagina="cuenta" data-sesion="cliente">
+  <body
+    class="pagina pagina_cuenta"
+    data-pagina="cuenta"
+    data-sesion="cliente"
+    data-seccion="datos"
+  >
     <div id="header"></div>
-    <main class="flex_H cuenta">
-      <div class="flex_V panel menu_izq">
-        <div class="flex_V cuenta_usuario">
-          <div class="flex_H cuenta_usuario_fila">
-            <div
-              id="iniciales"
-              class="flex_centrado texto_secundario imagen"
-            ></div>
-            <h1 id="nombre_completo"></h1>
-          </div>
-          <p class="texto_small">Miembro desde 2023</p>
-        </div>
-        <div class="separador"></div>
-        <div class="flex_V enlaces">
-          <a class="enlace" href="../mis-entradas/mis-entradas.html"
-            >Mis entradas</a
-          >
-          <a class="enlace" href="../historial/historial.html">
-            <!-- pauli, regulariza la ubicacion depsues-->
-            Historial de pago
-          </a>
-          <a id="cerrar_sesion" class="enlace" href="../../index.html">
-            Cerrar sesión
-          </a>
-        </div>
-      </div>
+    <main class="cuenta">
+      <!-- Componente: cuenta/cuenta.js -->
+      <div id="cuenta"></div>
 
-      <div class="flex_V panel datos_usuario">
+      <section class="cuenta__contenido flex_V panel datos_usuario">
         <h2>Datos del Usuario/a</h2>
         <div class="flex_H cuenta_fila">
           <fieldset class="fieldset_base campo_cuenta">
@@ -98,11 +81,12 @@
             <legend class="texto_small">Numero de contacto</legend>
             <span id="telefono">BORRAR? num de telefono</span>
           </fieldset> -->
-      </div>
+      </section>
     </main>
     <div id="footer"></div>
     <script src="../../componentes/header/header.js"></script>
     <script src="../../componentes/footer/footer.js"></script>
+    <script src="../../componentes/cuenta/cuenta.js"></script>
     <script src="mi-cuenta.js"></script>
   </body>
 </html>
