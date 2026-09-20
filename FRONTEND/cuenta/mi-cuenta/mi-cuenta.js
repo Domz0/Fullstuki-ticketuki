@@ -25,3 +25,10 @@ correo.textContent = correoGuardado;
 
 nombreCompleto.textContent = nombreGuardado + " " + apellidoGuardado;
 iniciales.textContent = nombreGuardado.charAt(0) + apellidoGuardado.charAt(0);
+
+//cierre de sesion
+const cerrarSesion = $("#cerrar_sesion");
+
+cerrarSesion.addEventListener("click", () => {
+  localStorage.setItem("sesionIniciada", "false");
+});
