@@ -378,10 +378,16 @@
     gap: 12px;
     margin-top: 8px;
   }
-
   .boton_comprar_mobile {
     width: 100%;
     min-height: 48px;
+  }
+  .pago_resumen_mobile .resumen_fila {
+    color: var(--color-texto-apagado);
+    font-size: 13px;
+  }
+  .pago_resumen_mobile .resumen_fila strong {
+    color: var(--color-texto);
   }
 }
 
@@ -402,4 +408,9 @@
 }
 .pago_opcion input[type="radio"] {
   display: none;
+}
+#mensaje_codigo {
+  /*esconde el mensaje para quee no haga espacio en a interfaz cuando no esta*/
+  margin: 0;
+  font-size: 12px;
 }

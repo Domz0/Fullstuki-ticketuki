@@ -81,8 +81,11 @@
                 placeholder="Código de descuento"
                 class="inputs"
               />
+
               <button type="button" class="boton pago_aplicar">Aplicar</button>
             </div>
+
+            <p id="mensaje_codigo"></p>
           </div>
           <p class="pago_sugerencia">
             Si una empresa con descuento vigente te pasó un código, canjéalo
@@ -222,9 +225,14 @@
             <div class="pago_resumen_mobile">
               <div class="separador"></div>
 
-              <div class="resumen_fila resumen_total">
-                <b>Total</b>
-                <strong>$99.000</strong>
+              <div class="resumen_fila">
+                <span>2 x entradas</span>
+                <strong>$90.000</strong>
+              </div>
+
+              <div class="resumen_fila">
+                <span>extra</span>
+                <strong>$9.000</strong>
               </div>
 
               <button type="button" class="boton morado boton_comprar_mobile">
@@ -270,5 +278,6 @@
     <div id="footer"></div>
     <script src="../../componentes/header/header.js"></script>
     <script src="../../componentes/footer/footer.js"></script>
+    <script src="pago.js"></script>
   </body>
 </html>
