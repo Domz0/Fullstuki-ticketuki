@@ -75,9 +75,17 @@
   gap: 8px;
   color: var(--color-texto-apagado);
   font-size: 12px;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 6px;
+  width: fit-content;
 }
 .pago_factura input {
   margin: 0;
+  width: 15px;
+  height: 15px;
+  accent-color: var(--color-morado);
+  cursor: pointer;
 }
 /* codigo descuernto */
 .pago_descuento {
@@ -177,6 +185,7 @@
   font-size: 11px;
   font-weight: 400;
   text-align: center;
+  cursor: pointer;
 }
 /* deje fijo este porque no se aun como hacerlo dinamico */
 .pago_cuota_marcada {
@@ -261,6 +270,10 @@
   width: 100%;
   min-height: 48px;
 }
+.pago_resumen_mobile {
+  display: none;
+}
+
 @media (max-width: 1023px) {
   .pago {
     flex-direction: column;
@@ -284,9 +297,9 @@
   }
   .resumen_compra > h2,
   .resumen_compra > .separador,
-  .resumen_detalles,
-  .resumen_total,
-  .boton_comprar {
+  .resumen_compra > .resumen_detalles,
+  .resumen_compra > .resumen_total,
+  .resumen_compra > .boton_comprar {
     display: none;
   }
   .resumen_evento {
@@ -337,6 +350,38 @@
     margin: 0;
     border-color: var(--color-morado);
     background-color: var(--color-morado);
+  }
+  .pago_tarjeta {
+    gap: 10px;
+  }
+  .pago_tarjeta .pago_fila {
+    gap: 8px;
+  }
+  .pago_tarjeta .pago_caja {
+    min-width: 0;
+  }
+  .pago_tarjeta input {
+    width: 100%;
+  }
+  .pago_cuotas .pago_fila {
+    display: flex;
+    gap: 6px;
+  }
+  .pago_cuota {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 4px;
+  }
+  .pago_resumen_mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .boton_comprar_mobile {
+    width: 100%;
+    min-height: 48px;
   }
 }
 
