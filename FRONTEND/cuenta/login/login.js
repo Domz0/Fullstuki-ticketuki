@@ -31,4 +31,22 @@ formulario.addEventListener("submit", (evento) => {
   } else {
     mensajePassword.textContent = "";
   }
+
+  if (datosValidos) {
+    const correoGuardado = localStorage.getItem("correo");
+    const passwordGuardada = localStorage.getItem("password");
+
+    if (
+      email.value.trim() === correoGuardado &&
+      password.value === passwordGuardada
+    ) {
+      //usando esto podemos dejar que despues del registro quede como iniciado igual
+      localStorage.setItem("sesionIniciada", "true");
+      //voy a intentar conectar a mi-cuenta, esto hay que cambiarlo
+      //window.location.href = "../../index.html";
+      window.location.href = "../mi-cuenta/mi-cuenta.html";
+    } else {
+      mensajePassword.textContent = "Correo o contraseña incorrectos";
+    }
+  }
 });

@@ -19,8 +19,11 @@
       <div class="flex_V panel menu_izq">
         <div class="flex_V cuenta_usuario">
           <div class="flex_H cuenta_usuario_fila">
-            <div class="flex_centrado texto_secundario imagen">CV</div>
-            <h1>Camila Vergara</h1>
+            <div
+              id="iniciales"
+              class="flex_centrado texto_secundario imagen"
+            ></div>
+            <h1 id="nombre_completo"></h1>
           </div>
           <p class="texto_small">Miembro desde 2023</p>
         </div>
@@ -36,31 +39,31 @@
         <div class="flex_H cuenta_fila">
           <fieldset class="fieldset_base campo_cuenta">
             <legend class="texto_small">Nombre</legend>
-            Camila
+            <span id="nombre"></span>
           </fieldset>
           <fieldset class="fieldset_base campo_cuenta">
             <legend class="texto_small">Apellido</legend>
-            Vergara
+            <span id="apellido"></span>
           </fieldset>
         </div>
         <div class="flex_H cuenta_fila">
           <fieldset class="fieldset_base campo_cuenta">
             <legend class="texto_small">Run</legend>
-            12345678-9
+            <span id="rut"></span>
           </fieldset>
           <fieldset class="fieldset_base campo_cuenta">
             <legend class="texto_small">Fecha de Nacimiento</legend>
-            01/04/1998
+            <span id="fecha_nacimiento">BORRAR? Fecha de Nacimiento</span>
           </fieldset>
         </div>
         <div class="flex_H cuenta_fila">
           <fieldset class="fieldset_base campo_cuenta">
             <legend class="texto_small">Correo electronico</legend>
-            correo@correo.cl
+            <span id="correo"></span>
           </fieldset>
           <fieldset class="fieldset_base campo_cuenta">
             <legend class="texto_small">Numero de contacto</legend>
-            +56912345678
+            <span id="telefono">BORRAR? num de telefono</span>
           </fieldset>
         </div>
       </div>
@@ -68,5 +71,6 @@
     <div id="footer"></div>
     <script src="../../componentes/header/header.js"></script>
     <script src="../../componentes/footer/footer.js"></script>
+    <script src="mi-cuenta.js"></script>
   </body>
 </html>
