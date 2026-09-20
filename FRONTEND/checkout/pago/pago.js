@@ -41,3 +41,61 @@ botonAplicar.addEventListener("click", () => {
     mensajeCodigo.textContent = "Código no válido";
   }
 });
+
+//datos comrpandoe
+const nombre = document.querySelector("#nombre");
+const apellido = document.querySelector("#apellido");
+const direccion = document.querySelector("#direccion");
+const correo = document.querySelector("#correo");
+
+const mensajeNombre = document.querySelector("#mensaje_nombre");
+const mensajeApellido = document.querySelector("#mensaje_apellido");
+const mensajeDireccion = document.querySelector("#mensaje_direccion");
+const mensajeCorreo = document.querySelector("#mensaje_correo");
+
+function validarDatos() {
+  let datosValidos = true;
+  const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (nombre.value.trim() === "") {
+    mensajeNombre.textContent = "Ingresa tu nombre";
+    datosValidos = false;
+  } else {
+    mensajeNombre.textContent = "";
+  }
+  if (apellido.value.trim() === "") {
+    mensajeApellido.textContent = "Ingresa tu apellido";
+    datosValidos = false;
+  } else {
+    mensajeApellido.textContent = "";
+  }
+  if (direccion.value.trim() === "") {
+    mensajeDireccion.textContent = "Ingresa tu dirección";
+    datosValidos = false;
+  } else {
+    mensajeDireccion.textContent = "";
+  }
+  if (correo.value.trim() === "") {
+    mensajeCorreo.textContent = "Ingresa tu correo";
+    datosValidos = false;
+  } else if (!regexCorreo.test(correo.value.trim())) {
+    mensajeCorreo.textContent = "Ingresa un correo valido";
+    datosValidos = false;
+  } else {
+    mensajeCorreo.textContent = "";
+  }
+  return datosValidos;
+}
+
+// pagar mobile y desktop
+const botonesPagar = document.querySelectorAll(
+  ".boton_comprar, .boton_comprar_mobile",
+);
+
+botonesPagar.forEach((boton) => {
+  boton.addEventListener("click", () => {
+    if (validarDatos()) {
+      window.location.href = "../confirmacion/confirmacion.html";
+    }
+  });
+});

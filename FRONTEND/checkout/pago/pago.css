@@ -414,3 +414,8 @@
   margin: 0;
   font-size: 12px;
 }
+.mensaje_validacion {
+  margin: 0;
+  font-size: 11px;
+  color: var(--color-texto-tenue);
+}
