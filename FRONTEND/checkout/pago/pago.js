@@ -14,6 +14,8 @@ opcionesPago.forEach((opcion) => {
   });
 });
 
+
+
 //selec de coutas
 const opcionesCuotas = document.querySelectorAll(".pago_cuota");
 
@@ -45,12 +47,12 @@ botonAplicar.addEventListener("click", () => {
 //datos comrpandoe
 const nombre = document.querySelector("#nombre");
 const apellido = document.querySelector("#apellido");
-const direccion = document.querySelector("#direccion");
+const rut = document.querySelector("#rut");
 const correo = document.querySelector("#correo");
 
 const mensajeNombre = document.querySelector("#mensaje_nombre");
 const mensajeApellido = document.querySelector("#mensaje_apellido");
-const mensajeDireccion = document.querySelector("#mensaje_direccion");
+const mensajeRut = document.querySelector("#mensaje_rut");
 const mensajeCorreo = document.querySelector("#mensaje_correo");
 
 function validarDatos() {
@@ -69,11 +71,11 @@ function validarDatos() {
   } else {
     mensajeApellido.textContent = "";
   }
-  if (direccion.value.trim() === "") {
-    mensajeDireccion.textContent = "Ingresa tu dirección";
+  if (rut.value.trim() === "") {
+    mensajeRut.textContent = "Ingresa tu rut";
     datosValidos = false;
   } else {
-    mensajeDireccion.textContent = "";
+    mensajeRut.textContent = "";
   }
   if (correo.value.trim() === "") {
     mensajeCorreo.textContent = "Ingresa tu correo";
@@ -85,6 +87,20 @@ function validarDatos() {
     mensajeCorreo.textContent = "";
   }
   return datosValidos;
+}
+
+
+if (localStorage.getItem("sesionIniciada")) {
+
+  const nombreGuardado = localStorage.getItem("nombre");
+  const apellidoGuardado = localStorage.getItem("apellido");
+  const rutGuardado = localStorage.getItem("rut");
+  const correoGuardado = localStorage.getItem("correo");
+
+  document.getElementById("nombre").value = nombreGuardado;
+  document.getElementById("apellido").value = apellidoGuardado;
+  document.getElementById("rut").value = rutGuardado;
+  document.getElementById("correo").value = correoGuardado;
 }
 
 // pagar mobile y desktop

@@ -19,7 +19,7 @@
   const fecha = FECHAS[url.get("fecha")] || FECHAS["14 nov"];
 
   let sector = null;
-  let cantidad = 2;
+  let cantidad = 1;
   let escala = 1;
 
   const lienzo = document.querySelector("[data-mapa]");
