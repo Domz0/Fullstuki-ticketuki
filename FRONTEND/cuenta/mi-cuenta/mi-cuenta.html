@@ -29,7 +29,9 @@
         </div>
         <div class="separador"></div>
         <div class="flex_V enlaces">
-          <a class="enlace" href="../mis-entradas/mis-entradas.html">Mis entradas</a>
+          <a class="enlace" href="../mis-entradas/mis-entradas.html"
+            >Mis entradas</a
+          >
           <a id="cerrar_sesion" class="enlace" href="../../index.html">
             Cerrar sesión
           </a>
@@ -53,21 +55,45 @@
             <legend class="texto_small">Run</legend>
             <span id="rut"></span>
           </fieldset>
-          <fieldset class="fieldset_base campo_cuenta">
-            <legend class="texto_small">Fecha de Nacimiento</legend>
-            <span id="fecha_nacimiento">BORRAR? Fecha de Nacimiento</span>
-          </fieldset>
         </div>
         <div class="flex_H cuenta_fila">
           <fieldset class="fieldset_base campo_cuenta">
             <legend class="texto_small">Correo electronico</legend>
             <span id="correo"></span>
           </fieldset>
-          <fieldset class="fieldset_base campo_cuenta">
+        </div>
+
+        <button type="button" id="editar_datos">Editar datos de acceso</button>
+
+        <div id="form_editar" class="form_editar">
+          <div class="input_editar">
+            <label for="nuevo_correo">Nuevo correo</label>
+            <input type="text" id="nuevo_correo" />
+            <p id="mensaje_correo" class="mensaje_validacion"></p>
+          </div>
+
+          <div class="input_editar">
+            <label for="nueva_password">Nueva contraseña</label>
+            <input type="password" id="nueva_password" />
+            <p id="mensaje_password" class="mensaje_validacion"></p>
+          </div>
+
+          <div class="botones_editar">
+            <button type="button" id="guardar_datos">Guardar cambios</button>
+
+            <button type="button" id="cancelar_edicion">Cancelar</button>
+          </div>
+        </div>
+
+        <!-- <fieldset class="fieldset_base campo_cuenta">
+            <legend class="texto_small">Fecha de Nacimiento</legend>
+            <span id="fecha_nacimiento">BORRAR? Fecha de Nacimiento</span>
+          </fieldset> -->
+
+        <!-- <fieldset class="fieldset_base campo_cuenta">
             <legend class="texto_small">Numero de contacto</legend>
             <span id="telefono">BORRAR? num de telefono</span>
-          </fieldset>
-        </div>
+          </fieldset> -->
       </div>
     </main>
     <div id="footer"></div>

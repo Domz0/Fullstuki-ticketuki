@@ -77,6 +77,68 @@
   padding: 0 4px;
   font-size: 12px;
 }
+#editar_datos {
+  align-self: flex-start;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--color-morado);
+  color: var(--color-texto);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.form_editar {
+  display: none;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+}
+.input_editar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.input_editar label {
+  font-size: 12px;
+  color: var(--color-texto-apagado);
+}
+.input_editar input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-linea);
+  border-radius: 6px;
+  background-color: var(--color-superficie);
+  color: var(--color-texto);
+  font-family: inherit;
+  outline: none;
+}
+.input_editar input:focus {
+  border-color: var(--color-morado);
+}
+.botones_editar {
+  display: flex;
+  gap: 8px;
+}
+.botones_editar button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  cursor: pointer;
+}
+#guardar_datos {
+  background-color: var(--color-morado);
+  color: var(--color-texto);
+}
+#cancelar_edicion {
+  background-color: var(--color-fondo-alto);
+  color: var(--color-texto);
+  border: 1px solid var(--color-linea);
+}
 @media (max-width: 1023px) {
   .cuenta {
     flex-direction: column;
@@ -104,5 +166,14 @@
     border-right: none;
     border-top: none;
     border-radius: 0;
+  }
+  #editar_datos {
+    width: 100%;
+  }
+  .botones_editar {
+    flex-direction: column;
+  }
+  .botones_editar button {
+    width: 100%;
   }
 }
