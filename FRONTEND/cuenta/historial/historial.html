@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ticketuki · Historial de compras</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="historial.css" />
+
+    <script src="../../componentes/header/header.js"></script>
+    <script src="../../componentes/footer/footer.js"></script>
+  </head>
+
+  <body data-pagina="cuenta" data-sesion="cliente">
+    <!-- Componente: header/header.html -->
+    <div id="header"></div>
+
+    <main class="historial">
+      <!-- ============ Perfil ============ -->
+      <header class="perfil">
+        <span class="perfil__avatar" aria-hidden="true">CV</span>
+        <div>
+          <h1 class="perfil__nombre">Camila Vergara</h1>
+          <p class="perfil__datos">camila@correo.cl · Miembro desde 2023</p>
+        </div>
+      </header>
+
+      <div class="historial__columnas">
+        <!-- ============ Menú de la cuenta ============ -->
+        <nav class="secciones" aria-label="Secciones de mi cuenta">
+          <a class="seccion__item" href="../mis-entradas/mis-entradas.html">Mis entradas</a>
+          <span class="seccion__item is-activo" aria-current="page">Historial</span>
+          <a class="seccion__item" href="../mi-cuenta/mi-cuenta.html">Datos personales</a>
+          <a class="seccion__item" href="../../componentes/convenios/convenios.html">Convenios activos</a>
+        </nav>
+
+        <!-- ============ Compras ============ -->
+        <section class="compras">
+          <div class="compras__cabecera">
+            <a
+              class="compras__volver"
+              href="../mi-cuenta/mi-cuenta.html"
+              aria-label="Volver a mi cuenta"
+            >
+              <span aria-hidden="true">‹</span>
+            </a>
+            <h2 class="compras__titulo">Historial de compras</h2>
+          </div>
+
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th scope="col">Orden</th>
+                <th scope="col">Evento</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Total</th>
+                <th scope="col">Boleta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tabla__orden">TKI-004821</td>
+                <td class="tabla__evento">Festival de rock en vivo</td>
+                <td class="tabla__fecha">02 sep 2026</td>
+                <td class="tabla__total">$104.500</td>
+                <td class="tabla__celda-boleta">
+                  <button class="tabla__boleta" type="button">
+                    Descargar<span class="tabla__boleta-extra"> boleta</span>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="tabla__orden">TKI-004102</td>
+                <td class="tabla__evento">Obra de teatro clásica</td>
+                <td class="tabla__fecha">18 ago 2026</td>
+                <td class="tabla__total">$39.600</td>
+                <td class="tabla__celda-boleta">
+                  <button class="tabla__boleta" type="button">
+                    Descargar<span class="tabla__boleta-extra"> boleta</span>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="tabla__orden">TKI-003914</td>
+                <td class="tabla__evento">Clásico de fútbol local</td>
+                <td class="tabla__fecha">30 jul 2026</td>
+                <td class="tabla__total">$39.600</td>
+                <td class="tabla__celda-boleta">
+                  <button class="tabla__boleta" type="button">
+                    Descargar<span class="tabla__boleta-extra"> boleta</span>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="tabla__orden">TKI-003780</td>
+                <td class="tabla__evento">Expo tecnología y videojuegos</td>
+                <td class="tabla__fecha">12 jul 2026</td>
+                <td class="tabla__total">$33.000</td>
+                <td class="tabla__celda-boleta">
+                  <button class="tabla__boleta" type="button">
+                    Descargar<span class="tabla__boleta-extra"> boleta</span>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="tabla__orden">TKI-003655</td>
+                <td class="tabla__evento">Ballet contemporáneo</td>
+                <td class="tabla__fecha">28 jun 2026</td>
+                <td class="tabla__total">$44.000</td>
+                <td class="tabla__celda-boleta">
+                  <button class="tabla__boleta" type="button">
+                    Descargar<span class="tabla__boleta-extra"> boleta</span>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="tabla__orden">TKI-003401</td>
+                <td class="tabla__evento">Feria del libro</td>
+                <td class="tabla__fecha">05 jun 2026</td>
+                <td class="tabla__total">$11.000</td>
+                <td class="tabla__celda-boleta">
+                  <button class="tabla__boleta" type="button">
+                    Descargar<span class="tabla__boleta-extra"> boleta</span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+
+    <!-- Componente: footer/footer.html -->
+    <div id="footer"></div>
+  </body>
+</html>
