@@ -1,12 +1,7 @@
 /*
-  Componente pasos: la barra de progreso del checkout.
-
-  La pagina declara en que paso va con data-paso en el <body>
-  ("entradas", "pago" o "confirmacion") y pone <div id="pasos"></div>
-  donde quiere la barra. Los pasos anteriores quedan marcados con un check.
-
-  En movil la lista se convierte en tres barritas mas el texto "Paso N de 3",
-  igual que la maqueta 1w.
+  El stepper es la barra de progreso del checkout, para ocuparlo se pone data-etapa en el <body> ("entradas", "pago" o "confirmacion") y pone <div id="pasos"></div>
+  donde quiere la barra
+  en movil son tres barritas "paso n de 3"
 */
 (() => {
   const PASOS = [
@@ -19,7 +14,7 @@
     const contenedor = document.getElementById("pasos");
     if (!contenedor) return;
 
-    const pedido = PASOS.findIndex((paso) => paso.id === document.body.dataset.paso);
+    const pedido = PASOS.findIndex((paso) => paso.id === document.body.dataset.etapa);
     const actual = pedido === -1 ? 0 : pedido;
 
     const barra = document.createElement("nav");

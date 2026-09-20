@@ -21,13 +21,13 @@
     <script src="evento.js" defer></script>
   </head>
 
-  <!-- data-barra-movil="oculta": en movil el pie lo ocupa la barra de compra -->
+
   <body data-pagina="buscar" data-sesion="cliente" data-barra-movil="oculta">
-    <!-- Componente: header/header.html -->
+  
     <div id="header"></div>
 
     <main class="evento">
-      <!-- ============ Tráiler ============ -->
+      <!--------------- trailer ------------- -->
       <section class="trailer" aria-label="Tráiler del evento">
         <a
           class="trailer__volver"
@@ -49,7 +49,7 @@
       </section>
 
       <div class="evento__columnas">
-        <!-- ============ Columna principal ============ -->
+        <!--------------- principal------------- -->
         <div class="evento__principal">
           <p class="etiquetas">
             <span class="etiqueta">Música</span>
@@ -63,7 +63,7 @@
             Estadio Nacional. Apertura de puertas a las 17:00.
           </p>
 
-          <!-- ============ Ficha técnica ============ -->
+          <!--------------- ficha ------------- -->
           <dl class="fichas">
             <div class="ficha">
               <dt class="ficha__rotulo">Recinto</dt>
@@ -79,7 +79,7 @@
             </div>
           </dl>
 
-          <!-- ============ Fechas ============ -->
+          <!--------------- fechas------------- -->
           <section class="fechas">
             <h2 class="evento__subtitulo">Fechas disponibles</h2>
 
@@ -135,8 +135,8 @@
             </ul>
           </section>
 
-          <!-- ============ Recinto ============ -->
-          <!-- El mapa lo dibuja componentes/recinto/recinto.js -->
+          <!--------------- recinto------------- -->
+
           <section class="recinto">
             <h2 class="evento__subtitulo">Recinto</h2>
 
@@ -156,7 +156,7 @@
           </section>
         </div>
 
-        <!-- ============ Panel de compra ============ -->
+        <!--------------- panel de compra------------- -->
         <aside class="reserva" aria-label="Compra de entradas">
           <p class="reserva__rotulo">Entradas desde</p>
           <p class="reserva__precio">$35.000</p>
@@ -189,7 +189,7 @@
       </div>
     </main>
 
-    <!-- ============ Barra de compra (solo móvil) ============ -->
+    <!--------------- barra de compra ombile------------- -->
     <div class="compra">
       <p class="compra__precio">
         <span class="compra__desde">Desde</span>
@@ -203,7 +203,7 @@
       </a>
     </div>
 
-    <!-- Componente: footer/footer.html -->
+
     <div id="footer"></div>
   </body>
 </html>

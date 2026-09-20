@@ -1,18 +1,8 @@
 /*
-  Componente recinto.
+  catalogo/evento/evento.html     -> vista previa del recinto (sin clics)
+  checkout/entradas/entradas.html-> seleccion de area
 
-  Aqui viven los recintos con sus sectores y el dibujo del mapa por areas.
-  Lo consumen dos pantallas:
-    catalogo/evento/evento.html        -> vista previa del recinto (sin clics)
-    checkout/entradas/entradas.html    -> seleccion de area
-
-  Cada sector se ubica sobre una grilla de 12 columnas: `col` y `fila` son los
-  mismos valores que grid-column y grid-row. Asi cada recinto arma su propia
-  planta sin necesidad de CSS a medida, y agregar un recinto nuevo es agregar
-  un objeto mas a RECINTOS.
-
-  Los precios estan en pesos y el cargo por servicio es un 10%, igual que en
-  la maqueta ($45.000 x 2 = $90.000 + $9.000 = $99.000).
+  cargo por servicio es un 10%
 */
 (() => {
   const CARGO = 0.1;
@@ -93,94 +83,58 @@
 
   const cargoPorServicio = (subtotal) => Math.round(subtotal * CARGO);
 
-  const buscarRecinto = (id) => RECINTOS[id] || RECINTOS.estadio;
+  const crearTexto = (clase, texto) => {
+    const span = document.createElement("span");
+    span.className = clase;
+    span.textContent = texto;
+    return span;
+  };
 
-  const buscarSector = (recinto, idSector) =>
-    recinto.sectores.find((sector) => sector.id === idSector) || null;
+  const crearSector = (sector, opciones) => {
+    const agotada = sector.estado === "agotada";
+    const clicable = opciones.interactivo && !agotada;
 
-  const disponibles = (recinto) =>
-    recinto.sectores.filter((sector) => sector.estado === "disponible");
+    const caja = document.createElement(clicable ? "button" : "div");
+    caja.className = "mapa__sector";
+    caja.dataset.sector = sector.id;
+    caja.style.gridColumn = sector.col;
+    caja.style.gridRow = sector.fila;
 
-  // El precio mas bajo entre los sectores que siguen a la venta.
-  const precioDesde = (recinto) =>
-    Math.min(...disponibles(recinto).map((sector) => sector.precio));
+    if (agotada) caja.classList.add("mapa__sector--agotada");
+    if (sector.id === opciones.seleccionado) caja.classList.add("is-activo");
 
-  /*
-    Dibuja el mapa dentro de `contenedor`.
+    if (clicable) {
+      caja.type = "button";
+      caja.setAttribute("aria-label", `${sector.nombre}, ${pesos(sector.precio)}`);
+      caja.addEventListener("click", () => opciones.alSeleccionar(sector));
+    }
 
-    opciones:
-      escala        -> multiplica el alto de las filas (la vista previa usa 0.6)
-      interactivo   -> true genera botones clicables; false, cajas de solo lectura
-      seleccionado  -> id del sector marcado
-      alSeleccionar -> callback(sector) al tocar un sector disponible
-  */
+    caja.append(
+      crearTexto("mapa__nombre", sector.nombre),
+      crearTexto("mapa__nombre mapa__nombre--corto", sector.corto),
+      crearTexto("mapa__precio", agotada ? "Agotada" : pesos(sector.precio))
+    );
+
+    return caja;
+  };
+
   const dibujarMapa = (contenedor, recinto, opciones = {}) => {
-    const { escala = 1, interactivo = false, seleccionado = "", alSeleccionar } = opciones;
+    const escala = opciones.escala || 1;
 
-    contenedor.textContent = "";
     contenedor.classList.add("mapa");
-    contenedor.classList.toggle("mapa--vista", !interactivo);
+    contenedor.classList.toggle("mapa--vista", !opciones.interactivo);
     contenedor.style.gridTemplateRows = recinto.filas
       .map((alto) => Math.round(alto * escala) + "px")
       .join(" ");
 
-    const acceso = document.createElement("p");
-    acceso.className = "mapa__acceso";
-    acceso.textContent = recinto.acceso;
+    const acceso = crearTexto("mapa__acceso", recinto.acceso);
     acceso.style.gridColumn = recinto.accesoCol;
     acceso.style.gridRow = "1";
-    contenedor.append(acceso);
 
-    recinto.sectores.forEach((sector) => {
-      const agotada = sector.estado === "agotada";
-      const caja = document.createElement(interactivo && !agotada ? "button" : "div");
+    const sectores = recinto.sectores.map((sector) => crearSector(sector, opciones));
 
-      caja.className = "mapa__sector";
-      caja.classList.toggle("mapa__sector--agotada", agotada);
-      caja.classList.toggle("is-activo", sector.id === seleccionado);
-      caja.style.gridColumn = sector.col;
-      caja.style.gridRow = sector.fila;
-      caja.dataset.sector = sector.id;
-
-      if (caja.tagName === "BUTTON") {
-        caja.type = "button";
-        caja.setAttribute("aria-pressed", String(sector.id === seleccionado));
-        // El nombre visible cambia segun el ancho, asi que se nombra a mano.
-        caja.setAttribute("aria-label", `${sector.nombre}, ${pesos(sector.precio)}`);
-      }
-
-      // Los dos nombres viajan siempre; el CSS decide cual se ve segun el ancho.
-      const largo = document.createElement("span");
-      largo.className = "mapa__nombre";
-      largo.textContent = sector.nombre;
-
-      const corto = document.createElement("span");
-      corto.className = "mapa__nombre mapa__nombre--corto";
-      corto.textContent = sector.corto;
-
-      const precio = document.createElement("span");
-      precio.className = "mapa__precio";
-      precio.textContent = agotada ? "Agotada" : pesos(sector.precio);
-
-      caja.append(largo, corto, precio);
-
-      if (caja.tagName === "BUTTON" && alSeleccionar) {
-        caja.addEventListener("click", () => alSeleccionar(sector));
-      }
-
-      contenedor.append(caja);
-    });
+    contenedor.replaceChildren(acceso, ...sectores);
   };
 
-  window.Recinto = {
-    RECINTOS,
-    CARGO,
-    pesos,
-    cargoPorServicio,
-    buscarRecinto,
-    buscarSector,
-    disponibles,
-    precioDesde,
-    dibujarMapa,
-  };
+  window.Recinto = { RECINTOS, pesos, cargoPorServicio, dibujarMapa };
 })();

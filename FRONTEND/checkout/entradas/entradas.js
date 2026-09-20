@@ -1,215 +1,152 @@
 /*
-  Paso 1 del checkout: elegir area.
-
-  Toda la informacion de recintos y sectores sale de
-  componentes/recinto/recinto.js, asi que esta pantalla no repite precios ni
-  nombres: cambia el recinto y el mapa, el listado y los totales se rehacen solos.
-
-  La pagina admite dos parametros en la url:
-    ?recinto=estadio|teatro|arena|ferial
-    ?fecha=14 nov|15 nov
+  Paso 1: elegir area.
+  El recinto lo define el evento y llega en la url (?recinto=...&fecha=...).
 */
 (() => {
   const MAXIMO = 6;
-  const CANTIDAD_INICIAL = 2;
-  const ESCALAS = [0.8, 1, 1.2, 1.4];
+  const ESCALA_MINIMA = 0.8;
+  const ESCALA_MAXIMA = 1.4;
 
   const FECHAS = {
     "14 nov": { largo: "Sáb 14 nov, 20:00", corto: "Sáb 14 nov" },
     "15 nov": { largo: "Dom 15 nov, 19:00", corto: "Dom 15 nov" },
   };
 
-  const { pesos, cargoPorServicio, buscarRecinto, RECINTOS } = window.Recinto;
+  const { RECINTOS, pesos, cargoPorServicio, dibujarMapa } = window.Recinto;
 
-  const parametros = new URLSearchParams(location.search);
-  const fecha = FECHAS[parametros.get("fecha")] || FECHAS["14 nov"];
+  const url = new URLSearchParams(location.search);
+  const recinto = RECINTOS[url.get("recinto")] || RECINTOS.estadio;
+  const fecha = FECHAS[url.get("fecha")] || FECHAS["14 nov"];
 
-  const estado = {
-    recinto: buscarRecinto(parametros.get("recinto")),
-    sector: null,
-    cantidad: CANTIDAD_INICIAL,
-    escala: 1,
-  };
+  let sector = null;
+  let cantidad = 2;
+  let escala = 1;
 
   const lienzo = document.querySelector("[data-mapa]");
   const listaAreas = document.querySelector("[data-areas]");
-  const grupoVariantes = document.querySelector("[data-variantes]");
-  const barraCompra = document.querySelector("[data-compra]");
-  const bloqueVacio = document.querySelector("[data-vacio]");
-  const bloqueDetalle = document.querySelector("[data-detalle]");
 
-  // El resumen vive dos veces (panel de escritorio y barra movil), por eso
-  // siempre se escribe sobre todas las coincidencias.
+  // Varios datos salen dos veces: en el panel de escritorio y en la barra movil.
   const escribir = (selector, valor) => {
     document.querySelectorAll(selector).forEach((nodo) => {
       nodo.textContent = valor;
     });
   };
 
-  // ---------- Variantes de recinto ----------
-
-  const dibujarVariantes = () => {
-    grupoVariantes.textContent = "";
-
-    Object.values(RECINTOS).forEach((recinto) => {
-      const activo = recinto.id === estado.recinto.id;
-      const boton = document.createElement("button");
-
-      boton.type = "button";
-      boton.className = "variante";
-      boton.classList.toggle("is-activo", activo);
-      boton.setAttribute("aria-pressed", String(activo));
-      boton.textContent = recinto.etiqueta;
-      boton.addEventListener("click", () => cambiarRecinto(recinto));
-
-      grupoVariantes.append(boton);
+  const mostrar = (selector, visible) => {
+    document.querySelectorAll(selector).forEach((nodo) => {
+      nodo.hidden = !visible;
     });
   };
 
-  // ---------- Listado de áreas ----------
-
-  const dibujarAreas = () => {
-    listaAreas.textContent = "";
-
-    estado.recinto.sectores.forEach((sector) => {
-      const agotada = sector.estado === "agotada";
-      const item = document.createElement("li");
-      const caja = document.createElement(agotada ? "div" : "button");
-
-      caja.className = "area";
-      caja.classList.toggle("area--agotada", agotada);
-      caja.dataset.area = sector.id;
-
-      if (caja.tagName === "BUTTON") {
-        caja.type = "button";
-        caja.setAttribute("aria-label", `${sector.nombre}, ${pesos(sector.precio)}`);
-        caja.addEventListener("click", () => elegirSector(sector));
-      }
-
-      const nombre = document.createElement("span");
-      nombre.className = "area__nombre";
-      nombre.textContent = sector.nombre;
-
-      const precio = document.createElement("span");
-      precio.className = "area__precio";
-      precio.textContent = agotada ? "Agotada" : pesos(sector.precio);
-
-      caja.append(nombre, precio);
-      item.append(caja);
-      listaAreas.append(item);
-    });
-
-    marcarAreas();
-  };
-
-  const marcarAreas = () => {
-    const elegido = estado.sector ? estado.sector.id : "";
-
-    listaAreas.querySelectorAll(".area").forEach((caja) => {
-      caja.classList.toggle("is-activo", caja.dataset.area === elegido);
+  const apagar = (selector, apagado) => {
+    document.querySelectorAll(selector).forEach((nodo) => {
+      nodo.disabled = apagado;
     });
   };
 
-  // ---------- Mapa ----------
+  const crearTexto = (clase, texto) => {
+    const span = document.createElement("span");
+    span.className = clase;
+    span.textContent = texto;
+    return span;
+  };
 
-  const dibujarMapa = () => {
-    window.Recinto.dibujarMapa(lienzo, estado.recinto, {
-      escala: estado.escala,
+  // ---------- dibujar ----------
+
+  const pintarCabecera = () => {
+    escribir("[data-detalle-largo]", `${fecha.largo} · ${recinto.nombre}`);
+    escribir("[data-detalle-corto]", `${recinto.nombre} · ${fecha.corto}`);
+  };
+
+  const pintarMapa = () => {
+    dibujarMapa(lienzo, recinto, {
+      escala,
       interactivo: true,
-      seleccionado: estado.sector ? estado.sector.id : "",
-      alSeleccionar: elegirSector,
+      seleccionado: sector ? sector.id : "",
+      alSeleccionar: elegir,
     });
   };
 
-  // ---------- Resumen ----------
+  const crearArea = (area) => {
+    const agotada = area.estado === "agotada";
+    const caja = document.createElement(agotada ? "div" : "button");
+
+    caja.className = agotada ? "area area--agotada" : "area";
+    if (sector && sector.id === area.id) caja.classList.add("is-activo");
+
+    if (!agotada) {
+      caja.type = "button";
+      caja.setAttribute("aria-label", `${area.nombre}, ${pesos(area.precio)}`);
+      caja.addEventListener("click", () => elegir(area));
+    }
+
+    caja.append(
+      crearTexto("area__nombre", area.nombre),
+      crearTexto("area__precio", agotada ? "Agotada" : pesos(area.precio))
+    );
+
+    const item = document.createElement("li");
+    item.append(caja);
+    return item;
+  };
+
+  const pintarAreas = () => {
+    listaAreas.replaceChildren(...recinto.sectores.map(crearArea));
+  };
 
   const pintarResumen = () => {
-    const sector = estado.sector;
-
-    // Con un área elegida, el escritorio cambia el listado por el resumen.
     document.body.classList.toggle("con-seleccion", Boolean(sector));
-
-    bloqueVacio.hidden = Boolean(sector);
-    bloqueDetalle.hidden = !sector;
-    barraCompra.hidden = !sector;
+    mostrar("[data-vacio]", !sector);
+    mostrar("[data-detalle]", Boolean(sector));
+    mostrar("[data-compra]", Boolean(sector));
 
     if (!sector) return;
 
-    const subtotal = sector.precio * estado.cantidad;
+    const subtotal = sector.precio * cantidad;
     const cargo = cargoPorServicio(subtotal);
 
     escribir("[data-nombre]", sector.nombre);
     escribir("[data-unidad]", `${pesos(sector.precio)} por entrada`);
-    escribir("[data-cantidad]", estado.cantidad);
-    escribir("[data-linea]", `${estado.cantidad} × entrada`);
+    escribir("[data-cantidad]", cantidad);
+    escribir("[data-linea]", `${cantidad} × entrada`);
     escribir("[data-subtotal]", pesos(subtotal));
     escribir("[data-cargo]", pesos(cargo));
     escribir("[data-total]", pesos(subtotal + cargo));
 
-    document.querySelectorAll("[data-paso]").forEach((boton) => {
-      const paso = Number(boton.dataset.paso);
-      boton.disabled =
-        paso < 0 ? estado.cantidad <= 1 : estado.cantidad >= MAXIMO;
+    apagar('[data-paso="-1"]', cantidad <= 1);
+    apagar('[data-paso="1"]', cantidad >= MAXIMO);
+  };
+
+  // ---------- acciones ----------
+
+  function elegir(area) {
+    sector = area;
+    pintarMapa();
+    pintarAreas();
+    pintarResumen();
+  }
+
+  document.querySelectorAll("[data-paso]").forEach((boton) => {
+    boton.addEventListener("click", () => {
+      const nueva = cantidad + Number(boton.dataset.paso);
+      cantidad = Math.min(MAXIMO, Math.max(1, nueva));
+      pintarResumen();
     });
-  };
-
-  const pintarCabecera = () => {
-    escribir("[data-detalle-largo]", `${fecha.largo} · ${estado.recinto.nombre}`);
-    escribir("[data-detalle-corto]", `${estado.recinto.nombre} · ${fecha.corto}`);
-  };
-
-  // ---------- Acciones ----------
-
-  function elegirSector(sector) {
-    estado.sector = sector;
-    dibujarMapa();
-    marcarAreas();
-    pintarResumen();
-  }
-
-  function cambiarRecinto(recinto) {
-    if (recinto.id === estado.recinto.id) return;
-
-    estado.recinto = recinto;
-    estado.sector = null;
-    estado.cantidad = CANTIDAD_INICIAL;
-
-    dibujarVariantes();
-    pintarCabecera();
-    dibujarMapa();
-    dibujarAreas();
-    pintarResumen();
-  }
-
-  document.addEventListener("click", (evento) => {
-    const paso = evento.target.closest("[data-paso]");
-    if (!paso || !estado.sector) return;
-
-    const siguiente = estado.cantidad + Number(paso.dataset.paso);
-    if (siguiente < 1 || siguiente > MAXIMO) return;
-
-    estado.cantidad = siguiente;
-    pintarResumen();
   });
 
   document.querySelectorAll("[data-zoom]").forEach((boton) => {
     boton.addEventListener("click", () => {
-      const posicion = ESCALAS.indexOf(estado.escala) + Number(boton.dataset.zoom);
-      if (posicion < 0 || posicion >= ESCALAS.length) return;
+      const nueva = escala + Number(boton.dataset.zoom) * 0.2;
+      escala = Math.min(ESCALA_MAXIMA, Math.max(ESCALA_MINIMA, nueva));
 
-      estado.escala = ESCALAS[posicion];
-      dibujarMapa();
-
-      document.querySelectorAll("[data-zoom]").forEach((otro) => {
-        const destino = ESCALAS.indexOf(estado.escala) + Number(otro.dataset.zoom);
-        otro.disabled = destino < 0 || destino >= ESCALAS.length;
-      });
+      pintarMapa();
+      apagar('[data-zoom="-1"]', escala <= ESCALA_MINIMA);
+      apagar('[data-zoom="1"]', escala >= ESCALA_MAXIMA);
     });
   });
 
-  dibujarVariantes();
   pintarCabecera();
-  dibujarMapa();
-  dibujarAreas();
+  pintarMapa();
+  pintarAreas();
   pintarResumen();
 })();

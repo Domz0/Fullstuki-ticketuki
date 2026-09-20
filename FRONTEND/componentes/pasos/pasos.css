@@ -1,8 +1,4 @@
-/*
-  Componente pasos: barra de progreso del checkout.
-  El markup lo genera componentes/pasos/pasos.js.
-*/
-
+/* stepper */
 .pasos {
   display: flex;
   align-items: center;
@@ -10,7 +6,6 @@
   gap: 14px;
 }
 
-/* El resumen corto es para movil; en escritorio se lee la lista completa. */
 .pasos__resumen {
   display: none;
   margin: 0;
@@ -35,7 +30,6 @@
   font-size: 16px;
 }
 
-/* Linea que une un paso con el siguiente. */
 .paso:not(:last-child)::after {
   content: "";
   width: 55px;
@@ -61,7 +55,6 @@
   font-weight: 600;
 }
 
-/* El paso en curso y los ya cumplidos comparten el circulo de marca. */
 .paso.is-activo .paso__numero,
 .paso.is-completo .paso__numero {
   border-color: var(--color-morado);
@@ -89,7 +82,6 @@
     gap: 6px;
   }
 
-  /* Cada paso pasa a ser una barrita de avance. */
   .paso {
     display: block;
     width: 26px;

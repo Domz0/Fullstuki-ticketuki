@@ -1,7 +1,7 @@
 const $ = (selector) => document.querySelector(selector);
 
 $("#btnEntradas").addEventListener("click", () => {
-  window.location.href = "entradas.html"; //HAY QUE CAMBIAR ESTO POR LA Q ES
+  window.location.href = "../../cuenta/mis-entradas/mis-entradas.html";
 });
 
 $("#btnHome").addEventListener("click", () => {

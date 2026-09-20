@@ -27,13 +27,13 @@
   <body
     data-pagina="entradas"
     data-sesion="cliente"
-    data-paso="entradas"
+    data-etapa="entradas"
     data-barra-movil="oculta"
   >
-    <!-- Componente: header/header.html -->
+    <!-- header -->
     <div id="header"></div>
 
-    <!-- ============ Barra superior (solo móvil) ============ -->
+    <!-- barra movil    -->
     <div class="tope">
       <a class="tope__volver" href="../../catalogo/evento/evento.html" aria-label="Volver al evento">
         <span aria-hidden="true">←</span>
@@ -46,25 +46,19 @@
     </div>
 
     <main class="entradas">
-      <!-- Componente: pasos/pasos.js -->
+      <!-- stepper -->
       <div id="pasos"></div>
 
-      <!-- ============ Cabecera ============ -->
+      <!-- eventos -->
       <header class="cabeza">
         <div class="cabeza__texto">
           <h1 class="cabeza__titulo">Festival de rock en vivo</h1>
           <p class="cabeza__detalle" data-detalle-largo>Sáb 14 nov, 20:00 · Estadio Nacional</p>
         </div>
-
-        <div class="variantes">
-          <p class="variantes__rotulo">Variantes de recinto</p>
-          <!-- Los botones los genera entradas.js desde los recintos definidos -->
-          <div class="variantes__grupo" data-variantes></div>
-        </div>
       </header>
 
       <div class="entradas__columnas">
-        <!-- ============ Plano del recinto ============ -->
+        <!-- plano-->
         <section class="plano" aria-label="Plano del recinto">
           <div class="plano__barra">
             <div class="leyenda">
@@ -95,7 +89,7 @@
           </p>
         </section>
 
-        <!-- ============ Resumen de la selección ============ -->
+        <!--  Resumen seleccionado-->
         <aside class="seleccion" aria-label="Tu selección">
           <h2 class="seleccion__titulo">Tu selección</h2>
 
@@ -138,7 +132,7 @@
             </a>
           </div>
 
-          <!-- Listado de áreas: entradas.js lo llena con los sectores del recinto -->
+          <!-- la lista de areas entradas.js lo llena con los sectores del recinto -->
           <ul class="areas" data-areas></ul>
 
           <p class="seleccion__tiempo">Tiempo para completar la compra: 09:42</p>
@@ -146,7 +140,7 @@
       </div>
     </main>
 
-    <!-- ============ Barra de compra (solo móvil) ============ -->
+    <!-- ============ compra movil ============ -->
     <div class="compra" data-compra hidden>
       <div class="compra__datos">
         <p class="compra__nombre" data-nombre></p>
@@ -164,7 +158,6 @@
       </a>
     </div>
 
-    <!-- Componente: footer/footer.html -->
     <div id="footer"></div>
   </body>
 </html>

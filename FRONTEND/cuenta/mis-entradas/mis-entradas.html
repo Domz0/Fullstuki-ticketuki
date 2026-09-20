@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ticketuki · Mis entradas</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="mis-entradas.css" />
+
+    <script src="../../componentes/header/header.js"></script>
+    <script src="../../componentes/footer/footer.js"></script>
+    <script src="mis-entradas.js" defer></script>
+  </head>
+
+  <body data-pagina="entradas" data-sesion="cliente">
+    <!-- Componente: header/header.html -->
+    <div id="header"></div>
+
+    <main class="entradas">
+      <h1 class="entradas__titulo">Mis entradas</h1>
+
+      <!-- ============ Filtros ============ -->
+      <div class="filtros" role="group" aria-label="Filtrar entradas">
+        <button class="filtro is-activo" type="button" data-filtro="proximas">
+          Próximas
+        </button>
+        <button class="filtro" type="button" data-filtro="pasadas">Pasadas</button>
+        <button class="filtro" type="button" data-filtro="transferidas">
+          Transferidas
+        </button>
+      </div>
+
+      <!-- ============ Entradas ============ -->
+      <ul class="lista" data-lista>
+        <li class="entrada" data-estado="proximas">
+          <div class="entrada__datos">
+            <p class="entrada__rotulo">Próximo evento</p>
+            <h2 class="entrada__titulo">Festival de rock en vivo</h2>
+            <p class="entrada__recinto">Estadio Nacional</p>
+            <p class="entrada__fecha">Sáb 14 nov, 20:00</p>
+            <p class="entrada__sector">Cancha General · 2 entradas</p>
+          </div>
+
+          <div class="entrada__acceso">
+            <div class="qr"></div>
+            <div class="entrada__codigo-caja">
+              <p class="entrada__rotulo entrada__rotulo--codigo">Código</p>
+              <p class="entrada__codigo">TKI-8F42-9C1D</p>
+            </div>
+          </div>
+
+          <div class="entrada__acciones">
+            <a class="boton entrada__detalle" href="../../catalogo/evento/evento.html">
+              Ver detalle
+            </a>
+            <button class="boton" type="button">Transferir</button>
+            <button class="boton entrada__revender" type="button">Revender</button>
+          </div>
+        </li>
+
+        <li class="entrada" data-estado="proximas">
+          <div class="entrada__datos">
+            <p class="entrada__rotulo">Próximo evento</p>
+            <h2 class="entrada__titulo">Obra de teatro clásica</h2>
+            <p class="entrada__recinto">Teatro Municipal</p>
+            <p class="entrada__fecha">Jue 12 nov, 19:30</p>
+            <p class="entrada__sector">Platea Baja · 3 entradas</p>
+          </div>
+
+          <div class="entrada__acceso">
+            <div class="qr"></div>
+            <div class="entrada__codigo-caja">
+              <p class="entrada__rotulo entrada__rotulo--codigo">Código</p>
+              <p class="entrada__codigo">TKI-3B77-2A0E</p>
+            </div>
+          </div>
+
+          <div class="entrada__acciones">
+            <a class="boton entrada__detalle" href="../../catalogo/evento/evento.html">
+              Ver detalle
+            </a>
+            <button class="boton" type="button">Transferir</button>
+            <button class="boton entrada__revender" type="button">Revender</button>
+          </div>
+        </li>
+
+        <li class="entrada entrada--cerrada" data-estado="pasadas">
+          <div class="entrada__datos">
+            <p class="entrada__rotulo">Evento finalizado</p>
+            <h2 class="entrada__titulo">Concierto de música electrónica</h2>
+            <p class="entrada__recinto">Arena Central</p>
+            <p class="entrada__fecha">Vie 12 sep, 22:00</p>
+            <p class="entrada__sector">Cancha · 2 entradas</p>
+          </div>
+
+          <div class="entrada__acceso">
+            <div class="qr"></div>
+            <div class="entrada__codigo-caja">
+              <p class="entrada__rotulo entrada__rotulo--codigo">Código</p>
+              <p class="entrada__codigo">TKI-9C04-5E2B</p>
+            </div>
+          </div>
+
+          <div class="entrada__acciones">
+            <a class="boton entrada__detalle" href="../../catalogo/evento/evento.html">
+              Ver detalle
+            </a>
+          </div>
+        </li>
+
+        <li class="entrada entrada--cerrada" data-estado="pasadas">
+          <div class="entrada__datos">
+            <p class="entrada__rotulo">Evento finalizado</p>
+            <h2 class="entrada__titulo">Clásico de fútbol local</h2>
+            <p class="entrada__recinto">Estadio Nacional</p>
+            <p class="entrada__fecha">Dom 24 ago, 16:00</p>
+            <p class="entrada__sector">Tribuna Andes · 4 entradas</p>
+          </div>
+
+          <div class="entrada__acceso">
+            <div class="qr"></div>
+            <div class="entrada__codigo-caja">
+              <p class="entrada__rotulo entrada__rotulo--codigo">Código</p>
+              <p class="entrada__codigo">TKI-1A55-7D3F</p>
+            </div>
+          </div>
+
+          <div class="entrada__acciones">
+            <a class="boton entrada__detalle" href="../../catalogo/evento/evento.html">
+              Ver detalle
+            </a>
+          </div>
+        </li>
+
+        <li class="entrada entrada--cerrada" data-estado="transferidas">
+          <div class="entrada__datos">
+            <p class="entrada__rotulo">Transferida a camila@correo.cl</p>
+            <h2 class="entrada__titulo">Feria del libro</h2>
+            <p class="entrada__recinto">Espacio Riesco</p>
+            <p class="entrada__fecha">Sáb 8 nov, 11:00</p>
+            <p class="entrada__sector">Pabellón A · 1 entrada</p>
+          </div>
+
+          <div class="entrada__acceso">
+            <div class="qr"></div>
+            <div class="entrada__codigo-caja">
+              <p class="entrada__rotulo entrada__rotulo--codigo">Código</p>
+              <p class="entrada__codigo">TKI-6E21-0B9C</p>
+            </div>
+          </div>
+
+          <div class="entrada__acciones">
+            <a class="boton entrada__detalle" href="../../catalogo/evento/evento.html">
+              Ver detalle
+            </a>
+          </div>
+        </li>
+      </ul>
+
+      <p class="vacio" data-vacio hidden>
+        No tienes entradas en esta sección.
+        <a class="enlace-morado" href="../../catalogo/listado/listado.html?categoria=musica">
+          Ver eventos
+        </a>
+      </p>
+    </main>
+
+    <!-- Componente: footer/footer.html -->
+    <div id="footer"></div>
+  </body>
+</html>

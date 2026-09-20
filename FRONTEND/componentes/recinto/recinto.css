@@ -1,8 +1,3 @@
-/*
-  Componente recinto: planta del recinto y leyenda.
-  El alto de las filas y la posicion de cada sector los pone recinto.js con
-  estilos en linea, porque dependen del recinto que se este mostrando.
-*/
 
 .mapa {
   display: grid;
@@ -14,7 +9,6 @@
   background: var(--color-fondo);
 }
 
-/* Rotulo del escenario o del acceso principal. */
 .mapa__acceso {
   display: grid;
   place-items: center;
@@ -68,7 +62,6 @@ button.mapa__sector:focus-visible {
   letter-spacing: -0.01em;
 }
 
-/* En escritorio manda el nombre largo; el corto entra en pantallas angostas. */
 .mapa__nombre--corto {
   display: none;
 }
@@ -115,7 +108,6 @@ button.mapa__sector:focus-visible {
   text-transform: uppercase;
 }
 
-/* Vista previa del detalle: solo lectura, texto mas chico. */
 .mapa--vista {
   gap: 6px;
   padding: 10px;
