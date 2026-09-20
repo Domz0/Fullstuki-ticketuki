@@ -1,152 +1,133 @@
-/*
-  Paso 1: elegir area.
-  El recinto lo define el evento y llega en la url (?recinto=...&fecha=...).
-*/
-(() => {
-  const MAXIMO = 6;
-  const ESCALA_MINIMA = 0.8;
-  const ESCALA_MAXIMA = 1.4;
+// Paso 1 del checkout: elegir area.
+// El recinto lo define el evento y llega en la url:
+//   entradas.html?recinto=estadio&fecha=14 nov
 
-  const FECHAS = {
-    "14 nov": { largo: "Sáb 14 nov, 20:00", corto: "Sáb 14 nov" },
-    "15 nov": { largo: "Dom 15 nov, 19:00", corto: "Dom 15 nov" },
-  };
+const $ = (selector) => document.querySelector(selector);
 
-  const { RECINTOS, pesos, cargoPorServicio, dibujarMapa } = window.Recinto;
+const MAXIMO = 6;
 
-  const url = new URLSearchParams(location.search);
-  const recinto = RECINTOS[url.get("recinto")] || RECINTOS.estadio;
-  const fecha = FECHAS[url.get("fecha")] || FECHAS["14 nov"];
+const FECHAS = {
+  "14 nov": { largo: "Sáb 14 nov, 20:00", corto: "Sáb 14 nov" },
+  "15 nov": { largo: "Dom 15 nov, 19:00", corto: "Dom 15 nov" },
+};
 
-  let sector = null;
-  let cantidad = 1;
-  let escala = 1;
+// Atajos a lo que dejo componentes/recinto/recinto.js
+const RECINTOS = window.Recinto.RECINTOS;
+const pesos = window.Recinto.pesos;
 
-  const lienzo = document.querySelector("[data-mapa]");
-  const listaAreas = document.querySelector("[data-areas]");
+const url = new URLSearchParams(location.search);
+const recinto = RECINTOS[url.get("recinto")] || RECINTOS.estadio;
+const fecha = FECHAS[url.get("fecha")] || FECHAS["14 nov"];
 
-  // Varios datos salen dos veces: en el panel de escritorio y en la barra movil.
-  const escribir = (selector, valor) => {
-    document.querySelectorAll(selector).forEach((nodo) => {
-      nodo.textContent = valor;
+// Lo que el usuario va eligiendo
+let sector = null;
+let cantidad = 1;
+
+// ---------- el mapa ----------
+
+const pintarMapa = () => {
+  window.Recinto.dibujarMapa($("[data-mapa]"), recinto, sector);
+
+  document.querySelectorAll("button.mapa__sector").forEach((caja) => {
+    caja.addEventListener("click", () => {
+      elegir(caja.dataset.sector);
     });
-  };
+  });
+};
 
-  const mostrar = (selector, visible) => {
-    document.querySelectorAll(selector).forEach((nodo) => {
-      nodo.hidden = !visible;
-    });
-  };
+// ---------- el listado de areas ----------
 
-  const apagar = (selector, apagado) => {
-    document.querySelectorAll(selector).forEach((nodo) => {
-      nodo.disabled = apagado;
-    });
-  };
+const pintarAreas = () => {
+  let html = "";
 
-  const crearTexto = (clase, texto) => {
-    const span = document.createElement("span");
-    span.className = clase;
-    span.textContent = texto;
-    return span;
-  };
-
-  // ---------- dibujar ----------
-
-  const pintarCabecera = () => {
-    escribir("[data-detalle-largo]", `${fecha.largo} · ${recinto.nombre}`);
-    escribir("[data-detalle-corto]", `${recinto.nombre} · ${fecha.corto}`);
-  };
-
-  const pintarMapa = () => {
-    dibujarMapa(lienzo, recinto, {
-      escala,
-      interactivo: true,
-      seleccionado: sector ? sector.id : "",
-      alSeleccionar: elegir,
-    });
-  };
-
-  const crearArea = (area) => {
-    const agotada = area.estado === "agotada";
-    const caja = document.createElement(agotada ? "div" : "button");
-
-    caja.className = agotada ? "area area--agotada" : "area";
-    if (sector && sector.id === area.id) caja.classList.add("is-activo");
-
-    if (!agotada) {
-      caja.type = "button";
-      caja.setAttribute("aria-label", `${area.nombre}, ${pesos(area.precio)}`);
-      caja.addEventListener("click", () => elegir(area));
+  recinto.sectores.forEach((area) => {
+    if (area.estado === "agotada") {
+      html += `
+        <li>
+          <div class="area area--agotada">
+            <span class="area__nombre">${area.nombre}</span>
+            <span class="area__precio">Agotada</span>
+          </div>
+        </li>`;
+      return;
     }
 
-    caja.append(
-      crearTexto("area__nombre", area.nombre),
-      crearTexto("area__precio", agotada ? "Agotada" : pesos(area.precio))
-    );
+    let clases = "area";
+    if (sector && sector.id === area.id) clases = "area is-activo";
 
-    const item = document.createElement("li");
-    item.append(caja);
-    return item;
-  };
+    html += `
+      <li>
+        <button type="button" class="${clases}" data-area="${area.id}">
+          <span class="area__nombre">${area.nombre}</span>
+          <span class="area__precio">${pesos(area.precio)}</span>
+        </button>
+      </li>`;
+  });
 
-  const pintarAreas = () => {
-    listaAreas.replaceChildren(...recinto.sectores.map(crearArea));
-  };
+  $("[data-areas]").innerHTML = html;
 
-  const pintarResumen = () => {
-    document.body.classList.toggle("con-seleccion", Boolean(sector));
-    mostrar("[data-vacio]", !sector);
-    mostrar("[data-detalle]", Boolean(sector));
-    mostrar("[data-compra]", Boolean(sector));
+  document.querySelectorAll("[data-area]").forEach((boton) => {
+    boton.addEventListener("click", () => {
+      elegir(boton.dataset.area);
+    });
+  });
+};
 
-    if (!sector) return;
+// ---------- el resumen ----------
 
-    const subtotal = sector.precio * cantidad;
-    const cargo = cargoPorServicio(subtotal);
-
-    escribir("[data-nombre]", sector.nombre);
-    escribir("[data-unidad]", `${pesos(sector.precio)} por entrada`);
-    escribir("[data-cantidad]", cantidad);
-    escribir("[data-linea]", `${cantidad} × entrada`);
-    escribir("[data-subtotal]", pesos(subtotal));
-    escribir("[data-cargo]", pesos(cargo));
-    escribir("[data-total]", pesos(subtotal + cargo));
-
-    apagar('[data-paso="-1"]', cantidad <= 1);
-    apagar('[data-paso="1"]', cantidad >= MAXIMO);
-  };
-
-  // ---------- acciones ----------
-
-  function elegir(area) {
-    sector = area;
-    pintarMapa();
-    pintarAreas();
-    pintarResumen();
+const pintarResumen = () => {
+  if (sector === null) {
+    document.body.classList.remove("con-seleccion");
+    $("[data-vacio]").hidden = false;
+    $("[data-detalle]").hidden = true;
+    return;
   }
 
-  document.querySelectorAll("[data-paso]").forEach((boton) => {
-    boton.addEventListener("click", () => {
-      const nueva = cantidad + Number(boton.dataset.paso);
-      cantidad = Math.min(MAXIMO, Math.max(1, nueva));
-      pintarResumen();
-    });
-  });
+  document.body.classList.add("con-seleccion");
+  $("[data-vacio]").hidden = true;
+  $("[data-detalle]").hidden = false;
 
-  document.querySelectorAll("[data-zoom]").forEach((boton) => {
-    boton.addEventListener("click", () => {
-      const nueva = escala + Number(boton.dataset.zoom) * 0.2;
-      escala = Math.min(ESCALA_MAXIMA, Math.max(ESCALA_MINIMA, nueva));
+  const subtotal = sector.precio * cantidad;
+  const cargo = window.Recinto.cargoPorServicio(subtotal);
 
-      pintarMapa();
-      apagar('[data-zoom="-1"]', escala <= ESCALA_MINIMA);
-      apagar('[data-zoom="1"]', escala >= ESCALA_MAXIMA);
-    });
-  });
+  $("[data-nombre]").textContent = sector.nombre;
+  $("[data-unidad]").textContent = `${pesos(sector.precio)} por entrada`;
+  $("[data-cantidad]").textContent = cantidad;
+  $("[data-linea]").textContent = `${cantidad} × entrada`;
+  $("[data-subtotal]").textContent = pesos(subtotal);
+  $("[data-cargo]").textContent = pesos(cargo);
+  $("[data-total]").textContent = pesos(subtotal + cargo);
 
-  pintarCabecera();
+  $('[data-paso="-1"]').disabled = cantidad === 1;
+  $('[data-paso="1"]').disabled = cantidad === MAXIMO;
+};
+
+// ---------- elegir un area ----------
+
+const elegir = (idArea) => {
+  sector = recinto.sectores.find((area) => area.id === idArea);
   pintarMapa();
   pintarAreas();
   pintarResumen();
-})();
+};
+
+// ---------- botones - y + de la cantidad ----------
+
+document.querySelectorAll("[data-paso]").forEach((boton) => {
+  boton.addEventListener("click", () => {
+    cantidad = cantidad + Number(boton.dataset.paso);
+
+    if (cantidad < 1) cantidad = 1;
+    if (cantidad > MAXIMO) cantidad = MAXIMO;
+
+    pintarResumen();
+  });
+});
+
+// ---------- al abrir la pagina ----------
+
+$("[data-detalle-largo]").textContent = `${fecha.largo} · ${recinto.nombre}`;
+$("[data-detalle-corto]").textContent = `${recinto.nombre} · ${fecha.corto}`;
+pintarMapa();
+pintarAreas();
+pintarResumen();

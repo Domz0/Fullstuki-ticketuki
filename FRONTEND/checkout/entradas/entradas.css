@@ -161,34 +161,6 @@ button {
   gap: 16px;
 }
 
-.zoom {
-  display: flex;
-  gap: 6px;
-}
-
-.zoom__boton {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--color-linea-suave);
-  border-radius: 7px;
-  background: var(--color-superficie);
-  color: var(--color-texto);
-  font-size: 15px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.zoom__boton:hover:not(:disabled) {
-  border-color: var(--color-morado);
-}
-
-.zoom__boton:disabled {
-  color: var(--color-texto-tenue);
-  cursor: not-allowed;
-}
-
 .plano__lienzo {
   min-width: 0;
 }
@@ -231,7 +203,7 @@ button {
 }
 
 .seleccion__vacio[hidden],
-.compra[hidden] {
+.seleccion__detalle[hidden] {
   display: none;
 }
 
@@ -432,49 +404,6 @@ button.area:hover {
   }
 }
 
-/* Barra de compra en movile */
-
-.compra {
-  /* En escritorio manda el panel lateral. */
-  display: none;
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 60;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px 12px;
-  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-  border-top: 1px solid var(--color-linea);
-  background: rgba(14, 15, 20, 0.97);
-  backdrop-filter: blur(8px);
-}
-
-.compra__datos {
-  min-width: 0;
-}
-
-.compra__nombre {
-  overflow: hidden;
-  margin: 0;
-  font-size: 14px;
-  font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.compra__unidad {
-  margin: 2px 0 0;
-  color: var(--color-texto-apagado);
-  font-size: 12px;
-}
-
-.compra__accion {
-  grid-column: 1 / -1;
-  height: 48px;
-  font-size: 15px;
-}
-
 @media (max-width: 1100px) {
   .entradas__columnas {
     grid-template-columns: minmax(0, 1fr) 290px;
@@ -489,8 +418,8 @@ button.area:hover {
   }
 
   .entradas {
-
-    padding: 14px var(--lado) 120px;
+    /* Deja aire para la barra fija de abajo. */
+    padding: 14px var(--lado) 170px;
   }
 
   .tope {
@@ -502,8 +431,7 @@ button.area:hover {
   }
 
   /* En movil el titulo y el recinto los muestra la barra superior. */
-  .cabeza,
-  .zoom {
+  .cabeza {
     display: none;
   }
 
@@ -539,22 +467,82 @@ button.area:hover {
 
   .seleccion__titulo,
   .seleccion__vacio,
-  .seleccion__detalle,
   .seleccion__tiempo {
     display: none;
+  }
+
+  /* El mismo panel pasa a ser la barra fija de abajo. */
+  .seleccion__detalle:not([hidden]) {
+    display: grid;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 60;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px 12px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--color-linea);
+    background: rgba(14, 15, 20, 0.97);
+    backdrop-filter: blur(8px);
+  }
+
+  /* Lo que no cabe en una barra. */
+  .seleccion__rotulo,
+  .cantidad__tope,
+  .totales__fila:not(.totales__fila--total) {
+    display: none;
+  }
+
+  .seleccion__area {
+    grid-column: 1;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .seleccion__nombre {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cantidad {
+    grid-column: 2;
+  }
+
+  .totales {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .totales__fila--total {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .totales__fila--total dd {
+    font-size: 17px;
+  }
+
+  .seleccion__continuar {
+    grid-column: 1 / -1;
+    height: 48px;
+    margin-top: 2px;
+    font-size: 15px;
   }
 
   .area {
     padding: 12px 14px;
   }
-
-  .compra {
-    display: grid;
-  }
 }
 
 @media (max-width: 420px) {
-  .compra__accion {
+  .seleccion__continuar {
     font-size: 14px;
   }
 }

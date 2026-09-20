@@ -90,51 +90,69 @@
     return span;
   };
 
-  const crearSector = (sector, opciones) => {
-    const agotada = sector.estado === "agotada";
-    const clicable = opciones.interactivo && !agotada;
+  // `tamano` es un porcentaje: 100 es el plano completo, 70 la vista previa.
+  const pintar = (contenedor, recinto, tamano, idElegido, clicables) => {
+    const filas = [];
+    recinto.filas.forEach((alto) => {
+      filas.push(Math.round((alto * tamano) / 100) + "px");
+    });
 
-    const caja = document.createElement(clicable ? "button" : "div");
-    caja.className = "mapa__sector";
-    caja.dataset.sector = sector.id;
-    caja.style.gridColumn = sector.col;
-    caja.style.gridRow = sector.fila;
-
-    if (agotada) caja.classList.add("mapa__sector--agotada");
-    if (sector.id === opciones.seleccionado) caja.classList.add("is-activo");
-
-    if (clicable) {
-      caja.type = "button";
-      caja.setAttribute("aria-label", `${sector.nombre}, ${pesos(sector.precio)}`);
-      caja.addEventListener("click", () => opciones.alSeleccionar(sector));
-    }
-
-    caja.append(
-      crearTexto("mapa__nombre", sector.nombre),
-      crearTexto("mapa__nombre mapa__nombre--corto", sector.corto),
-      crearTexto("mapa__precio", agotada ? "Agotada" : pesos(sector.precio))
-    );
-
-    return caja;
-  };
-
-  const dibujarMapa = (contenedor, recinto, opciones = {}) => {
-    const escala = opciones.escala || 1;
-
+    contenedor.innerHTML = "";
     contenedor.classList.add("mapa");
-    contenedor.classList.toggle("mapa--vista", !opciones.interactivo);
-    contenedor.style.gridTemplateRows = recinto.filas
-      .map((alto) => Math.round(alto * escala) + "px")
-      .join(" ");
+    contenedor.classList.toggle("mapa--vista", !clicables);
+    contenedor.style.gridTemplateRows = filas.join(" ");
 
     const acceso = crearTexto("mapa__acceso", recinto.acceso);
     acceso.style.gridColumn = recinto.accesoCol;
     acceso.style.gridRow = "1";
+    contenedor.append(acceso);
 
-    const sectores = recinto.sectores.map((sector) => crearSector(sector, opciones));
+    recinto.sectores.forEach((sector) => {
+      const agotada = sector.estado === "agotada";
+      const clicable = clicables && !agotada;
 
-    contenedor.replaceChildren(acceso, ...sectores);
+      const caja = document.createElement(clicable ? "button" : "div");
+      caja.className = "mapa__sector";
+      caja.dataset.sector = sector.id;
+      caja.style.gridColumn = sector.col;
+      caja.style.gridRow = sector.fila;
+
+      if (agotada) caja.classList.add("mapa__sector--agotada");
+      if (sector.id === idElegido) caja.classList.add("is-activo");
+
+      if (clicable) {
+        caja.type = "button";
+        // El nombre visible cambia segun el ancho, asi que se nombra a mano.
+        caja.setAttribute("aria-label", `${sector.nombre}, ${pesos(sector.precio)}`);
+      }
+
+      caja.append(
+        crearTexto("mapa__nombre", sector.nombre),
+        crearTexto("mapa__nombre mapa__nombre--corto", sector.corto),
+        crearTexto("mapa__precio", agotada ? "Agotada" : pesos(sector.precio))
+      );
+
+      contenedor.append(caja);
+    });
   };
 
-  window.Recinto = { RECINTOS, pesos, cargoPorServicio, dibujarMapa };
+  // Mapa de la pantalla de entradas: sus sectores son botones.
+  const dibujarMapa = (contenedor, recinto, elegido) => {
+    let id = "";
+    if (elegido) id = elegido.id;
+    pintar(contenedor, recinto, 100, id, true);
+  };
+
+  // Mapita del detalle del evento: solo se mira.
+  const dibujarVistaPrevia = (contenedor, recinto) => {
+    pintar(contenedor, recinto, 70, "", false);
+  };
+
+  window.Recinto = {
+    RECINTOS,
+    pesos,
+    cargoPorServicio,
+    dibujarMapa,
+    dibujarVistaPrevia,
+  };
 })();

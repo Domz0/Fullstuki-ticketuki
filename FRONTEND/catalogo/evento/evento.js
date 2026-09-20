@@ -1,11 +1,7 @@
-(() => {
-  const contenedor = document.querySelector("[data-mapa]");
-  if (!contenedor) return;
+const contenedor = document.querySelector("[data-mapa]");
+const recinto = window.Recinto.RECINTOS.estadio;
 
-  const recinto = window.Recinto.RECINTOS.estadio;
+window.Recinto.dibujarVistaPrevia(contenedor, recinto);
 
-  window.Recinto.dibujarMapa(contenedor, recinto, { escala: 0.7 });
-
-  document.querySelector("[data-resumen-recinto]").textContent =
-    `${recinto.nombre} · ${recinto.sectores.length} áreas disponibles`;
-})();
+document.querySelector("[data-resumen-recinto]").textContent =
+  `${recinto.nombre} · ${recinto.sectores.length} áreas disponibles`;
