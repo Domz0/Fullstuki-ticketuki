@@ -306,11 +306,50 @@
   .pago_opcion {
     width: 100%;
   }
+  .pago_descuento {
+    padding: 14px 16px;
+    border: 1px solid var(--color-morado);
+    border-radius: 10px;
+    background-color: var(--color-fondo-alto);
+    gap: 10px;
+  }
+  .pago_descuento h2 {
+    display: block;
+    margin: 0;
+  }
+  .pago_descuento label,
+  .pago_sugerencia {
+    display: none;
+  }
+  .pago_codigo_fila {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+    padding: 6px;
+  }
+  .pago_codigo_fila input {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+  }
+  .pago_aplicar {
+    flex-shrink: 0;
+    margin: 0;
+    border-color: var(--color-morado);
+    background-color: var(--color-morado);
+  }
 }
 
 @media (min-width: 1024px) {
   .pago {
     flex-direction: row;
+  }
+  .pago_codigo_fila {
+    display: flex;
+    flex-direction: column;
+  }
+  .pago_aplicar {
+    display: none;
   }
 }
 .pago_opcion_marcada {
