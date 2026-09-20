@@ -313,3 +313,9 @@
     flex-direction: row;
   }
 }
+.pago_opcion_marcada {
+  border-color: var(--color-morado);
+}
+.pago_opcion input[type="radio"] {
+  display: none;
+}
