@@ -40,12 +40,6 @@ editarDatos.addEventListener("click", () => {
   formEditar.style.display = "block";
   editarDatos.style.display = "none";
 });
-//cancelar
-const cancelarEdicion = $("#cancelar_edicion");
-cancelarEdicion.addEventListener("click", () => {
-  formEditar.style.display = "none";
-  editarDatos.style.display = "block";
-});
 
 //validacion datos nuevos
 const nuevoCorreo = $("#nuevo_correo");
@@ -55,6 +49,7 @@ const mensajeCorreo = $("#mensaje_correo");
 const mensajePassword = $("#mensaje_password");
 
 const guardarDatos = $("#guardar_datos");
+const cancelarEdicion = $("#cancelar_edicion");
 
 const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const regexMayuscula = /[A-Z]/;
@@ -96,4 +91,15 @@ guardarDatos.addEventListener("click", () => {
     formEditar.style.display = "none";
     editarDatos.style.display = "block";
   }
+});
+//cancelar
+cancelarEdicion.addEventListener("click", () => {
+  formEditar.style.display = "none";
+  editarDatos.style.display = "block";
+
+  nuevoCorreo.value = "";
+  nuevaPassword.value = "";
+
+  mensajeCorreo.textContent = "";
+  mensajePassword.textContent = "";
 });
