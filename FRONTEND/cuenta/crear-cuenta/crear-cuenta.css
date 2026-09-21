@@ -12,6 +12,7 @@ body {
   margin: 0;
   border: 0;
   padding: 0;
+  background-color: var(--color-fondo);
 }
 
 .flex-container {
@@ -138,13 +139,21 @@ img {
   filter: blur(2px);
 }
 
-/*
+
 @media (max-width: 1023px) {
+
+  .form-container {
+    background-color: var(--color-fondo);
+    width: 100%;
+    height: 100vh;
+  } 
+
+  .img-container {
+    width: 0%;
+  }
+
 }
 
-@media (max-width: 1024px) {
-}
-*/
 
 /*me tome el archivo >:) */
 .mensaje_validacion {
