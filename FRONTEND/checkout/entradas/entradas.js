@@ -5,7 +5,7 @@
 const $ = (selector) => document.querySelector(selector);
 
 const MAXIMO = 6;
-const EVENTO = "Festival de rock en vivo";
+const EVENTO = "Lollapalooza 2026";
 
 const FECHAS = {
   "14 nov": { largo: "Sáb 14 nov, 20:00", corto: "Sáb 14 nov" },
