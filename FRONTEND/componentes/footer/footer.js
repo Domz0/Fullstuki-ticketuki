@@ -2,7 +2,7 @@
 (() => {
   const carpetaFrontend = new URL("../../", document.currentScript.src);
 
-  const cargar = () => {
+  function cargar() {
     const contenedor = document.getElementById("footer");
     if (!contenedor) return;
 
@@ -21,7 +21,10 @@
         plantilla.content
           .querySelectorAll("a[href], link[href], img[src]")
           .forEach((elemento) => {
-            const atributo = elemento.hasAttribute("href") ? "href" : "src";
+            let atributo = "src";
+            if (elemento.hasAttribute("href")) {
+              atributo = "href";
+            }
             const valor = elemento.getAttribute(atributo);
             if (!valor || valor.startsWith("#") || /^[a-z]+:/i.test(valor)) return;
             elemento.setAttribute(atributo, new URL(valor, carpetaFrontend).href);
@@ -35,10 +38,10 @@
   };
 
   function mantenerContactoAbierto(contenedor) {
-    const contacto = contenedor.querySelector("[data-contacto]");
+    const contacto = contenedor.querySelector("#footer_contacto");
     if (!contacto) return;
 
-    const revisar = () => {
+    function revisar() {
       if (window.innerWidth > 860) contacto.open = true;
     };
 

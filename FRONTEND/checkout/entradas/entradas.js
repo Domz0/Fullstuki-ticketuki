@@ -26,8 +26,8 @@ let cantidad = 1;
 
 // ---------- el mapa ----------
 
-const pintarMapa = () => {
-  window.Recinto.dibujarMapa($("[data-mapa]"), recinto, sector);
+function pintarMapa() {
+  window.Recinto.dibujarMapa($("#entradas_mapa"), recinto, sector);
 
   document.querySelectorAll("button.mapa__sector").forEach((caja) => {
     caja.addEventListener("click", () => {
@@ -38,7 +38,7 @@ const pintarMapa = () => {
 
 // ---------- el listado de areas ----------
 
-const pintarAreas = () => {
+function pintarAreas() {
   let html = "";
 
   recinto.sectores.forEach((area) => {
@@ -65,7 +65,7 @@ const pintarAreas = () => {
       </li>`;
   });
 
-  $("[data-areas]").innerHTML = html;
+  $("#entradas_areas").innerHTML = html;
 
   document.querySelectorAll("[data-area]").forEach((boton) => {
     boton.addEventListener("click", () => {
@@ -76,28 +76,28 @@ const pintarAreas = () => {
 
 // ---------- el resumen ----------
 
-const pintarResumen = () => {
+function pintarResumen() {
   if (sector === null) {
     document.body.classList.remove("con-seleccion");
-    $("[data-vacio]").hidden = false;
-    $("[data-detalle]").hidden = true;
+    $("#entradas_vacio").hidden = false;
+    $("#entradas_detalle").hidden = true;
     return;
   }
 
   document.body.classList.add("con-seleccion");
-  $("[data-vacio]").hidden = true;
-  $("[data-detalle]").hidden = false;
+  $("#entradas_vacio").hidden = true;
+  $("#entradas_detalle").hidden = false;
 
   const subtotal = sector.precio * cantidad;
   const cargo = window.Recinto.cargoPorServicio(subtotal);
 
-  $("[data-nombre]").textContent = sector.nombre;
-  $("[data-unidad]").textContent = `${pesos(sector.precio)} por entrada`;
-  $("[data-cantidad]").textContent = cantidad;
-  $("[data-linea]").textContent = `${cantidad} × entrada`;
-  $("[data-subtotal]").textContent = pesos(subtotal);
-  $("[data-cargo]").textContent = pesos(cargo);
-  $("[data-total]").textContent = pesos(subtotal + cargo);
+  $("#entradas_nombre").textContent = sector.nombre;
+  $("#entradas_unidad").textContent = `${pesos(sector.precio)} por entrada`;
+  $("#entradas_cantidad").textContent = cantidad;
+  $("#entradas_linea").textContent = `${cantidad} × entrada`;
+  $("#entradas_subtotal").textContent = pesos(subtotal);
+  $("#entradas_cargo").textContent = pesos(cargo);
+  $("#entradas_total").textContent = pesos(subtotal + cargo);
 
   $('[data-paso="-1"]').disabled = cantidad === 1;
   $('[data-paso="1"]').disabled = cantidad === MAXIMO;
@@ -106,7 +106,7 @@ const pintarResumen = () => {
 };
 
 // La pantalla de pago lee estos datos para mostrar la misma compra.
-const guardarCompra = (subtotal, cargo) => {
+function guardarCompra(subtotal, cargo) {
   localStorage.setItem("compraEvento", EVENTO);
   localStorage.setItem("compraFecha", fecha.largo);
   localStorage.setItem("compraRecinto", recinto.nombre);
@@ -119,8 +119,12 @@ const guardarCompra = (subtotal, cargo) => {
 
 // ---------- elegir un area ----------
 
-const elegir = (idArea) => {
-  sector = recinto.sectores.find((area) => area.id === idArea);
+function elegir(idArea) {
+  recinto.sectores.forEach((area) => {
+    if (area.id === idArea) {
+      sector = area;
+    }
+  });
   pintarMapa();
   pintarAreas();
   pintarResumen();
@@ -141,9 +145,9 @@ document.querySelectorAll("[data-paso]").forEach((boton) => {
 
 // ---------- al abrir la pagina ----------
 
-$("[data-evento]").textContent = EVENTO;
-$("[data-detalle-largo]").textContent = `${fecha.largo} · ${recinto.nombre}`;
-$("[data-detalle-corto]").textContent = `${recinto.nombre} · ${fecha.corto}`;
+$("#entradas_evento").textContent = EVENTO;
+$("#entradas_detalle_largo").textContent = `${fecha.largo} · ${recinto.nombre}`;
+$("#entradas_detalle_corto").textContent = `${recinto.nombre} · ${fecha.corto}`;
 pintarMapa();
 pintarAreas();
 pintarResumen();

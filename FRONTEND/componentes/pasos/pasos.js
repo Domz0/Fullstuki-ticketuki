@@ -10,12 +10,16 @@
     { id: "confirmacion", nombre: "Confirmación" },
   ];
 
-  const cargar = () => {
+  function cargar() {
     const contenedor = document.getElementById("pasos");
     if (!contenedor) return;
 
-    const pedido = PASOS.findIndex((paso) => paso.id === document.body.dataset.etapa);
-    const actual = pedido === -1 ? 0 : pedido;
+    let actual = 0;
+    PASOS.forEach((paso, posicion) => {
+      if (paso.id === document.body.dataset.etapa) {
+        actual = posicion;
+      }
+    });
 
     const barra = document.createElement("nav");
     barra.className = "pasos";
@@ -31,13 +35,25 @@
     PASOS.forEach((paso, posicion) => {
       const item = document.createElement("li");
       item.className = "paso";
-      item.classList.toggle("is-completo", posicion < actual);
-      item.classList.toggle("is-activo", posicion === actual);
+      if (posicion < actual) {
+        item.classList.add("is-completo");
+      } else {
+        item.classList.remove("is-completo");
+      }
+      if (posicion === actual) {
+        item.classList.add("is-activo");
+      } else {
+        item.classList.remove("is-activo");
+      }
       if (posicion === actual) item.setAttribute("aria-current", "step");
 
       const numero = document.createElement("span");
       numero.className = "paso__numero";
-      numero.textContent = posicion < actual ? "✓" : String(posicion + 1);
+      if (posicion < actual) {
+        numero.textContent = "✓";
+      } else {
+        numero.textContent = String(posicion + 1);
+      }
       numero.setAttribute("aria-hidden", "true");
 
       const nombre = document.createElement("span");

@@ -30,43 +30,43 @@
     </form>
 
     <!-- visitante sin sesión -->
-    <nav class="menu" data-sesion="invitado" aria-label="Acceso">
+    <nav id="header_invitado" class="menu" data-sesion="invitado" aria-label="Acceso">
       <a class="menu__enlace" href="index.html">Inicio</a>
       <a class="menu__enlace" href="cuenta/crear-cuenta/crear-cuenta.html">Crear cuenta</a>
       <a class="menu__enlace" href="cuenta/login/login.html">Iniciar sesión</a>
     </nav>
 
     <!-- con sesión iniciada -->
-    <nav class="menu" data-sesion="cliente" aria-label="Mi cuenta" hidden>
+    <nav id="header_cliente" class="menu" data-sesion="cliente" aria-label="Mi cuenta" hidden>
       <a class="menu__cuenta" href="cuenta/mi-cuenta/mi-cuenta.html">
-        <span class="menu__avatar" data-iniciales>TK</span>
+        <span id="header_iniciales" class="menu__avatar" data-iniciales>TK</span>
         <span class="menu__cuenta-texto">Mi cuenta</span>
       </a>
     </nav>
   </div>
 
   <nav class="categorias" aria-label="Categorías">
-    <a class="categorias__chip" data-categoria="musica" href="catalogo/listado/listado.html?categoria=musica">Música</a>
-    <a class="categorias__chip" data-categoria="artes" href="catalogo/listado/listado.html?categoria=artes">Artes y Teatro</a>
-    <a class="categorias__chip" data-categoria="deportes" href="catalogo/listado/listado.html?categoria=deportes">Deportes</a>
-    <a class="categorias__chip" data-categoria="ferias" href="catalogo/listado/listado.html?categoria=ferias">Ferias &amp; Expos</a>
+    <a id="header_categoria_musica" class="categorias__chip" data-categoria="musica" href="catalogo/listado/listado.html?categoria=musica">Música</a>
+    <a id="header_categoria_artes" class="categorias__chip" data-categoria="artes" href="catalogo/listado/listado.html?categoria=artes">Artes y Teatro</a>
+    <a id="header_categoria_deportes" class="categorias__chip" data-categoria="deportes" href="catalogo/listado/listado.html?categoria=deportes">Deportes</a>
+    <a id="header_categoria_ferias" class="categorias__chip" data-categoria="ferias" href="catalogo/listado/listado.html?categoria=ferias">Ferias &amp; Expos</a>
   </nav>
 </header>
 
 <nav class="barra-movil" aria-label="Navegación">
-  <a class="barra-movil__item" data-pagina="inicio" href="index.html">
+  <a id="header_pagina_inicio" class="barra-movil__item" data-pagina="inicio" href="index.html">
     <span class="barra-movil__icono" aria-hidden="true"></span>
     Inicio
   </a>
-  <a class="barra-movil__item" data-pagina="buscar" href="catalogo/listado/listado.html?categoria=musica">
+  <a id="header_pagina_buscar" class="barra-movil__item" data-pagina="buscar" href="catalogo/listado/listado.html?categoria=musica">
     <span class="barra-movil__icono" aria-hidden="true"></span>
     Buscar
   </a>
-  <a class="barra-movil__item" data-pagina="entradas" href="cuenta/mis-entradas/mis-entradas.html">
+  <a id="header_pagina_entradas" class="barra-movil__item" data-pagina="entradas" href="cuenta/mis-entradas/mis-entradas.html">
     <span class="barra-movil__icono" aria-hidden="true"></span>
     Entradas
   </a>
-  <a class="barra-movil__item" data-pagina="cuenta" href="cuenta/mi-cuenta/mi-cuenta.html">
+  <a id="header_pagina_cuenta" class="barra-movil__item" data-pagina="cuenta" href="cuenta/mi-cuenta/mi-cuenta.html">
     <span class="barra-movil__icono" aria-hidden="true"></span>
     Cuenta
   </a>

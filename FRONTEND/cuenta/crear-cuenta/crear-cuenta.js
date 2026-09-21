@@ -1,6 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
 
-const formulario = $("form");
+const formulario = $("#formulario_crear_cuenta");
 
 const nombre = $("#nombre");
 const apellido = $("#apellido");

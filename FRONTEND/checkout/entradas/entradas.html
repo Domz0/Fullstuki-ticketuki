@@ -40,7 +40,7 @@
       </a>
       <div class="tope__texto">
         <p class="tope__titulo">Elegir área</p>
-        <p class="tope__detalle" data-detalle-corto>Estadio Nacional · Sáb 14 nov</p>
+        <p class="tope__detalle" data-detalle-corto id="entradas_detalle_corto">Estadio Nacional · Sáb 14 nov</p>
       </div>
       <p class="tope__tiempo">09:42</p>
     </div>
@@ -52,8 +52,8 @@
       <!-- eventos -->
       <header class="cabeza">
         <div class="cabeza__texto">
-          <h1 class="cabeza__titulo" data-evento>Lollapalooza 2026</h1>
-          <p class="cabeza__detalle" data-detalle-largo>Sáb 14 nov, 20:00 · Estadio Nacional</p>
+          <h1 class="cabeza__titulo" data-evento id="entradas_evento">Lollapalooza 2026</h1>
+          <p class="cabeza__detalle" data-detalle-largo id="entradas_detalle_largo">Sáb 14 nov, 20:00 · Estadio Nacional</p>
         </div>
       </header>
 
@@ -76,7 +76,7 @@
             </div>
           </div>
 
-          <div class="plano__lienzo" data-mapa></div>
+          <div class="plano__lienzo" data-mapa id="entradas_mapa"></div>
 
           <p class="plano__nota">
             Selección por área. La ubicación exacta dentro del área se asigna al ingresar
@@ -88,37 +88,37 @@
         <aside class="seleccion" aria-label="Tu selección">
           <h2 class="seleccion__titulo">Tu selección</h2>
 
-          <p class="seleccion__vacio" data-vacio>
+          <p class="seleccion__vacio" data-vacio id="entradas_vacio">
             Elige un área en el mapa para ver precios y continuar.
           </p>
 
-          <div class="seleccion__detalle" data-detalle hidden>
+          <div class="seleccion__detalle" data-detalle hidden id="entradas_detalle">
             <div class="seleccion__area">
-              <p class="seleccion__nombre" data-nombre></p>
-              <p class="seleccion__unidad" data-unidad></p>
+              <p class="seleccion__nombre" data-nombre id="entradas_nombre"></p>
+              <p class="seleccion__unidad" data-unidad id="entradas_unidad"></p>
             </div>
 
             <p class="seleccion__rotulo">Cantidad de entradas</p>
 
             <div class="cantidad">
               <button class="cantidad__boton" type="button" data-paso="-1" aria-label="Quitar una entrada">−</button>
-              <output class="cantidad__valor" data-cantidad>2</output>
+              <output class="cantidad__valor" data-cantidad id="entradas_cantidad">2</output>
               <button class="cantidad__boton" type="button" data-paso="1" aria-label="Agregar una entrada">+</button>
               <span class="cantidad__tope">Máximo 6 por compra</span>
             </div>
 
             <dl class="totales">
               <div class="totales__fila">
-                <dt data-linea>2 × entrada</dt>
-                <dd data-subtotal>$90.000</dd>
+                <dt data-linea id="entradas_linea">2 × entrada</dt>
+                <dd data-subtotal id="entradas_subtotal">$90.000</dd>
               </div>
               <div class="totales__fila">
                 <dt>Cargo por servicio</dt>
-                <dd data-cargo>$9.000</dd>
+                <dd data-cargo id="entradas_cargo">$9.000</dd>
               </div>
               <div class="totales__fila totales__fila--total">
                 <dt>Total</dt>
-                <dd data-total>$99.000</dd>
+                <dd data-total id="entradas_total">$99.000</dd>
               </div>
             </dl>
 
@@ -128,7 +128,7 @@
           </div>
 
           <!-- la lista de areas entradas.js lo llena con los sectores del recinto -->
-          <ul class="areas" data-areas></ul>
+          <ul class="areas" data-areas id="entradas_areas"></ul>
 
         </aside>
       </div>

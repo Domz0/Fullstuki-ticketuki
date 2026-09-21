@@ -1,21 +1,28 @@
 (() => {
-  const entradas = [...document.querySelectorAll(".entrada")];
-  const vacio = document.querySelector("[data-vacio]");
+  const entradas = document.querySelectorAll(".entrada");
+  const vacio = document.querySelector("#mis_entradas_vacio");
 
-  const filtrar = (estado) => {
+  function filtrar(estado) {
     entradas.forEach((entrada) => {
       entrada.hidden = entrada.dataset.estado !== estado;
     });
 
-    vacio.hidden = entradas.some((entrada) => !entrada.hidden);
+    let hayEntradas = false;
+    entradas.forEach((entrada) => {
+      if (!entrada.hidden) {
+        hayEntradas = true;
+      }
+    });
+    vacio.hidden = hayEntradas;
   };
 
   document.querySelectorAll("[data-filtro]").forEach((boton) => {
     boton.addEventListener("click", () => {
       document.querySelectorAll("[data-filtro]").forEach((otro) => {
-        otro.classList.toggle("is-activo", otro === boton);
+        otro.classList.remove("is-activo");
       });
 
+      boton.classList.add("is-activo");
       filtrar(boton.dataset.filtro);
     });
   });

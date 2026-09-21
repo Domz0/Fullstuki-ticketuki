@@ -8,7 +8,7 @@
     { id: "historial", nombre: "Historial", ruta: "cuenta/historial/historial.html" },
   ];
 
-  const cargar = () => {
+  function cargar() {
     const contenedor = document.getElementById("cuenta");
     if (!contenedor) return;
 
@@ -19,25 +19,27 @@
 
     contenedor.innerHTML = `
       <header class="cuenta__perfil">
-        <span class="cuenta__avatar" data-iniciales aria-hidden="true"></span>
+        <span class="cuenta__avatar" data-iniciales id="cuenta_iniciales" aria-hidden="true"></span>
         <div>
-          <h1 class="cuenta__nombre" data-nombre></h1>
-          <p class="cuenta__datos" data-correo></p>
+          <h1 class="cuenta__nombre" data-nombre id="cuenta_nombre"></h1>
+          <p class="cuenta__datos" data-correo id="cuenta_correo"></p>
         </div>
       </header>
-      <nav class="cuenta__secciones" aria-label="Secciones de mi cuenta"></nav>
+      <nav id="cuenta_secciones" class="cuenta__secciones" aria-label="Secciones de mi cuenta"></nav>
     `;
 
     // Los datos del usuario van como texto, nunca como html.
     const iniciales = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
-    contenedor.querySelector("[data-iniciales]").textContent = iniciales || "TK";
-    contenedor.querySelector("[data-nombre]").textContent =
+    contenedor.querySelector("#cuenta_iniciales").textContent = iniciales || "TK";
+    contenedor.querySelector("#cuenta_nombre").textContent =
       `${nombre} ${apellido}`.trim() || "Mi cuenta";
-    contenedor.querySelector("[data-correo]").textContent = correo
-      ? `${correo} · Miembro desde 2023`
-      : "Miembro desde 2023";
+    const textoCorreo = contenedor.querySelector("#cuenta_correo");
+    textoCorreo.textContent = "Miembro desde 2023";
+    if (correo) {
+      textoCorreo.textContent = correo + " · Miembro desde 2023";
+    }
 
-    const nav = contenedor.querySelector(".cuenta__secciones");
+    const nav = contenedor.querySelector("#cuenta_secciones");
     const abierta = document.body.dataset.seccion;
 
     SECCIONES.forEach((seccion) => {

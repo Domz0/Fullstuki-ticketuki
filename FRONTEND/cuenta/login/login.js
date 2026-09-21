@@ -1,6 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
 
-const formulario = $("form");
+const formulario = $("#formulario_login");
 
 const email = $("#email");
 const password = $("#password");

@@ -83,7 +83,7 @@
 
   const cargoPorServicio = (subtotal) => Math.round(subtotal * CARGO);
 
-  const crearTexto = (clase, texto) => {
+  function crearTexto(clase, texto) {
     const span = document.createElement("span");
     span.className = clase;
     span.textContent = texto;
@@ -91,7 +91,7 @@
   };
 
   // `tamano` es un porcentaje: 100 es el plano completo, 70 la vista previa.
-  const pintar = (contenedor, recinto, tamano, idElegido, clicables) => {
+  function pintar(contenedor, recinto, tamano, idElegido, clicables) {
     const filas = [];
     recinto.filas.forEach((alto) => {
       filas.push(Math.round((alto * tamano) / 100) + "px");
@@ -99,7 +99,11 @@
 
     contenedor.innerHTML = "";
     contenedor.classList.add("mapa");
-    contenedor.classList.toggle("mapa--vista", !clicables);
+    if (!clicables) {
+      contenedor.classList.add("mapa--vista");
+    } else {
+      contenedor.classList.remove("mapa--vista");
+    }
     contenedor.style.gridTemplateRows = filas.join(" ");
 
     const acceso = crearTexto("mapa__acceso", recinto.acceso);
@@ -111,7 +115,11 @@
       const agotada = sector.estado === "agotada";
       const clicable = clicables && !agotada;
 
-      const caja = document.createElement(clicable ? "button" : "div");
+      let etiqueta = "div";
+      if (clicable) {
+        etiqueta = "button";
+      }
+      const caja = document.createElement(etiqueta);
       caja.className = "mapa__sector";
       caja.dataset.sector = sector.id;
       caja.style.gridColumn = sector.col;
@@ -126,10 +134,14 @@
         caja.setAttribute("aria-label", `${sector.nombre}, ${pesos(sector.precio)}`);
       }
 
+      let textoPrecio = "Agotada";
+      if (!agotada) {
+        textoPrecio = pesos(sector.precio);
+      }
       caja.append(
         crearTexto("mapa__nombre", sector.nombre),
         crearTexto("mapa__nombre mapa__nombre--corto", sector.corto),
-        crearTexto("mapa__precio", agotada ? "Agotada" : pesos(sector.precio))
+        crearTexto("mapa__precio", textoPrecio)
       );
 
       contenedor.append(caja);
@@ -137,14 +149,14 @@
   };
 
   // Mapa de la pantalla de entradas: sus sectores son botones.
-  const dibujarMapa = (contenedor, recinto, elegido) => {
+  function dibujarMapa(contenedor, recinto, elegido) {
     let id = "";
     if (elegido) id = elegido.id;
     pintar(contenedor, recinto, 100, id, true);
   };
 
   // Mapita del detalle del evento: solo se mira.
-  const dibujarVistaPrevia = (contenedor, recinto) => {
+  function dibujarVistaPrevia(contenedor, recinto) {
     pintar(contenedor, recinto, 70, "", false);
   };
 

@@ -2,7 +2,7 @@
 (() => {
   const carpetaFrontend = new URL("../../", document.currentScript.src);
 
-  const cargar = () => {
+  function cargar() {
     const contenedor = document.getElementById("header");
     if (!contenedor) return;
 
@@ -22,7 +22,10 @@
         plantilla.content
           .querySelectorAll("a[href], link[href], img[src]")
           .forEach((elemento) => {
-            const atributo = elemento.hasAttribute("href") ? "href" : "src";
+            let atributo = "src";
+            if (elemento.hasAttribute("href")) {
+              atributo = "href";
+            }
             const valor = elemento.getAttribute(atributo);
             if (!valor || valor.startsWith("#") || /^[a-z]+:/i.test(valor)) return;
             elemento.setAttribute(atributo, new URL(valor, carpetaFrontend).href);
@@ -31,7 +34,7 @@
 
         const pagina = document.body.dataset.pagina || "inicio";
         const pestana = plantilla.content.querySelector(
-          `.barra-movil__item[data-pagina="${pagina}"]`
+          "#header_pagina_" + pagina
         );
         if (pestana) pestana.classList.add("is-activo");
 
@@ -39,7 +42,7 @@
         const enlace = new URL(location.href).searchParams.get("categoria");
         const categoria = enlace || document.body.dataset.categoria || "todos";
         const chip = plantilla.content.querySelector(
-          `.categorias__chip[data-categoria="${categoria}"]`
+          "#header_categoria_" + categoria
         );
         if (chip) chip.classList.add("is-activo");
 
@@ -49,19 +52,24 @@
         // Se elimina el bloque que no corresponde en vez de ocultarlo: el atributo
         // hidden no sirve aca porque .menu ya trae display:flex y le gana.
         const guardada = localStorage.getItem("sesionIniciada");
-        const sesion =
-          guardada === null
-            ? document.body.dataset.sesion || "invitado"
-            : guardada === "true"
-            ? "cliente"
-            : "invitado";
+        let sesion = "invitado";
+        if (guardada === "true") {
+          sesion = "cliente";
+        } else if (guardada === null && document.body.dataset.sesion) {
+          sesion = document.body.dataset.sesion;
+        }
 
-        plantilla.content.querySelectorAll(".menu[data-sesion]").forEach((bloque) => {
-          if (bloque.dataset.sesion !== sesion) bloque.remove();
-        });
+        const menuInvitado = plantilla.content.querySelector("#header_invitado");
+        const menuCliente = plantilla.content.querySelector("#header_cliente");
+        if (sesion === "cliente") {
+          menuInvitado.remove();
+          menuCliente.hidden = false;
+        } else {
+          menuCliente.remove();
+        }
 
         // Iniciales del usuario en el avatar. Van como texto, nunca como html.
-        const avatar = plantilla.content.querySelector("[data-iniciales]");
+        const avatar = plantilla.content.querySelector("#header_iniciales");
         if (avatar) {
           const nombre = localStorage.getItem("nombre") || "";
           const apellido = localStorage.getItem("apellido") || "";

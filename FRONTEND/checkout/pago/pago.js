@@ -1,6 +1,6 @@
 // ----- resumen de la compra -----
 
-const escribirResumen = (selector, texto) => {
+function escribirResumen(selector, texto) {
   document.querySelectorAll(selector).forEach((nodo) => {
     nodo.textContent = texto;
   });
@@ -46,8 +46,8 @@ function formatoPrecio(precio) {
 
 // ----- tipo de pago -----
 const opcionesPago = document.querySelectorAll(".pago_opcion");
-const datosTarjeta = document.querySelector(".pago_tarjeta");
-const datosTransferencia = document.querySelector(".pago_transferencia");
+const datosTarjeta = document.querySelector("#pago_tarjeta");
+const datosTransferencia = document.querySelector("#pago_transferencia");
 
 // débito viene seleccionado por defecto
 datosTarjeta.style.display = "none";
@@ -93,7 +93,7 @@ opcionesCuotas.forEach((cuota) => {
 });
 
 // ----- código de descuento -----
-const botonAplicar = document.querySelector(".pago_aplicar");
+const botonAplicar = document.querySelector("#pago_aplicar");
 const inputCodigo = document.querySelector("#codigo");
 const mensajeCodigo = document.querySelector("#mensaje_codigo");
 botonAplicar.addEventListener("click", () => {

@@ -1,7 +1,7 @@
 (() => {
   const carpetaFrontend = new URL("../../", document.currentScript.src);
 
-  const cargar = () => {
+  function cargar() {
     const contenedor = document.getElementById("convenios");
     if (!contenedor) return;
 
@@ -19,7 +19,10 @@
         plantilla.content
           .querySelectorAll("a[href], link[href], img[src]")
           .forEach((elemento) => {
-            const atributo = elemento.hasAttribute("href") ? "href" : "src";
+            let atributo = "src";
+            if (elemento.hasAttribute("href")) {
+              atributo = "href";
+            }
             const valor = elemento.getAttribute(atributo);
             if (!valor || valor.startsWith("#") || /^[a-z]+:/i.test(valor)) return;
             elemento.setAttribute(atributo, new URL(valor, carpetaFrontend).href);
@@ -32,8 +35,8 @@
   };
 
   function activarCarrusel(contenedor) {
-    const pista = contenedor.querySelector("[data-pista]");
-    const puntos = contenedor.querySelector("[data-puntos]");
+    const pista = contenedor.querySelector("#convenios_pista");
+    const puntos = contenedor.querySelector("#convenios_puntos");
     if (!pista) return;
 
     const convenios = [...pista.querySelectorAll(".convenio")];
@@ -59,7 +62,7 @@
     let animacion = null;
     let respaldo = null;
 
-    const desplazar = (destino) => {
+    function desplazar(destino) {
       if (animacion) cancelAnimationFrame(animacion);
       clearTimeout(respaldo);
 
@@ -70,7 +73,7 @@
       const partida = performance.now();
       pista.style.scrollSnapType = "none";
 
-      const terminar = () => {
+      function terminar() {
         if (animacion) cancelAnimationFrame(animacion);
         clearTimeout(respaldo);
         animacion = null;
@@ -84,13 +87,15 @@
 
       respaldo = setTimeout(terminar, DURACION + 100);
 
-      const paso = (ahora) => {
+      function paso(ahora) {
         const avance = Math.min((ahora - partida) / DURACION, 1);
         // Arranca y termina despacio.
-        const suave =
-          avance < 0.5
-            ? 2 * avance * avance
-            : 1 - Math.pow(-2 * avance + 2, 2) / 2;
+        let suave;
+        if (avance < 0.5) {
+          suave = 2 * avance * avance;
+        } else {
+          suave = 1 - Math.pow(-2 * avance + 2, 2) / 2;
+        }
 
         pista.scrollLeft = inicio + distancia * suave;
 
@@ -104,15 +109,19 @@
       animacion = requestAnimationFrame(paso);
     };
 
-    const ir = (indice) => {
+    function ir(indice) {
       const destino = Math.min(Math.max(indice, 0), convenios.length - 1);
       desplazar(destino * pista.clientWidth);
     };
 
-    const pintar = () => {
+    function pintar() {
       [...puntos.children].forEach((punto, indice) => {
         const activo = indice === actual;
-        punto.classList.toggle("is-activo", activo);
+        if (activo) {
+          punto.classList.add("is-activo");
+        } else {
+          punto.classList.remove("is-activo");
+        }
         punto.setAttribute("aria-selected", activo);
       });
     };

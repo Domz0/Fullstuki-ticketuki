@@ -38,10 +38,10 @@
         </a>
 
         <div class="categoria__texto">
-          <h1 class="categoria__titulo">Música</h1>
+          <h1 class="categoria__titulo" id="categoria__titulo">Música</h1>
           <p class="categoria__conteo">
             <span data-conteo>5</span> <span data-plural="evento">eventos</span> en
-            <span data-ciudad>Santiago</span>
+            <span data-ciudad id="listado_ciudad">Santiago</span>
           </p>
         </div>
 
@@ -59,13 +59,13 @@
         data-busqueda
         aria-label="Buscar en esta categoría"
         placeholder="Buscar en esta categoría"
-        />
+        id="listado_busqueda" />
       </form>
 
       <!-- ============ Chips resumen (móvil) ============ -->
       <div class="chips">
-        <button class="chips__chip chips__chip--filtros" type="button" data-abre-panel>
-          Filtros <span class="chips__contador" data-activos>0</span>
+        <button class="chips__chip chips__chip--filtros" type="button" data-abre-panel id="chips__chip__filtros">
+          Filtros <span class="chips__contador" data-activos id="listado_activos">0</span>
         </button>
         <button class="chips__chip" type="button" data-abre-panel data-resumen="subcategoria">
           Subcategoría
@@ -84,7 +84,7 @@
       <!-- ============ Filtros + resultados ============ -->
       <div class="listado">
         <!-- El mismo panel es barra lateral en escritorio y hoja inferior en móvil -->
-        <div class="panel" data-panel hidden>
+        <div class="panel" data-panel hidden id="listado_panel">
           <div class="panel__fondo" data-cierra-panel></div>
 
           <div class="panel__caja" role="dialog" aria-modal="true" aria-label="Filtros">
@@ -139,14 +139,14 @@
 
             <label class="orden">
               <span class="orden__texto">Ordenar por</span>
-              <select class="selector" data-orden aria-label="Ordenar por">
+              <select class="selector" data-orden aria-label="Ordenar por" id="listado_orden">
                 <option value="fecha">Fecha más próxima</option>
                 <option value="precio">Precio</option>
               </select>
             </label>
           </div>
 
-          <section class="resultados" data-lista>
+          <section class="resultados" data-lista id="listado_lista">
             <article
             class="resultado"
             data-categoria="musica"
@@ -640,7 +640,7 @@ data-precio="6000"
             </div>
 </article>
 
-<p class="resultados__vacio" data-vacio hidden>
+<p class="resultados__vacio" data-vacio hidden id="listado_vacio">
   No hay eventos que coincidan con esos filtros.
 </p>
 </section>
