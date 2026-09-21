@@ -16,8 +16,9 @@ const mensajeMail = $("#mensaje_mail");
 const mensajePassword = $("#mensaje_password");
 const mensajeCheckbox = $("#mensaje_checkbox");
 
-const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const regexMayuscula = /[A-Z]/;
+const regexCorreo = /^[^\s@]+@(duoc\.cl|gmail\.com|duocuc\.cl|profesor\.duoc\.cl)$/i;
+// Formato del RUT con o sin puntos y con guion antes del digito verificador.
+const regexRut = /^([0-9]{7,8}|[0-9]{1,2}\.[0-9]{3}\.[0-9]{3})-[0-9kK]$/;
 
 formulario.addEventListener("submit", (evento) => {
   evento.preventDefault();
@@ -44,6 +45,9 @@ formulario.addEventListener("submit", (evento) => {
   if (rut.value.trim() === "") {
     mensajeRut.textContent = "Ingresa tu RUT";
     datosValidos = false;
+  } else if (!regexRut.test(rut.value.trim())) {
+    mensajeRut.textContent = "Usa el formato 12.345.678-5 o 12345678-5";
+    datosValidos = false;
   } else {
     mensajeRut.textContent = "";
   }
@@ -51,6 +55,9 @@ formulario.addEventListener("submit", (evento) => {
   // Correo
   if (mail.value.trim() === "") {
     mensajeMail.textContent = "Ingresa tu correo";
+    datosValidos = false;
+  } else if (mail.value.trim().length > 100) {
+    mensajeMail.textContent = "El correo debe tener como máximo 100 caracteres";
     datosValidos = false;
   } else if (!regexCorreo.test(mail.value.trim())) {
     mensajeMail.textContent = "Correo no válido";
@@ -63,11 +70,8 @@ formulario.addEventListener("submit", (evento) => {
   if (password.value.trim() === "") {
     mensajePassword.textContent = "Ingresa una contraseña";
     datosValidos = false;
-  } else if (password.value.length < 8) {
-    mensajePassword.textContent = "Debe tener mínimo 8 caracteres";
-    datosValidos = false;
-  } else if (!regexMayuscula.test(password.value)) {
-    mensajePassword.textContent = "Debe contener al menos una mayúscula";
+  } else if (password.value.length < 4 || password.value.length > 10) {
+    mensajePassword.textContent = "Debe tener entre 4 y 10 caracteres";
     datosValidos = false;
   } else {
     mensajePassword.textContent = "";

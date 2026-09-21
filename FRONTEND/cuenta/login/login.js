@@ -8,7 +8,7 @@ const password = $("#password");
 const mensajeEmail = $("#mensaje_email");
 const mensajePassword = $("#mensaje_password");
 
-const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const regexCorreo = /^[^\s@]+@(duoc\.cl|gmail\.com|duocuc\.cl|profesor\.duoc\.cl)$/i;
 
 formulario.addEventListener("submit", (evento) => {
   evento.preventDefault();
@@ -17,6 +17,9 @@ formulario.addEventListener("submit", (evento) => {
 
   if (email.value.trim() === "") {
     mensajeEmail.textContent = "Ingresa tu correo";
+    datosValidos = false;
+  } else if (email.value.trim().length > 100) {
+    mensajeEmail.textContent = "El correo debe tener como máximo 100 caracteres";
     datosValidos = false;
   } else if (!regexCorreo.test(email.value.trim())) {
     mensajeEmail.textContent = "Correo no válido";
@@ -27,6 +30,9 @@ formulario.addEventListener("submit", (evento) => {
 
   if (password.value.trim() === "") {
     mensajePassword.textContent = "Ingresa tu contraseña";
+    datosValidos = false;
+  } else if (password.value.length < 4 || password.value.length > 10) {
+    mensajePassword.textContent = "Debe tener entre 4 y 10 caracteres";
     datosValidos = false;
   } else {
     mensajePassword.textContent = "";

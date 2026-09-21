@@ -129,7 +129,9 @@ const mensajeCorreo = document.querySelector("#mensaje_correo");
 function validarDatos() {
   let datosValidos = true;
 
-  const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const regexCorreo = /^[^\s@]+@(duoc\.cl|gmail\.com|duocuc\.cl|profesor\.duoc\.cl)$/i;
+  // Formato del RUT con o sin puntos y con guion antes del digito verificador.
+  const regexRut = /^([0-9]{7,8}|[0-9]{1,2}\.[0-9]{3}\.[0-9]{3})-[0-9kK]$/;
 
   // nombre
   if (nombre.value.trim() === "") {
@@ -154,6 +156,9 @@ function validarDatos() {
     mensajeRut.textContent = "Ingresa tu rut";
 
     datosValidos = false;
+  } else if (!regexRut.test(rut.value.trim())) {
+    mensajeRut.textContent = "Usa el formato 12.345.678-5 o 12345678-5";
+    datosValidos = false;
   } else {
     mensajeRut.textContent = "";
   }
@@ -162,6 +167,9 @@ function validarDatos() {
   if (correo.value.trim() === "") {
     mensajeCorreo.textContent = "Ingresa tu correo";
 
+    datosValidos = false;
+  } else if (correo.value.trim().length > 100) {
+    mensajeCorreo.textContent = "El correo debe tener como máximo 100 caracteres";
     datosValidos = false;
   } else if (!regexCorreo.test(correo.value.trim())) {
     mensajeCorreo.textContent = "Ingresa un correo válido";

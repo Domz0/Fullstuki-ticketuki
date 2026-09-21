@@ -38,8 +38,7 @@ const mensajePassword = $("#mensaje_password");
 const guardarDatos = $("#guardar_datos");
 const cancelarEdicion = $("#cancelar_edicion");
 
-const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const regexMayuscula = /[A-Z]/;
+const regexCorreo = /^[^\s@]+@(duoc\.cl|gmail\.com|duocuc\.cl|profesor\.duoc\.cl)$/i;
 
 guardarDatos.addEventListener("click", () => {
   let datosValidos = true;
@@ -47,6 +46,9 @@ guardarDatos.addEventListener("click", () => {
   // Nuevo correo
   if (nuevoCorreo.value.trim() === "") {
     mensajeCorreo.textContent = "Ingresa un correo";
+    datosValidos = false;
+  } else if (nuevoCorreo.value.trim().length > 100) {
+    mensajeCorreo.textContent = "El correo debe tener como máximo 100 caracteres";
     datosValidos = false;
   } else if (!regexCorreo.test(nuevoCorreo.value.trim())) {
     mensajeCorreo.textContent = "Correo no válido";
@@ -59,11 +61,8 @@ guardarDatos.addEventListener("click", () => {
   if (nuevaPassword.value.trim() === "") {
     mensajePassword.textContent = "Ingresa una contraseña";
     datosValidos = false;
-  } else if (nuevaPassword.value.length < 8) {
-    mensajePassword.textContent = "Debe tener mínimo 8 caracteres";
-    datosValidos = false;
-  } else if (!regexMayuscula.test(nuevaPassword.value)) {
-    mensajePassword.textContent = "Debe contener al menos una mayúscula";
+  } else if (nuevaPassword.value.length < 4 || nuevaPassword.value.length > 10) {
+    mensajePassword.textContent = "Debe tener entre 4 y 10 caracteres";
     datosValidos = false;
   } else {
     mensajePassword.textContent = "";
