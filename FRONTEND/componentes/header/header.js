@@ -43,14 +43,31 @@
         );
         if (chip) chip.classList.add("is-activo");
 
-        // Estado de la sesion: la pagina lo declara con <body data-sesion="cliente">.
-        // Por defecto es "invitado". Reemplaza a los antiguos header1/header2.
+        // Estado de la sesion. Manda localStorage("sesionIniciada"), que es lo que
+        // escriben login.js y cuenta.js al entrar o salir. Si esa clave todavia no
+        // existe (navegador limpio) se usa <body data-sesion> como respaldo.
         // Se elimina el bloque que no corresponde en vez de ocultarlo: el atributo
         // hidden no sirve aca porque .menu ya trae display:flex y le gana.
-        const sesion = document.body.dataset.sesion || "invitado";
+        const guardada = localStorage.getItem("sesionIniciada");
+        const sesion =
+          guardada === null
+            ? document.body.dataset.sesion || "invitado"
+            : guardada === "true"
+            ? "cliente"
+            : "invitado";
+
         plantilla.content.querySelectorAll(".menu[data-sesion]").forEach((bloque) => {
           if (bloque.dataset.sesion !== sesion) bloque.remove();
         });
+
+        // Iniciales del usuario en el avatar. Van como texto, nunca como html.
+        const avatar = plantilla.content.querySelector("[data-iniciales]");
+        if (avatar) {
+          const nombre = localStorage.getItem("nombre") || "";
+          const apellido = localStorage.getItem("apellido") || "";
+          const iniciales = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
+          avatar.textContent = iniciales || "TK";
+        }
 
         contenedor.replaceChildren(plantilla.content);
       })

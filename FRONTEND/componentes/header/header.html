@@ -8,7 +8,8 @@
   La pagina decide qué se muestra con dos atributos en su <body>:
     data-pagina    -> marca la pestaña de la barra movil (inicio, buscar, entradas, cuenta)
     data-categoria -> marca el chip de categoría (si no viene ?categoria= en la url)
-    data-sesion    -> "invitado" (por defecto) o "cliente"
+    data-sesion    -> "invitado" o "cliente". Es solo un respaldo: el estado real lo
+                      decide localStorage("sesionIniciada") dentro de header/header.js
 -->
 <link rel="stylesheet" href="componentes/header/header.css" />
 
@@ -37,10 +38,8 @@
 
     <!-- con sesión iniciada -->
     <nav class="menu" data-sesion="cliente" aria-label="Mi cuenta" hidden>
-      <a class="menu__enlace" href="index.html">Inicio</a>
-      <a class="menu__enlace" href="cuenta/mis-entradas/mis-entradas.html">Mis entradas</a>
       <a class="menu__cuenta" href="cuenta/mi-cuenta/mi-cuenta.html">
-        <span class="menu__avatar">CV</span>
+        <span class="menu__avatar" data-iniciales>TK</span>
         <span class="menu__cuenta-texto">Mi cuenta</span>
       </a>
     </nav>
