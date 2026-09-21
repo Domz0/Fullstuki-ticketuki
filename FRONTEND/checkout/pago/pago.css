@@ -126,6 +126,7 @@
 .pago_opcion {
   display: flex;
   flex: 1;
+  flex-basis: 0;
   align-items: center;
   gap: 12px;
   min-width: 0;
@@ -144,9 +145,9 @@
   border-radius: 5px;
   background-color: var(--color-superficie);
 }
-/*deja la ultima opcion a media fila, sin ser clicable*/
 .pago_hueco {
   flex: 1;
+  flex-basis: 0;
   min-width: 0;
 }
 .pago_opcion_texto {
@@ -174,7 +175,7 @@
   border: 1px solid var(--color-linea);
 }
 .pago_tarjeta {
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 12px;
 }
@@ -359,7 +360,8 @@
     flex-direction: column;
     gap: 10px;
   }
-  .pago_opcion {
+  .pago_metodos .pago_opcion {
+    flex: none;
     width: 100%;
   }
   .pago_descuento {
@@ -429,11 +431,19 @@
   .pago_resumen_mobile .resumen_fila strong {
     color: var(--color-texto);
   }
+  .pago_metodos .pago_hueco {
+    display: none;
+  }
 }
 
 @media (min-width: 1024px) {
   .pago {
     flex-direction: row;
+  }
+  .pago_metodos .pago_opcion,
+  .pago_metodos .pago_hueco {
+    flex: 0 0 calc(50% - 6px);
+    width: calc(50% - 6px);
   }
 }
 .pago_opcion_marcada {
@@ -451,4 +461,20 @@
   margin: 0;
   font-size: 11px;
   color: var(--color-texto-tenue);
+}
+.pago_transferencia {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+.transferencia_dato {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.transferencia_dato span {
+  color: var(--color-texto-tenue);
+}
+.transferencia_dato strong {
+  text-align: right;
 }

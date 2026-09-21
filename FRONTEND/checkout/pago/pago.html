@@ -113,101 +113,55 @@
             <div class="pago_fila">
               <div class="pago_opcion pago_opcion_marcada">
                 <span class="pago_opcion_logo" aria-hidden="true"></span>
-                <label class="pago_opcion_texto" for="metodo_debcredito">
-                  Débito / Crédito
-                  <small>Visa, Mastercard, Redcompra</small>
+
+                <label class="pago_opcion_texto" for="metodo_debito">
+                  Débito
+                  <small>Pago con tarjeta de débito</small>
                 </label>
+
                 <input
-                  id="metodo_debcredito"
+                  id="metodo_debito"
                   type="radio"
                   name="metodo_pago"
-                  value="debcredito"
+                  value="Débito"
+                  checked
                 />
               </div>
+
               <div class="pago_opcion">
                 <span class="pago_opcion_logo" aria-hidden="true"></span>
-                <label class="pago_opcion_texto" for="metodo_mpago">
-                  Mercado pago
-                  <small>Saldo o tarjetas guardadas</small>
+
+                <label class="pago_opcion_texto" for="metodo_credito">
+                  Crédito
+                  <small>Pago con tarjeta de crédito</small>
                 </label>
+
                 <input
-                  id="metodo_mpago"
+                  id="metodo_credito"
                   type="radio"
                   name="metodo_pago"
-                  value="mpago"
-                />
-              </div>
-            </div>
-            <div class="pago_fila">
-              <div class="pago_opcion">
-                <span class="pago_opcion_logo" aria-hidden="true"></span>
-                <label class="pago_opcion_texto" for="metodo_paypal">
-                  PayPal
-                  <small>Redirige a PayPal</small>
-                </label>
-                <input
-                  id="metodo_paypal"
-                  type="radio"
-                  name="metodo_pago"
-                  value="paypal"
-                />
-              </div>
-              <div class="pago_opcion">
-                <span class="pago_opcion_logo" aria-hidden="true"></span>
-                <label class="pago_opcion_texto" for="metodo_AGpay">
-                  Apple Pay / Google Pay
-                  <small>Pago con un toque</small>
-                </label>
-                <input
-                  id="metodo_AGpay"
-                  type="radio"
-                  name="metodo_pago"
-                  value="AGpay"
+                  value="Crédito"
                 />
               </div>
             </div>
+
             <div class="pago_fila">
               <div class="pago_opcion">
                 <span class="pago_opcion_logo" aria-hidden="true"></span>
-                <label class="pago_opcion_texto" for="metodo_yape">
-                  Yape / Plin
-                  <small>Pago por celular</small>
-                </label>
-                <input
-                  id="metodo_yape"
-                  type="radio"
-                  name="metodo_pago"
-                  value="yape"
-                />
-              </div>
-              <div class="pago_opcion">
-                <span class="pago_opcion_logo" aria-hidden="true"></span>
+
                 <label class="pago_opcion_texto" for="metodo_transferencia">
-                  Transferencia Bancaria
-                  <small>Cupo reservado 2 horas</small>
+                  Transferencia bancaria
+                  <small>Pago mediante transferencia</small>
                 </label>
+
                 <input
                   id="metodo_transferencia"
                   type="radio"
                   name="metodo_pago"
-                  value="transferencia"
+                  value="Transferencia bancaria"
                 />
               </div>
-            </div>
-            <div class="pago_fila">
-              <div class="pago_opcion">
-                <span class="pago_opcion_logo" aria-hidden="true"></span>
-                <label class="pago_opcion_texto" for="metodo_cuotas">
-                  Cuotas sin interés
-                  <small>Hasta 12 cuotas con bancos</small>
-                </label>
-                <input
-                  id="metodo_cuotas"
-                  type="radio"
-                  name="metodo_pago"
-                  value="cuotas"
-                />
-              </div>
+
               <div class="pago_hueco" aria-hidden="true"></div>
             </div>
           </div>
@@ -215,6 +169,7 @@
           <div class="separador"></div>
           <div class="pago_tarjeta">
             <h2>Datos de la Tarjeta</h2>
+
             <div class="pago_caja">
               <label for="numero_tarjeta">Dígitos de tarjeta</label>
               <input
@@ -224,7 +179,10 @@
                 placeholder="0000 0000 0000 0000"
                 class="inputs"
               />
+
+              <p id="mensaje_tarjeta" class="mensaje_validacion"></p>
             </div>
+
             <div class="pago_fila">
               <div class="pago_caja">
                 <label for="vencimiento">Fecha de vencimiento</label>
@@ -236,6 +194,7 @@
                   class="inputs"
                 />
               </div>
+
               <div class="pago_caja">
                 <label for="cvv">CVV</label>
                 <input
@@ -247,8 +206,10 @@
                 />
               </div>
             </div>
+
             <div class="pago_cuotas">
               <p>Cuotas sin interés</p>
+
               <div class="pago_fila">
                 <button type="button" class="pago_cuota pago_cuota_marcada">
                   Sin cuotas
@@ -258,23 +219,51 @@
                 <button type="button" class="pago_cuota">12 cuotas</button>
               </div>
             </div>
-            <div class="pago_resumen_mobile">
-              <div class="separador"></div>
+          </div>
+          <div class="pago_transferencia">
+            <h2>Datos para transferencia</h2>
 
-              <div class="resumen_fila">
-                <span data-resumen-linea>2 × entrada</span>
-                <strong data-resumen-subtotal>$90.000</strong>
-              </div>
-
-              <div class="resumen_fila">
-                <span>Cargo por servicio</span>
-                <strong data-resumen-cargo>$9.000</strong>
-              </div>
-
-              <button type="button" class="boton morado boton_comprar_mobile">
-                Pagar <span data-resumen-total>$99.000</span>
-              </button>
+            <div class="transferencia_dato">
+              <span>Banco</span>
+              <strong>Banco Ticketuki</strong>
             </div>
+
+            <div class="transferencia_dato">
+              <span>Tipo de cuenta</span>
+              <strong>Cuenta Corriente</strong>
+            </div>
+
+            <div class="transferencia_dato">
+              <span>N° de cuenta</span>
+              <strong>123456789</strong>
+            </div>
+
+            <div class="transferencia_dato">
+              <span>RUT</span>
+              <strong>76.123.456-7</strong>
+            </div>
+
+            <div class="transferencia_dato">
+              <span>Correo</span>
+              <strong>pagos@ticketuki.cl</strong>
+            </div>
+          </div>
+          <div class="pago_resumen_mobile">
+            <div class="separador"></div>
+
+            <div class="resumen_fila">
+              <span data-resumen-linea>2 × entrada</span>
+              <strong data-resumen-subtotal>$90.000</strong>
+            </div>
+
+            <div class="resumen_fila">
+              <span>Cargo por servicio</span>
+              <strong data-resumen-cargo>$9.000</strong>
+            </div>
+
+            <button type="button" class="boton morado boton_comprar_mobile">
+              Pagar <span data-resumen-total>$99.000</span>
+            </button>
           </div>
         </div>
       </div>
@@ -297,10 +286,12 @@
             <dt>Área</dt>
             <dd data-resumen-area>Cancha General</dd>
           </div>
+
           <div class="resumen_fila">
             <dt data-resumen-linea>2 × entrada</dt>
             <dd data-resumen-subtotal>$90.000</dd>
           </div>
+
           <div class="resumen_fila">
             <dt>Cargo por servicio</dt>
             <dd data-resumen-cargo>$9.000</dd>
