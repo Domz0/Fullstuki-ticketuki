@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Ticketuki Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;700&display=swap"
+    />
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body class="pagina admin">
+
+    <header class="barra flex_H">
+      <button type="button" class="barra__menu" id="abrirMenu" aria-label="Abrir menú" aria-expanded="false" aria-controls="lateral">
+        <span></span><span></span><span></span>
+      </button>
+      <p class="marca">Ticketuki <span class="marca__rol">Admin</span></p>
+      <span class="avatar" data-iniciales aria-hidden="true">AD</span>
+    </header>
+
+    <div class="velo" id="velo" hidden></div>
+
+    <aside class="lateral flex_V" id="lateral" aria-label="Menú de administración">
+      <p class="marca lateral__marca">Ticketuki <span class="marca__rol">Admin</span></p>
+
+      <nav class="lateral__nav flex_V">
+        <p class="lateral__grupo">Principal</p>
+        <a class="lateral__enlace is-activo" href="dashboard.html" aria-current="page">Dashboard</a>
+      </nav>
+
+      <div class="lateral__pie flex_V">
+        <button type="button" class="lateral__salir" id="cerrarSesion">Cerrar sesión</button>
+        <div class="lateral__usuario flex_H">
+          <span class="avatar" data-iniciales aria-hidden="true">AD</span>
+          <div>
+            <p class="lateral__nombre" data-nombre>Administrador</p>
+            <p class="lateral__cargo">Superadmin</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="admin__columna flex_V">
+
+      <div class="cabecera flex_H">
+        <div>
+          <p class="cabecera__ruta">Inicio</p>
+          <h1 class="cabecera__titulo">Dashboard</h1>
+        </div>
+        <label class="buscador flex_H">
+          <span class="buscador__icono" aria-hidden="true"></span>
+          <input type="search" placeholder="Buscar eventos, órdenes, usuarios" aria-label="Buscar" />
+        </label>
+      </div>
+
+      <main class="contenido">
+        <div class="periodos flex_H">
+          <div class="periodos__grupo flex_H" role="group" aria-label="Periodo">
+            <button type="button" class="periodo" data-periodo="últimos 7 días">
+              <span class="solo-escritorio">7 días</span><span class="solo-mobile">Hoy</span>
+            </button>
+            <button type="button" class="periodo is-activo" data-periodo="últimos 30 días" aria-pressed="true">30 días</button>
+            <button type="button" class="periodo" data-periodo="el último trimestre">Trimestre</button>
+            <button type="button" class="periodo" data-periodo="el último año">Año</button>
+          </div>
+          <p class="periodos__nota solo-escritorio">Comparado con el periodo anterior</p>
+        </div>
+
+        <section class="kpis" aria-label="Indicadores">
+          <article class="tarjeta kpi">
+            <h2 class="rotulo">Entradas vendidas</h2>
+            <p class="kpi__valor">48.213</p>
+            <p class="kpi__pie"><span class="chip chip--morado">+12,4%</span><span class="solo-escritorio">vs 42.885</span></p>
+          </article>
+          <article class="tarjeta kpi">
+            <h2 class="rotulo">Ingresos brutos</h2>
+            <p class="kpi__valor">$2.412M</p>
+            <p class="kpi__pie"><span class="chip chip--morado">+9,1%</span><span class="solo-escritorio">vs $2.211M</span></p>
+          </article>
+          <article class="tarjeta kpi">
+            <h2 class="rotulo">Cargos por servicio</h2>
+            <p class="kpi__valor">$219M</p>
+            <p class="kpi__pie"><span class="chip">10% del bruto</span></p>
+          </article>
+          <article class="tarjeta kpi">
+            <h2 class="rotulo">Ocupación promedio</h2>
+            <p class="kpi__valor">78,4%</p>
+            <p class="kpi__pie"><span class="chip">-2,1%</span><span class="solo-escritorio">vs 80,5%</span></p>
+          </article>
+        </section>
+
+        <section class="tarjeta bloque bloque--curva">
+          <div class="bloque__cabecera flex_H">
+            <div>
+              <h2 class="bloque__titulo">Curva de ventas</h2>
+              <p class="bloque__sub" id="curvaSub">Entradas vendidas por día · últimos 30 días</p>
+            </div>
+            <p class="bloque__total">48.213</p>
+          </div>
+          <div class="curva" role="img" aria-label="Entradas vendidas por día">
+            <div class="curva__barra" style="height: 35%"></div>
+            <div class="curva__barra" style="height: 43%"></div>
+            <div class="curva__barra" style="height: 37%"></div>
+            <div class="curva__barra" style="height: 35%"></div>
+            <div class="curva__barra" style="height: 45%"></div>
+            <div class="curva__barra" style="height: 49%"></div>
+            <div class="curva__barra" style="height: 42%"></div>
+            <div class="curva__barra" style="height: 44%"></div>
+            <div class="curva__barra" style="height: 55%"></div>
+            <div class="curva__barra" style="height: 54%"></div>
+            <div class="curva__barra" style="height: 48%"></div>
+            <div class="curva__barra" style="height: 54%"></div>
+            <div class="curva__barra" style="height: 63%"></div>
+            <div class="curva__barra" style="height: 58%"></div>
+            <div class="curva__barra" style="height: 55%"></div>
+            <div class="curva__barra" style="height: 65%"></div>
+            <div class="curva__barra" style="height: 70%"></div>
+            <div class="curva__barra" style="height: 63%"></div>
+            <div class="curva__barra" style="height: 64%"></div>
+            <div class="curva__barra" style="height: 74%"></div>
+            <div class="curva__barra" style="height: 75%"></div>
+            <div class="curva__barra" style="height: 68%"></div>
+            <div class="curva__barra" style="height: 74%"></div>
+            <div class="curva__barra" style="height: 83%"></div>
+            <div class="curva__barra" style="height: 79%"></div>
+            <div class="curva__barra" style="height: 75%"></div>
+            <div class="curva__barra" style="height: 84%"></div>
+            <div class="curva__barra is-reciente" style="height: 90%"></div>
+            <div class="curva__barra is-reciente" style="height: 84%"></div>
+            <div class="curva__barra is-reciente" style="height: 83%"></div>
+          </div>
+          <div class="curva__fechas flex_H">
+            <span>19 AGO</span><span>03 SEP</span><span>17 SEP</span>
+          </div>
+        </section>
+
+        <section class="tarjeta bloque bloque--pagos">
+          <h2 class="bloque__titulo">Métodos de pago</h2>
+          <p class="bloque__sub">Sobre 48.213 transacciones</p>
+          <div class="pagos flex_H">
+            <div class="dona" role="img" aria-label="62% tarjeta">
+              <p class="dona__centro"><strong>62%</strong><span>Tarjeta</span></p>
+            </div>
+            <ul class="leyenda flex_V">
+              <li><span class="punto punto--uno"></span>Tarjeta crédito/débito<b>62%</b></li>
+              <li><span class="punto punto--dos"></span>Mercado Pago<b>16%</b></li>
+              <li><span class="punto punto--tres"></span>Apple / Google Pay<b>12%</b></li>
+              <li><span class="punto punto--cuatro"></span>Transferencia<b>7%</b></li>
+              <li><span class="punto punto--cinco"></span>Otros<b>3%</b></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="tarjeta bloque bloque--areas">
+          <h2 class="bloque__titulo">Ventas por área</h2>
+          <p class="bloque__sub">Festival de rock en vivo · Estadio Nacional</p>
+          <ul class="barras flex_V">
+            <li>
+              <div class="barras__fila"><span>Cancha Preferencial</span><b>7.120 / 7.600</b></div>
+              <div class="pista"><div class="pista__relleno" style="width: 94%"></div></div>
+            </li>
+            <li>
+              <div class="barras__fila"><span>Cancha General</span><b>19.480 / 23.000</b></div>
+              <div class="pista"><div class="pista__relleno" style="width: 85%"></div></div>
+            </li>
+            <li>
+              <div class="barras__fila"><span>Tribuna Andes</span><b>8.940 / 11.800</b></div>
+              <div class="pista"><div class="pista__relleno" style="width: 76%"></div></div>
+            </li>
+            <li>
+              <div class="barras__fila"><span>Tribuna Pacífico</span><b>11.800 / 11.800</b></div>
+              <div class="pista"><div class="pista__relleno" style="width: 100%"></div></div>
+            </li>
+            <li>
+              <div class="barras__fila"><span>Galería Sur</span><b>4.130 / 8.600</b></div>
+              <div class="pista"><div class="pista__relleno" style="width: 48%"></div></div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="tarjeta bloque bloque--aforo">
+          <h2 class="bloque__titulo">Aforo y asistencia</h2>
+          <p class="bloque__sub">Eventos finalizados este mes</p>
+          <ul class="barras flex_V">
+            <li>
+              <div class="barras__fila"><span>Clásico de fútbol local</span><b>92%</b></div>
+              <div class="pista"><div class="pista__relleno" style="width: 92%"></div></div>
+            </li>
+            <li>
+              <div class="barras__fila"><span>Obra de teatro clásica</span><b>88%</b></div>
+              <div class="pista"><div class="pista__relleno" style="width: 88%"></div></div>
+            </li>
+            <li>
+              <div class="barras__fila"><span>Expo tecnología y videojuegos</span><b>74%</b></div>
+              <div class="pista"><div class="pista__relleno" style="width: 74%"></div></div>
+            </li>
+            <li>
+              <div class="barras__fila"><span>Feria del libro</span><b>69%</b></div>
+              <div class="pista"><div class="pista__relleno" style="width: 69%"></div></div>
+            </li>
+          </ul>
+          <p class="aforo__leyenda flex_H solo-escritorio">
+            <span class="punto punto--morado"></span>Asistió <span class="punto"></span>No asistió
+          </p>
+        </section>
+
+        <section class="tarjeta bloque bloque--descuentos">
+          <div class="bloque__cabecera flex_H">
+            <div>
+              <h2 class="bloque__titulo">Descuentos por empresa</h2>
+              <p class="bloque__sub">Monto descontado este mes</p>
+            </div>
+            <a class="bloque__accion solo-escritorio" href="#">Ver todos</a>
+          </div>
+          <ul class="descuentos flex_V">
+            <li class="barras__fila">
+              <span>RETAIL15</span>
+              <div class="pista"><div class="pista__relleno pista__relleno--rosa" style="width: 100%"></div></div>
+              <b>$38,2M</b>
+            </li>
+            <li class="barras__fila">
+              <span>CAJA10</span>
+              <div class="pista"><div class="pista__relleno pista__relleno--rosa" style="width: 64%"></div></div>
+              <b>$24,6M</b>
+            </li>
+            <li class="barras__fila">
+              <span>BANCO12</span>
+              <div class="pista"><div class="pista__relleno pista__relleno--rosa" style="width: 47%"></div></div>
+              <b>$18,1M</b>
+            </li>
+            <li class="barras__fila">
+              <span>SALUD08</span>
+              <div class="pista"><div class="pista__relleno pista__relleno--rosa" style="width: 25%"></div></div>
+              <b>$9,4M</b>
+            </li>
+          </ul>
+        </section>
+
+        <section class="tarjeta bloque bloque--devoluciones">
+          <div class="bloque__cabecera flex_H">
+            <div>
+              <h2 class="bloque__titulo">Devoluciones y contracargos</h2>
+              <p class="bloque__sub solo-escritorio">Últimos 30 días</p>
+            </div>
+            <a class="bloque__accion solo-escritorio" href="#">Revisar</a>
+          </div>
+          <div class="mini">
+            <div class="mini__item"><strong>1.871</strong><span>Solicitudes</span></div>
+            <div class="mini__item"><strong>98,4%</strong><span>Automáticas</span></div>
+            <div class="mini__item"><strong>$41,2M</strong><span>Monto devuelto</span></div>
+            <div class="mini__item"><strong>23</strong><span>Contracargos</span></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+  </body>
+</html>

@@ -48,6 +48,7 @@ formulario.addEventListener("submit", (evento) => {
     ) {
       //usando esto podemos dejar que despues del registro quede como iniciado igual
       localStorage.setItem("sesionIniciada", "true");
+      localStorage.setItem("rol", "cliente");
       //voy a intentar conectar a mi-cuenta, esto hay que cambiarlo
       window.location.href = "../../index.html";
       //window.location.href = "../mi-cuenta/mi-cuenta.html";
@@ -58,7 +59,8 @@ formulario.addEventListener("submit", (evento) => {
 
     ) {
       localStorage.setItem("sesionIniciada", "true");
-      window.location.href = "../../admin.html";
+      localStorage.setItem("rol", "admin");
+      window.location.href = "../../admin/dashboard/dashboard.html";
     } else {
       mensajePassword.textContent = "Correo o contraseña incorrectos";
     }
