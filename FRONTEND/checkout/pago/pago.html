@@ -36,6 +36,7 @@
                 id="nombre"
                 type="text"
                 name="nombre"
+                autocomplete="given-name"
                 placeholder="Nombre"
                 class="inputs"
               />
@@ -47,6 +48,7 @@
                 id="apellido"
                 type="text"
                 name="apellido"
+                autocomplete="family-name"
                 placeholder="Apellido"
                 class="inputs"
               />
@@ -60,7 +62,8 @@
                 id="rut"
                 type="text"
                 name="rut"
-                placeholder="Dirección"
+                maxlength="12"
+                placeholder="Ej: 12.345.678-5"
                 class="inputs"
               />
               <p id="mensaje_rut" class="mensaje_validacion"></p>
@@ -71,6 +74,8 @@
                 id="correo"
                 type="email"
                 name="correo"
+                autocomplete="email"
+                maxlength="100"
                 placeholder="Correo electrónico"
                 class="inputs"
               />
@@ -92,7 +97,13 @@
                 class="inputs"
               />
 
-              <button type="button" class="boton pago_aplicar" id="pago_aplicar">Aplicar</button>
+              <button
+                type="button"
+                class="boton pago_aplicar"
+                id="pago_aplicar"
+              >
+                Aplicar
+              </button>
             </div>
 
             <p id="mensaje_codigo"></p>

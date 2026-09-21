@@ -27,6 +27,7 @@
                   type="text"
                   id="nombre"
                   name="nombre"
+                  autocomplete="given-name"
                   placeholder="Nombre"
                 />
                 <p id="mensaje_nombre" class="mensaje_validacion"></p>
@@ -37,6 +38,7 @@
                   type="text"
                   id="apellido"
                   name="apellido"
+                  autocomplete="family-name"
                   placeholder="Apellido"
                 />
                 <p id="mensaje_apellido" class="mensaje_validacion"></p>
@@ -50,7 +52,8 @@
                   type="text"
                   id="rut"
                   name="rut"
-                  placeholder="12.345.678-9"
+                  maxlength="12"
+                  placeholder="Ej: 12.345.678-5"
                 />
                 <p id="mensaje_rut" class="mensaje_validacion"></p>
               </div>
@@ -60,6 +63,8 @@
                   type="text"
                   id="mail"
                   name="mail"
+                  autocomplete="email"
+                  maxlength="100"
                   placeholder="tu@correo.com"
                 />
                 <p id="mensaje_mail" class="mensaje_validacion"></p>
@@ -71,6 +76,8 @@
                 type="password"
                 id="password"
                 name="password"
+                autocomplete="new-password"
+                maxlength="10"
                 placeholder="Entre 4 y 10 caracteres"
               />
               <p id="mensaje_password" class="mensaje_validacion"></p>
