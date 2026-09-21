@@ -1,3 +1,8 @@
+const sesionIniciada = localStorage.getItem("sesionIniciada");
+if (sesionIniciada !== "true") {
+  window.location.href = "../login/login.html";
+} //si no estai logueado te fuiste al lobby
+
 (() => {
   const entradas = document.querySelectorAll(".entrada");
   const vacio = document.querySelector("#mis_entradas_vacio");
@@ -14,7 +19,7 @@
       }
     });
     vacio.hidden = hayEntradas;
-  };
+  }
 
   document.querySelectorAll("[data-filtro]").forEach((boton) => {
     boton.addEventListener("click", () => {
