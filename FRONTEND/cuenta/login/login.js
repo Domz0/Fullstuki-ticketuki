@@ -43,8 +43,16 @@ formulario.addEventListener("submit", (evento) => {
       //usando esto podemos dejar que despues del registro quede como iniciado igual
       localStorage.setItem("sesionIniciada", "true");
       //voy a intentar conectar a mi-cuenta, esto hay que cambiarlo
-      //window.location.href = "../../index.html";
-      window.location.href = "../mi-cuenta/mi-cuenta.html";
+      window.location.href = "../../index.html";
+      //window.location.href = "../mi-cuenta/mi-cuenta.html";
+
+    } else if (
+      email.value.trim() === "admin@duocuc.cl" &&
+      password.value === "Admin1234"
+
+    ) {
+      localStorage.setItem("sesionIniciada", "true");
+      window.location.href = "../../admin.html";
     } else {
       mensajePassword.textContent = "Correo o contraseña incorrectos";
     }
