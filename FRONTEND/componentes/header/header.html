@@ -6,7 +6,6 @@
   sirve igual desde index.html que desde catalogo/listado/listado.html.
 
   La pagina decide qué se muestra con dos atributos en su <body>:
-    data-pagina    -> marca la pestaña de la barra movil (inicio, buscar, entradas, cuenta)
     data-categoria -> marca el chip de categoría (si no viene ?categoria= en la url)
     data-sesion    -> "invitado" o "cliente". Es solo un respaldo: el estado real lo
                       decide localStorage("sesionIniciada") dentro de header/header.js
@@ -52,22 +51,3 @@
     <a id="header_categoria_ferias" class="categorias__chip" data-categoria="ferias" href="catalogo/listado/listado.html?categoria=ferias">Ferias &amp; Expos</a>
   </nav>
 </header>
-
-<nav class="barra-movil" aria-label="Navegación">
-  <a id="header_pagina_inicio" class="barra-movil__item" data-pagina="inicio" href="index.html">
-    <span class="barra-movil__icono" aria-hidden="true"></span>
-    Inicio
-  </a>
-  <a id="header_pagina_buscar" class="barra-movil__item" data-pagina="buscar" href="catalogo/listado/listado.html?categoria=musica">
-    <span class="barra-movil__icono" aria-hidden="true"></span>
-    Buscar
-  </a>
-  <a id="header_pagina_entradas" class="barra-movil__item" data-pagina="entradas" href="cuenta/mis-entradas/mis-entradas.html">
-    <span class="barra-movil__icono" aria-hidden="true"></span>
-    Entradas
-  </a>
-  <a id="header_pagina_cuenta" class="barra-movil__item" data-pagina="cuenta" href="cuenta/mi-cuenta/mi-cuenta.html">
-    <span class="barra-movil__icono" aria-hidden="true"></span>
-    Cuenta
-  </a>
-</nav>

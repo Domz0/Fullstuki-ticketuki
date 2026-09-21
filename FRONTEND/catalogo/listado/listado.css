@@ -475,7 +475,6 @@ button {
 }
 
 .panel__fondo,
-.panel__asa,
 .panel__boton {
   display: none;
 }
@@ -497,15 +496,6 @@ button {
 
 .panel__grupo:last-of-type {
   margin-bottom: 0;
-}
-
-.panel__asa {
-  display: block;
-  width: 44px;
-  height: 4px;
-  margin: 0 auto 16px;
-  border-radius: 999px;
-  background: var(--color-linea-suave);
 }
 
 .panel__encabezado {
@@ -730,7 +720,6 @@ body.sin-scroll {
   }
 
   .panel__fondo,
-  .panel__asa,
   .panel__boton {
     display: block;
   }

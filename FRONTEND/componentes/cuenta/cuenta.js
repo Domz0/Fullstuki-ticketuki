@@ -4,8 +4,8 @@
 
   const SECCIONES = [
     { id: "datos", nombre: "Datos personales", ruta: "cuenta/mi-cuenta/mi-cuenta.html" },
-    { id: "entradas", nombre: "Mis entradas", ruta: "cuenta/mis-entradas/mis-entradas.html" },
-    { id: "historial", nombre: "Historial", ruta: "cuenta/historial/historial.html" },
+    { id: "entradas", nombre: "Mis entradas", ruta: "cuenta/mis-entradas/mis-entradas.html" }
+    //{ id: "historial", nombre: "Historial", ruta: "cuenta/historial/historial.html" },
   ];
 
   function cargar() {
