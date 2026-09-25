@@ -110,6 +110,7 @@ botonAplicar.addEventListener("click", () => {
     inputCodigo.classList.remove("input_error");
     inputCodigo.classList.add("input_exito");
     escribirResumen("[data-resumen-total]", formatoPrecio(total));
+    escribirResumen("[data-resumen-descuento]", "-" + formatoPrecio(descuento));
   } else if (codigo === "ROCK20" && descuentoAplicado === true) {
     mensajeCodigo.textContent = "El descuento ya fue aplicado";
     mensajeCodigo.classList.remove("txt_error");
