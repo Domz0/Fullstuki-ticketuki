@@ -34,7 +34,7 @@
     contenedor.querySelector("#cuenta_nombre").textContent =
       `${nombre} ${apellido}`.trim() || "Mi cuenta";
     const textoCorreo = contenedor.querySelector("#cuenta_correo");
-    textoCorreo.textContent = "Miembro desde 2023";
+    textoCorreo.textContent = "Miembro desde 2026";
     if (correo) {
       textoCorreo.textContent = correo + " · Miembro desde 2023";
     }

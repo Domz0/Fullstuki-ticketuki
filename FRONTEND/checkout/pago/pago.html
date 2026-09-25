@@ -40,7 +40,7 @@
                 placeholder="Nombre"
                 class="inputs"
               />
-              <p id="mensaje_nombre" class="mensaje_validacion"></p>
+              <p id="mensaje_nombre" class="txt_error"></p>
             </div>
             <div class="pago_caja">
               <label for="apellido">Apellido</label>
@@ -52,7 +52,7 @@
                 placeholder="Apellido"
                 class="inputs"
               />
-              <p id="mensaje_apellido" class="mensaje_validacion"></p>
+              <p id="mensaje_apellido" class="txt_error"></p>
             </div>
           </div>
           <div class="pago_fila">
@@ -66,7 +66,7 @@
                 placeholder="Ej: 12.345.678-5"
                 class="inputs"
               />
-              <p id="mensaje_rut" class="mensaje_validacion"></p>
+              <p id="mensaje_rut" class="txt_error"></p>
             </div>
             <div class="pago_caja">
               <label for="correo">Correo electrónico</label>
@@ -79,7 +79,7 @@
                 placeholder="Correo electrónico"
                 class="inputs"
               />
-              <p id="mensaje_correo" class="mensaje_validacion"></p>
+              <p id="mensaje_correo" class="txt_error"></p>
             </div>
           </div>
         </div>
@@ -108,10 +108,6 @@
 
             <p id="mensaje_codigo"></p>
           </div>
-          <p class="pago_sugerencia">
-            Si una empresa con descuento vigente te pasó un código, canjéalo
-            acá.
-          </p>
         </div>
 
         <div class="pago_bloque">
@@ -173,8 +169,8 @@
             </div>
           </div>
 
-          <div class="separador"></div>
           <div class="pago_tarjeta" id="pago_tarjeta">
+            <div class="separador"></div>
             <h2>Datos de la Tarjeta</h2>
 
             <div class="pago_caja">
@@ -187,7 +183,7 @@
                 class="inputs"
               />
 
-              <p id="mensaje_tarjeta" class="mensaje_validacion"></p>
+              <p id="mensaje_tarjeta" class="txt_error"></p>
             </div>
 
             <div class="pago_fila">
@@ -228,6 +224,7 @@
             </div>
           </div>
           <div class="pago_transferencia" id="pago_transferencia">
+            <div class="separador"></div>
             <h2>Datos para transferencia</h2>
 
             <div class="transferencia_dato">

@@ -46,26 +46,33 @@ guardarDatos.addEventListener("click", () => {
   // Nuevo correo
   if (nuevoCorreo.value.trim() === "") {
     mensajeCorreo.textContent = "Ingresa un correo";
+    nuevoCorreo.classList.add("input_error");
     datosValidos = false;
   } else if (nuevoCorreo.value.trim().length > 100) {
     mensajeCorreo.textContent = "El correo debe tener como máximo 100 caracteres";
+    nuevoCorreo.classList.add("input_error");
     datosValidos = false;
   } else if (!regexCorreo.test(nuevoCorreo.value.trim())) {
     mensajeCorreo.textContent = "Correo no válido";
+    nuevoCorreo.classList.add("input_error");
     datosValidos = false;
   } else {
     mensajeCorreo.textContent = "";
+    nuevoCorreo.classList.remove("input_error");
   }
 
   // Nueva contraseña
   if (nuevaPassword.value.trim() === "") {
     mensajePassword.textContent = "Ingresa una contraseña";
+    nuevaPassword.classList.add("input_error");
     datosValidos = false;
   } else if (nuevaPassword.value.length < 4 || nuevaPassword.value.length > 10) {
     mensajePassword.textContent = "Debe tener entre 4 y 10 caracteres";
+    nuevaPassword.classList.add("input_error");
     datosValidos = false;
   } else {
     mensajePassword.textContent = "";
+    nuevaPassword.classList.remove("input_error");
   }
 
   if (datosValidos) {
@@ -88,4 +95,7 @@ cancelarEdicion.addEventListener("click", () => {
 
   mensajeCorreo.textContent = "";
   mensajePassword.textContent = "";
+
+  nuevoCorreo.classList.remove("input_error");
+  nuevaPassword.classList.remove("input_error");
 });

@@ -17,25 +17,32 @@ formulario.addEventListener("submit", (evento) => {
 
   if (email.value.trim() === "") {
     mensajeEmail.textContent = "Ingresa tu correo";
+    email.classList.add("input_error");
     datosValidos = false;
   } else if (email.value.trim().length > 100) {
     mensajeEmail.textContent = "El correo debe tener como máximo 100 caracteres";
+    email.classList.add("input_error");
     datosValidos = false;
   } else if (!regexCorreo.test(email.value.trim())) {
     mensajeEmail.textContent = "Correo no válido";
+    email.classList.add("input_error");
     datosValidos = false;
   } else {
     mensajeEmail.textContent = "";
+    email.classList.remove("input_error");
   }
 
   if (password.value.trim() === "") {
     mensajePassword.textContent = "Ingresa tu contraseña";
+    password.classList.add("input_error");
     datosValidos = false;
   } else if (password.value.length < 4 || password.value.length > 10) {
     mensajePassword.textContent = "Debe tener entre 4 y 10 caracteres";
+    password.classList.add("input_error");
     datosValidos = false;
   } else {
     mensajePassword.textContent = "";
+    password.classList.remove("input_error");
   }
 
   if (datosValidos) {
@@ -56,13 +63,14 @@ formulario.addEventListener("submit", (evento) => {
     } else if (
       email.value.trim() === "admin@duocuc.cl" &&
       password.value === "Admin1234"
-
     ) {
       localStorage.setItem("sesionIniciada", "true");
       localStorage.setItem("rol", "admin");
       window.location.href = "../../admin/dashboard/dashboard.html";
     } else {
       mensajePassword.textContent = "Correo o contraseña incorrectos";
+      password.classList.add("input_error");
     }
+    
   }
 });

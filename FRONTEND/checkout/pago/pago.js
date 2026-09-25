@@ -105,12 +105,23 @@ botonAplicar.addEventListener("click", () => {
     total = total - descuento;
     descuentoAplicado = true;
     mensajeCodigo.textContent = "Código válido! Descuento aplicado";
-
+    mensajeCodigo.classList.remove("txt_error");
+    mensajeCodigo.classList.add("txt_exito");
+    inputCodigo.classList.remove("input_error");
+    inputCodigo.classList.add("input_exito");
     escribirResumen("[data-resumen-total]", formatoPrecio(total));
   } else if (codigo === "ROCK20" && descuentoAplicado === true) {
     mensajeCodigo.textContent = "El descuento ya fue aplicado";
+    mensajeCodigo.classList.remove("txt_error");
+    mensajeCodigo.classList.add("txt_exito");
+    inputCodigo.classList.remove("input_error");
+    inputCodigo.classList.add("input_exito");
   } else {
     mensajeCodigo.textContent = "Código no válido";
+    mensajeCodigo.classList.remove("txt_exito");
+    mensajeCodigo.classList.add("txt_error");
+    inputCodigo.classList.remove("input_exito");
+    inputCodigo.classList.add("input_error");
   }
 });
 
@@ -136,47 +147,53 @@ function validarDatos() {
   // nombre
   if (nombre.value.trim() === "") {
     mensajeNombre.textContent = "Ingresa tu nombre";
-
+    nombre.classList.add("input_error");
     datosValidos = false;
   } else {
     mensajeNombre.textContent = "";
+    nombre.classList.remove("input_error");
   }
 
   // apellido
   if (apellido.value.trim() === "") {
     mensajeApellido.textContent = "Ingresa tu apellido";
-
+    apellido.classList.add("input_error");
     datosValidos = false;
   } else {
     mensajeApellido.textContent = "";
+    apellido.classList.remove("input_error");
   }
 
   // rut
   if (rut.value.trim() === "") {
     mensajeRut.textContent = "Ingresa tu rut";
-
+    rut.classList.add("input_error");
     datosValidos = false;
   } else if (!regexRut.test(rut.value.trim())) {
     mensajeRut.textContent = "Usa el formato 12.345.678-5 o 12345678-5";
+    rut.classList.add("input_error");
     datosValidos = false;
   } else {
     mensajeRut.textContent = "";
+    rut.classList.remove("input_error");
   }
 
   // correo
   if (correo.value.trim() === "") {
     mensajeCorreo.textContent = "Ingresa tu correo";
-
+    correo.classList.add("input_error");
     datosValidos = false;
   } else if (correo.value.trim().length > 100) {
     mensajeCorreo.textContent = "El correo debe tener como máximo 100 caracteres";
+    correo.classList.add("input_error");
     datosValidos = false;
   } else if (!regexCorreo.test(correo.value.trim())) {
     mensajeCorreo.textContent = "Ingresa un correo válido";
-
+    correo.classList.add("input_error");
     datosValidos = false;
   } else {
     mensajeCorreo.textContent = "";
+    correo.classList.remove("input_error");
   }
   return datosValidos;
 }
@@ -219,13 +236,13 @@ function validarTarjeta() {
 
     if (!regexTarjeta.test(numeroTarjeta.value.trim())) {
       mensajeTarjeta.textContent = "La tarjeta debe tener 16 números";
-
+      numeroTarjeta.classList.add("input_error");
       return false;
     }
   }
 
   mensajeTarjeta.textContent = "";
-
+  numeroTarjeta.classList.remove("input_error");
   return true;
 }
 
