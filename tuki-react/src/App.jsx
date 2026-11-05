@@ -1,4 +1,7 @@
-﻿import SeleccionEntradas from "./components/SeleccionEntradas";
+﻿import Cuenta from './components/Cuenta';
+import { entradas } from './data/entradas';
+import { perfil } from './data/perfil';
+import SeleccionEntradas from "./components/SeleccionEntradas";
 import { seleccion } from "./data/seleccion";
 import PasosCompra from "./components/PasosCompra";
 import FormularioLogin from "./components/FormularioLogin";
@@ -38,6 +41,7 @@ function App() {
         <FormularioRegistro />
         {/*registro*/}
         <FormularioLogin />
+        <Cuenta usuario={perfil} entradas={entradas} />
         {/*login*/}
       </main>
       <Footer />
