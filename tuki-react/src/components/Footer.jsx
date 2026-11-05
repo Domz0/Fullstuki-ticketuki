@@ -15,8 +15,12 @@ function Footer() {
             className="footer_accesos"
             aria-label="Accesos del pie de página"
           >
-            <a className="footer_acceso">Inicio</a>
-            <a className="footer_acceso">Eventos</a>
+            <a className="footer_acceso" href="#/inicio">
+              Inicio
+            </a>
+            <a className="footer_acceso" href="#/catalogo/musica">
+              Eventos
+            </a>
           </nav>
         </div>
 
@@ -29,12 +33,12 @@ function Footer() {
 
               <p className="footer_rotulo">Correo</p>
               <p className="footer_dato">
-                <a>contacto@ticketuki.cl</a>
+                <a href="mailto:contacto@ticketuki.cl">contacto@ticketuki.cl</a>
               </p>
 
               <p className="footer_rotulo">Teléfono</p>
               <p className="footer_dato">
-                <a>+56 2 2612 3400</a>
+                <a href="tel:+56226123400">+56 2 2612 3400</a>
               </p>
 
               <p className="footer_rotulo">Dirección</p>
@@ -56,7 +60,13 @@ function Footer() {
 
               <p className="footer_rotulo">Redes</p>
               <div className="footer_redes">
-                <a className="footer_red" aria-label="Instagram de Ticketuki">
+                <a
+                  href="https://www.instagram.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="footer_red"
+                  aria-label="Instagram de Ticketuki"
+                >
                   <svg
                     className="footer_icono"
                     viewBox="0 0 24 24"
@@ -74,7 +84,13 @@ function Footer() {
                   <span className="footer_red-texto">Instagram</span>
                 </a>
 
-                <a className="footer_red" aria-label="YouTube de Ticketuki">
+                <a
+                  href="https://www.youtube.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="footer_red"
+                  aria-label="YouTube de Ticketuki"
+                >
                   <svg
                     className="footer_icono"
                     viewBox="0 0 24 24"

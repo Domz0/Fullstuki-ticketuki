@@ -22,3 +22,51 @@
     gap: 12px;
   }
 }
+
+.pantalla {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px 32px;
+}
+.pantalla > .catalogo,
+.pantalla > .detalle_evento,
+.pantalla > .elegir_entradas,
+.pantalla > .cuenta,
+.pantalla > .login,
+.pantalla > .registro {
+  margin-top: 0;
+}
+.pantalla > .detalle_evento,
+.pantalla > .cuenta {
+  padding: 0;
+}
+.pantalla_pago {
+  max-width: 1600px;
+}
+.pantalla_confirmacion {
+  max-width: 1000px;
+}
+.pantalla_confirmacion .confirmacion {
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+.pantalla .login_marca,
+.pantalla .registro_marca {
+  text-decoration: none;
+}
+.inicio_eventos {
+  margin-top: 44px;
+}
+.pantalla .catalogo {
+  scroll-margin-top: 0;
+}
+@media (max-width: 860px) {
+  .pantalla {
+    padding: 16px;
+  }
+  .pantalla_evento .detalle_evento .compra {
+    position: sticky;
+    bottom: 0;
+  }
+}

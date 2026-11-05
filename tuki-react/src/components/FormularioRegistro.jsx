@@ -2,7 +2,7 @@
 import { validarRegistro } from "../utils/validarRegistro";
 import "./FormularioRegistro.css";
 
-function FormularioRegistro() {
+function FormularioRegistro({ onValidado }) {
   const [datos, setDatos] = useState({
     nombre: "",
     apellido: "",
@@ -30,6 +30,7 @@ function FormularioRegistro() {
       setMensaje("Revisa los campos marcados.");
       event.currentTarget.elements.namedItem(primerError).focus();
     } else {
+      onValidado();
       setMensaje(
         "Los datos cumplen las validaciones. No se creó una cuenta ni se guardaron datos.",
       );
@@ -66,7 +67,9 @@ function FormularioRegistro() {
   return (
     <section className="registro" aria-labelledby="titulo_registro">
       <div className="registro_contenido">
-        <span className="registro_marca">Ticketuki</span>
+        <a href="#/inicio" className="registro_marca">
+          Ticketuki
+        </a>
         <form
           className="registro_formulario"
           onSubmit={comprobarRegistro}
@@ -118,7 +121,7 @@ function FormularioRegistro() {
               </p>
             )}
           </div>
-          <button type="submit">Validar datos</button>
+          <button type="submit">Crear cuenta</button>
           <p
             role="status"
             className={
@@ -128,7 +131,7 @@ function FormularioRegistro() {
             {mensaje}
           </p>
           <p className="registro_ingresar">
-            ¿Ya tienes cuenta? <a>Ingresar</a>
+            ¿Ya tienes cuenta? <a href="#/login">Ingresar</a>
           </p>
         </form>
       </div>

@@ -1,13 +1,13 @@
-﻿import { useState } from "react";
+﻿import { navegar } from "../utils/navegacion";
 import Perfil from "./Perfil";
 import MisEntradas from "./MisEntradas";
 import "./Cuenta.css";
 
-function Cuenta({ usuario, entradas }) {
+function Cuenta({ usuario, entradas, seccion = "datos" }) {
   {
     /*parte en los datos y cambia segun el botons*/
   }
-  const [seccion, setSeccion] = useState("datos");
+
   const iniciales = (
     usuario.nombre.charAt(0) + usuario.apellido.charAt(0)
   ).toUpperCase();
@@ -33,7 +33,7 @@ function Cuenta({ usuario, entradas }) {
           type="button"
           className={`cuenta_seccion ${seccion === "datos" ? "is-activo" : ""}`}
           aria-pressed={seccion === "datos"}
-          onClick={() => setSeccion("datos")}
+          onClick={() => navegar("/cuenta/datos")}
         >
           Datos personales
         </button>
@@ -41,11 +41,15 @@ function Cuenta({ usuario, entradas }) {
           type="button"
           className={`cuenta_seccion ${seccion === "entradas" ? "is-activo" : ""}`}
           aria-pressed={seccion === "entradas"}
-          onClick={() => setSeccion("entradas")}
+          onClick={() => navegar("/cuenta/entradas")}
         >
           Mis entradas
         </button>
-        <button type="button" className="cuenta_seccion cuenta_seccion_salir">
+        <button
+          type="button"
+          className="cuenta_seccion cuenta_seccion_salir"
+          onClick={() => navegar("/inicio")}
+        >
           Cerrar sesión
         </button>
       </nav>

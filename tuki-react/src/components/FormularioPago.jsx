@@ -39,7 +39,7 @@ function CampoPago({
   );
 }
 
-function FormularioPago() {
+function FormularioPago({ onValidado }) {
   const [datos, setDatos] = useState({
     nombre: "",
     apellido: "",
@@ -85,6 +85,10 @@ function FormularioPago() {
     const nuevosErrores = validarPago(datos, metodo);
     setErrores(nuevosErrores);
     setValidado(true);
+    if (Object.keys(nuevosErrores).length === 0) {
+      onValidado(metodo);
+      return;
+    }
     setMensaje(
       Object.keys(nuevosErrores).length === 0
         ? "Los datos cumplen las comprobaciones de formato. No se realizó ningún pago ni se guardaron los datos."
@@ -117,6 +121,7 @@ function FormularioPago() {
     >
       <h2 id="titulo_pago">Formulario de pago</h2>
       <form
+        id="formulario_pago"
         className="pago_formulario"
         onSubmit={comprobarDatos}
         noValidate
@@ -285,9 +290,6 @@ function FormularioPago() {
             </p>
           )}
         </div>
-        <button type="submit" className="boton morado boton_comprar">
-          Validar datos
-        </button>
         <p
           role="status"
           className={Object.keys(errores).length ? "txt_error" : "txt_exito"}

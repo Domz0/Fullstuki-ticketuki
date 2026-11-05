@@ -1,24 +1,26 @@
-﻿import { useState } from 'react'
-import CantidadEntradas from './CantidadEntradas'
-import './SeleccionEntradas.css'
+﻿import { useState } from "react";
+import CantidadEntradas from "./CantidadEntradas";
+import "./SeleccionEntradas.css";
 
-function SeleccionEntradas({ seleccion }) {
-  const [cantidad, setCantidad] = useState(1)
+function SeleccionEntradas({ seleccion, onContinuar }) {
+  const [cantidad, setCantidad] = useState(1);
   if (!seleccion) {
     return (
       <section className="seleccion" aria-label="Tu selección">
         <h2 className="seleccion_titulo">Tu selección</h2>
-        <p className="seleccion_vacio">Elige un área para ver precios y continuar.</p>
+        <p className="seleccion_vacio">
+          Elige un área para ver precios y continuar.
+        </p>
       </section>
-    )
+    );
   }
 
-  const subtotal = seleccion.precio * cantidad
-  const cargo = Math.round(subtotal * seleccion.tasaServicio)
-  const total = subtotal + cargo
+  const subtotal = seleccion.precio * cantidad;
+  const cargo = Math.round(subtotal * seleccion.tasaServicio);
+  const total = subtotal + cargo;
 
   function pesos(valor) {
-    return '$' + valor.toLocaleString('es-CL')
+    return "$" + valor.toLocaleString("es-CL");
   }
 
   return (
@@ -26,7 +28,9 @@ function SeleccionEntradas({ seleccion }) {
       <h2 className="seleccion_titulo">Tu selección</h2>
       <div className="seleccion_area">
         <p className="seleccion_nombre">{seleccion.area}</p>
-        <p className="seleccion_unidad">{pesos(seleccion.precio)} por entrada</p>
+        <p className="seleccion_unidad">
+          {pesos(seleccion.precio)} por entrada
+        </p>
       </div>
       <CantidadEntradas cantidad={cantidad} onCambiar={setCantidad} />
       <dl className="totales" aria-live="polite">
@@ -43,9 +47,15 @@ function SeleccionEntradas({ seleccion }) {
           <dd>{pesos(total)}</dd>
         </div>
       </dl>
-      <button type="button" className="boton seleccion_continuar">Continuar al pago</button>
+      <button
+        type="button"
+        className="boton seleccion_continuar"
+        onClick={() => onContinuar(cantidad)}
+      >
+        Continuar al pago
+      </button>
     </section>
-  )
+  );
 }
 
-export default SeleccionEntradas
+export default SeleccionEntradas;

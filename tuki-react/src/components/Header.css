@@ -224,3 +224,6 @@
     font-size: 14px;
   }
 }
+.header_buscar { border: 0; background: transparent; color: var(--color-morado-claro); font: inherit; cursor: pointer; }
+.header .menu { flex-wrap: wrap; }
+@media (max-width: 600px) { .header .menu { width: 100%; margin-left: 0; gap: 18px; } }

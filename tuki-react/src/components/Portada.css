@@ -1,0 +1,78 @@
+﻿.portada {
+  position: relative;
+  aspect-ratio: 16 / 6;
+  min-height: 420px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--color-fondo);
+}
+
+.portada_imagen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.portada_velo {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(3, 4, 6, 0.55) 0%,
+      rgba(4, 5, 7, 0.25) 35%,
+      rgba(4, 5, 7, 0.95) 100%
+    ),
+    linear-gradient(90deg, rgba(3, 4, 6, 0.75), transparent 60%);
+}
+
+.portada_texto {
+  position: absolute;
+  right: 44px;
+  bottom: 44px;
+  left: 44px;
+}
+
+.portada_etiqueta {
+  margin: 0;
+  color: var(--color-morado-claro);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.portada_titulo {
+  margin: 16px 0 12px;
+  font-size: clamp(38px, 4vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.portada_datos {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: 17px;
+}
+
+.portada_cta {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.portada .boton { min-height: 52px; padding: 0 24px; border-radius: 10px; font-weight: 600; text-decoration: none; }
+.portada_ver { background: var(--color-morado); color: var(--color-blanco); }
+.portada_trailer { background: var(--color-superficie); color: var(--color-texto); }
+@media (max-width: 860px) {
+  .portada { aspect-ratio: auto; min-height: 0; }
+  .portada_imagen { position: relative; height: 260px; }
+  .portada_velo { bottom: auto; height: 260px; }
+  .portada_texto { position: static; padding: 20px; background: var(--color-fondo-alto); }
+  .portada_titulo { font-size: 34px; }
+  .portada_cta { flex-wrap: wrap; }
+  .portada_cta .boton { flex: 1; }
+}

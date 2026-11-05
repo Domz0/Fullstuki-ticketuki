@@ -1,17 +1,29 @@
-﻿import './Confirmacion.css'
+﻿import { navegar } from "../utils/navegacion";
+import "./Confirmacion.css";
 
 function Confirmacion({ compra }) {
   return (
-    <section className="flex_V confirmacion" aria-labelledby="titulo_confirmacion">
+    <section
+      className="flex_V confirmacion"
+      aria-labelledby="titulo_confirmacion"
+    >
       <header className="flex_V confirmacion_encabezado">
         <h2 id="titulo_confirmacion">Compra confirmada</h2>
-        <p className="texto_secundario">Vista de ejemplo con datos ficticios. El QR no es una entrada válida.</p>
+        <p className="texto_secundario">
+          Vista de ejemplo con datos ficticios. El QR no es una entrada válida.
+        </p>
       </header>
       <div className="flex_H panel confirmacion_tarjeta">
         <div className="flex_V confirmacion_acceso">
-          <img src={compra.qr} alt="QR de ejemplo" className="flex_centrado qr" />
+          <img
+            src={compra.qr}
+            alt="QR de ejemplo"
+            className="flex_centrado qr"
+          />
           <dl className="confirmacion_identificador">
-            <dt className="texto_small confirmacion_etiqueta">CODIGO DE ACCESO</dt>
+            <dt className="texto_small confirmacion_etiqueta">
+              CODIGO DE ACCESO
+            </dt>
             <dd className="confirmacion_codigo">{compra.codigo}</dd>
           </dl>
           <p className="texto_small">
@@ -49,7 +61,10 @@ function Confirmacion({ compra }) {
             </div>
             <div className="flex_V confirmacion_campo">
               <dt className="texto_small">CANTIDAD</dt>
-              <dd>{compra.cantidad + (compra.cantidad === 1 ? ' entrada' : ' entradas')}</dd>
+              <dd>
+                {compra.cantidad +
+                  (compra.cantidad === 1 ? " entrada" : " entradas")}
+              </dd>
             </div>
           </dl>
 
@@ -60,16 +75,26 @@ function Confirmacion({ compra }) {
             </div>
             <div className="flex_V confirmacion_campo">
               <dt className="texto_small">TOTAL PAGADO</dt>
-              <dd>{'$' + compra.total.toLocaleString('es-CL')}</dd>
+              <dd>{"$" + compra.total.toLocaleString("es-CL")}</dd>
             </div>
           </dl>
           <div className="separador"></div>
           <div className="flex_H botonera">
-            <button type="button" className="boton boton_entradas">
+            <button
+              type="button"
+              className="boton boton_entradas"
+              onClick={() => navegar("/cuenta/entradas")}
+            >
               Ver mis entradas
             </button>
 
-            <button type="button" className="boton boton_home">Volver a home</button>
+            <button
+              type="button"
+              className="boton boton_home"
+              onClick={() => navegar("/inicio")}
+            >
+              Volver a home
+            </button>
           </div>
         </div>
       </div>
@@ -80,8 +105,7 @@ function Confirmacion({ compra }) {
         </p>
       </div>
     </section>
-  )
+  );
 }
 
-export default Confirmacion
-
+export default Confirmacion;

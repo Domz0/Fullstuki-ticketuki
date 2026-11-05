@@ -1,0 +1,102 @@
+﻿.resumen_pago .resumen_nota {
+  margin: 0;
+  color: var(--color-texto-tenue);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+}
+.resumen_pago .resumen_evento {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.resumen_pago .resumen_imagen {
+  flex-shrink: 0;
+  border: 1px solid var(--color-linea);
+  border-radius: 4px;
+  width: 62px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 12px;
+}
+.resumen_pago .resumen_evento_texto {
+  min-width: 0;
+}
+.resumen_pago .resumen_evento_texto b {
+  font-size: 13px;
+}
+.resumen_pago .resumen_evento_texto p {
+  margin: 6px 0 0;
+  color: var(--color-texto-tenue);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.resumen_pago .resumen_detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+}
+.resumen_pago .resumen_fila {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.resumen_pago .resumen_fila dd {
+  margin: 0;
+  text-align: right;
+  color: var(--color-texto);
+}
+.resumen_pago .resumen_total strong {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.pago_contenedor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  align-items: start;
+  gap: 28px;
+  margin-top: 24px;
+}
+
+.pago_contenedor .formulario_pago {
+  margin-top: 0;
+  min-width: 0;
+}
+
+.resumen_pago {
+  position: sticky;
+  top: 150px;
+  min-width: 0;
+}
+
+.resumen_pago h2 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.resumen_pago .resumen_pago_continuar {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 18px;
+  color: var(--color-texto);
+  font: inherit;
+  font-weight: 700;
+}
+
+@media (max-width: 1023px) {
+  .pago_contenedor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .resumen_pago {
+    position: static;
+  }
+}
