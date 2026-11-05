@@ -1,10 +1,10 @@
 import CatalogoEventos from "../components/CatalogoEventos";
-import { catalogo } from "../data/catalogo";
+import { obtenerCatalogo } from "../utils/eventos";
 
 function PaginaCatalogo({ categoria, busqueda }) {
   return (
     <CatalogoEventos
-      eventos={catalogo}
+      eventos={obtenerCatalogo()}
       categoria={categoria}
       busquedaInicial={busqueda}
     />

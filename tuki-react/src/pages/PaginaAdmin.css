@@ -25,7 +25,22 @@
 .admin_tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
 .admin_tabla th, .admin_tabla td { padding: 14px; border-bottom: 1px solid var(--color-linea); text-align: left; }
 .admin_tabla th { color: var(--color-texto-apagado); }
+.admin_indicadores { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.admin_tarjeta { padding: 20px; background: var(--color-fondo-alto); border: 1px solid var(--color-linea); border-radius: 10px; }
+.admin_tarjeta h2 { margin: 0 0 12px; font-size: 15px; }
+.admin_tarjeta strong { font-size: clamp(20px, 2.5vw, 30px); overflow-wrap: anywhere; }
+.admin_tarjeta p { color: var(--color-texto-apagado); font-size: 13px; }
+.admin_formulario { display: flex; flex-direction: column; gap: 20px; max-width: 850px; }
+.admin_fila { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.admin_campo { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.admin_campo input, .admin_campo select, .admin_campo textarea { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid var(--color-linea); border-radius: 8px; background: var(--color-fondo-alto); color: var(--color-texto); font: inherit; }
+.admin_campo textarea { min-height: 120px; resize: vertical; }
+.admin_formulario > button { padding: 12px; background: var(--color-morado); color: var(--color-texto); }
+.admin_formulario > button:disabled { opacity: 0.5; cursor: default; }
+.admin_formulario a { color: var(--color-morado-claro); text-decoration: underline; }
+@media (max-width: 1000px) { .admin_indicadores { grid-template-columns: 1fr; } }
 @media (max-width: 700px) {
+  .admin_fila { grid-template-columns: 1fr; }
   .admin { grid-template-columns: 1fr; }
   .admin_lateral { border-right: 0; border-bottom: 1px solid var(--color-linea); gap: 12px; }
   .admin_menu, .admin_pie { flex-direction: row; flex-wrap: wrap; align-items: center; }

@@ -9,7 +9,7 @@ function ElegirEntradas({ evento, seleccion, fechaElegida, sectores, onElegir, o
       <PasosCompra etapa="entradas" />
       <header className="cabeza">
         <h2 id="elegir_entradas_titulo" className="cabeza_titulo">{evento.nombre}</h2>
-        <p className="cabeza_detalle">{fecha.dia} {fecha.mes} · {fecha.horario} · {evento.recinto}</p>
+        <p className="cabeza_detalle">{fecha.dia} {fecha.mes}{fecha.horario && ` · ${fecha.horario}`} · {evento.recinto}</p>
       </header>
       <div className="entradas_columnas">
         <section className="plano" aria-label="Elegir sector">

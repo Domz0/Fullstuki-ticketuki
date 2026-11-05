@@ -17,7 +17,7 @@ function ResumenPago({ evento, fecha, seleccion, cantidad, codigo = "" }) {
         <div className="resumen_evento_texto">
           <b>{evento.nombre}</b>
           <p>
-            {fecha.dia} {fecha.mes} · {fecha.horario}
+            {fecha.dia} {fecha.mes}{fecha.horario && ` · ${fecha.horario}`}
             <br />
             {evento.recinto}
           </p>

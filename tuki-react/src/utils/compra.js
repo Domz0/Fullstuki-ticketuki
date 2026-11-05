@@ -23,7 +23,7 @@ export function crearSeleccion(evento, fecha, sector, cantidad) {
     evento: evento.nombre,
     recinto: evento.recinto,
     fechaId: fecha.id,
-    fecha: `${fecha.dia} ${fecha.mes} · ${fecha.horario}`,
+    fecha: `${fecha.dia} ${fecha.mes}${fecha.horario ? " · " + fecha.horario : ""}`,
     sectorId: sector.id,
     area: sector.nombre,
     precio: sector.precio,

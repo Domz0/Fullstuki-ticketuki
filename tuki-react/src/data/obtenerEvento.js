@@ -1,9 +1,9 @@
-﻿import { catalogo } from "./catalogo";
+﻿import { obtenerCatalogo } from "../utils/eventos";
 import { detalleEvento } from "./detalleEvento";
 
 export function obtenerEvento(id = "destacado") {
   if (id === "destacado") return { ...detalleEvento, id };
-  const evento = catalogo.find((item) => String(item.id) === id);
+  const evento = obtenerCatalogo().find((item) => String(item.id) === id);
   if (!evento) return null;
   const fecha = evento.detalle.split(" · ").slice(1).join(" · ");
   const partes = fecha.split(" ");
@@ -20,12 +20,12 @@ export function obtenerEvento(id = "destacado") {
     categoriaId: evento.categoria,
     categoria: categorias[evento.categoria],
     ubicacion: `${evento.recinto}, ${evento.ciudad}`,
-    descripcion: `${evento.nombre} en ${evento.recinto}. Información de ejemplo del catálogo.`,
+    descripcion: evento.descripcion || `${evento.nombre} en ${evento.recinto}. Información de ejemplo del catálogo.`,
     precioConCargo: Math.round(evento.precio * 1.1),
     duracion: "Por confirmar",
     edad: "Por confirmar",
     trailer: null,
-    fechas: [
+    fechas: evento.fechas || [
       {
         id: "principal",
         dia: partes[1] || "—",

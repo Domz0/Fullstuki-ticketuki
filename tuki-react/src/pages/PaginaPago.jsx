@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import "./PaginaPago.css";
 import PasosCompra from "../components/PasosCompra";
 import FormularioPago from "../components/FormularioPago";
 import ResumenPago from "../components/ResumenPago";
@@ -11,7 +12,7 @@ function PaginaPago({ evento, fecha, usuario }) {
   const [mensaje, setMensaje] = useState("");
   const confirmando = useRef(false);
   if (!compra || compra.eventoId !== evento.id || compra.fechaId !== fecha.id) {
-    return <section><h2>Elige tus entradas primero</h2><a href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Elegir entradas</a></section>;
+    return <section><h2>Elige tus entradas primero</h2><a className="pago_volver" href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Elegir entradas</a></section>;
   }
 
   function aplicarCodigo(codigo) {
@@ -39,7 +40,7 @@ function PaginaPago({ evento, fecha, usuario }) {
   return (
     <>
       <PasosCompra etapa="pago" />
-      <a href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Volver a elegir entradas</a>
+      <a className="pago_volver" href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Volver a elegir entradas</a>
       <div className="pago_contenedor">
         <FormularioPago usuario={usuario} comprador={compra.comprador}
           codigoAplicado={compra.codigoDescuento} onAplicarCodigo={aplicarCodigo}

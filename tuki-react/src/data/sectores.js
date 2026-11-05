@@ -145,6 +145,6 @@ export function obtenerSectores(evento) {
   const nombre = evento.recinto.toLowerCase();
   if (nombre.includes('teatro')) return sectores.teatro;
   if (nombre.includes('arena')) return sectores.arena;
-  if (evento.categoriaId === 'ferias') return sectores.ferial;
+  if (nombre.includes('riesco')) return sectores.ferial;
   return sectores.estadio;
 }
