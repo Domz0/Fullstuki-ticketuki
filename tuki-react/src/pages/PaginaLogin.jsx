@@ -8,7 +8,7 @@ function PaginaLogin({ onIniciarSesion, registroExitoso = false }) {
       const usuario = iniciarSesion(datos);
       if (!usuario) return { error: "Correo o contraseña incorrectos." };
       onIniciarSesion(usuario);
-      navegar("/inicio");
+      navegar(usuario.rol === "admin" ? "/admin/dashboard" : "/inicio");
       return {};
     } catch {
       return { error: "No se pudo iniciar sesión. Inténtalo nuevamente." };

@@ -12,6 +12,7 @@ import PaginaPago from "./pages/PaginaPago";
 import PaginaConfirmacion from "./pages/PaginaConfirmacion";
 import PaginaGestionEntrada from "./pages/PaginaGestionEntrada";
 import PaginaNoEncontrada from "./pages/PaginaNoEncontrada";
+import PaginaAdmin from "./pages/PaginaAdmin";
 import { obtenerEvento } from "./data/obtenerEvento";
 import { obtenerUsuario, cerrarSesion } from "./utils/sesion";
 import { leerRuta, navegar } from "./utils/navegacion";
@@ -41,7 +42,9 @@ function App() {
   const { pantalla, id, parametros } = leerRuta(hash);
   useEffect(() => {
     if (pantalla === "cuenta" && !usuario) navegar("/login");
-    if (["login", "registro"].includes(pantalla) && usuario) navegar("/cuenta/datos");
+    if (["login", "registro", "cuenta"].includes(pantalla) && usuario?.rol === "admin") navegar("/admin/dashboard");
+    else if (["login", "registro"].includes(pantalla) && usuario) navegar("/cuenta/datos");
+    if (pantalla === "admin" && usuario?.rol !== "admin") navegar(usuario ? "/inicio" : "/login");
   }, [pantalla, usuario]);
 
   const categoria = ["musica", "artes", "deportes", "ferias"].includes(id)
@@ -53,6 +56,12 @@ function App() {
     evento?.fechas[0];
 
   let contenido;
+
+  if (pantalla === "admin") {
+    return usuario?.rol === "admin"
+      ? <PaginaAdmin seccion={id} onCerrarSesion={salir} />
+      : null;
+  }
 
   if (pantalla === "inicio") contenido = <Inicio />;
   else if (pantalla === "catalogo")

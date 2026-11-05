@@ -285,10 +285,22 @@ function FormularioPago({ onValidado, usuario, comprador, codigoAplicado = "", o
             </div>
           )}
           {metodo === "transferencia" && (
-            <p className="texto_secundario">
-              Transferencia seleccionada. En esta vista solo se comprueban los
-              datos del comprador.
-            </p>
+            <div className="pago_transferencia">
+              <div className="separador"></div>
+              <h3>Datos para transferencia</h3>
+              {[
+                ["Banco", "Banco Ticketuki"],
+                ["Tipo de cuenta", "Cuenta Corriente"],
+                ["N° de cuenta", "123456789"],
+                ["RUT", "76.123.456-7"],
+                ["Correo", "pagos@ticketuki.cl"],
+              ].map(([etiqueta, valor]) => (
+                <div className="transferencia_dato" key={etiqueta}>
+                  <span>{etiqueta}</span>
+                  <strong>{valor}</strong>
+                </div>
+              ))}
+            </div>
           )}
         </div>
         <p

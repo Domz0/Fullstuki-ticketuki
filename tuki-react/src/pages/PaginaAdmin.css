@@ -1,0 +1,33 @@
+.admin {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: 100vh;
+}
+.admin_lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 24px 18px;
+  background: var(--color-fondo-alto);
+  border-right: 1px solid var(--color-linea);
+}
+.admin_marca { margin: 0; font-size: 22px; font-weight: 700; }
+.admin_marca span { color: var(--color-morado); font-size: 13px; }
+.admin_menu, .admin_pie { display: flex; flex-direction: column; gap: 12px; }
+.admin_menu p, .admin_pie p { color: var(--color-texto-apagado); font-size: 13px; }
+.admin_menu a { padding: 12px; border-radius: 8px; }
+.admin a { color: var(--color-texto); text-decoration: none; }
+.admin_menu a[aria-current="page"] { background: var(--color-morado-fondo); color: var(--color-morado-claro); }
+.admin_pie { margin-top: auto; }
+.admin_pie button { border: 0; padding: 0; background: transparent; color: var(--color-texto-apagado); font: inherit; text-align: left; cursor: pointer; }
+.admin_contenido { padding: 32px; min-width: 0; }
+.admin_tabla_contenedor { overflow-x: auto; }
+.admin_tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
+.admin_tabla th, .admin_tabla td { padding: 14px; border-bottom: 1px solid var(--color-linea); text-align: left; }
+.admin_tabla th { color: var(--color-texto-apagado); }
+@media (max-width: 700px) {
+  .admin { grid-template-columns: 1fr; }
+  .admin_lateral { border-right: 0; border-bottom: 1px solid var(--color-linea); gap: 12px; }
+  .admin_menu, .admin_pie { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .admin_contenido { padding: 16px; }
+}

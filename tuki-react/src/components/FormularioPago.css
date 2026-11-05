@@ -150,6 +150,21 @@
 .pago_tarjeta input {
   font-family: monospace;
 }
+.pago_transferencia {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.transferencia_dato {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-linea);
+}
+.transferencia_dato span { color: var(--color-texto-apagado); }
+.transferencia_dato strong { overflow-wrap: anywhere; }
 /*cuotas*/
 .pago_cuotas {
   display: flex;

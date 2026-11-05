@@ -45,7 +45,7 @@ function Header({ categoria, usuario, onCerrarSesion }) {
               </button>
               <a
                 className="menu_cuenta"
-                href="#/cuenta/datos"
+                href={usuario.rol === "admin" ? "#/admin/dashboard" : "#/cuenta/datos"}
                 aria-label={`Mi cuenta: ${usuario.nombre} ${usuario.apellido}`}
               >
                 <span className="menu_avatar" aria-hidden="true">
@@ -53,7 +53,7 @@ function Header({ categoria, usuario, onCerrarSesion }) {
                     usuario.nombre.charAt(0) + usuario.apellido.charAt(0)
                   ).toUpperCase()}
                 </span>
-                <span className="menu_cuenta-texto">Mi cuenta</span>
+                <span className="menu_cuenta-texto">{usuario.rol === "admin" ? "Administración" : "Mi cuenta"}</span>
               </a>
             </>
           ) : (

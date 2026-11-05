@@ -1,6 +1,9 @@
 // Una cuenta local por navegador, igual que en el proyecto original.
 export function obtenerUsuario() {
   if (localStorage.getItem("sesionIniciada") !== "true") return null;
+  if (localStorage.getItem("rol") === "admin") {
+    return { nombre: "Administrador", apellido: "", correo: "admin@duoc.cl", rol: "admin", rut: "" };
+  }
   const correo = localStorage.getItem("correo");
   if (!correo) return null;
   return {
@@ -8,6 +11,7 @@ export function obtenerUsuario() {
     apellido: localStorage.getItem("apellido") || "",
     rut: localStorage.getItem("rut") || "",
     correo,
+    rol: "cliente",
     miembroDesde: localStorage.getItem("miembroDesde") || new Date().getFullYear(),
   };
 }
@@ -24,6 +28,12 @@ export function registrarUsuario(datos) {
 }
 
 export function iniciarSesion(datos) {
+  if (datos.correo.trim().toLowerCase() === "admin@duoc.cl") {
+    if (datos.password !== "1234") return null;
+    localStorage.setItem("sesionIniciada", "true");
+    localStorage.setItem("rol", "admin");
+    return obtenerUsuario();
+  }
   const correo = localStorage.getItem("correo");
   const password = localStorage.getItem("password");
   if (
@@ -43,7 +53,7 @@ export function cerrarSesion() {
 }
 
 export function actualizarDatosAcceso(datos) {
-  if (!obtenerUsuario()) return null;
+  if (obtenerUsuario()?.rol !== "cliente") return null;
   localStorage.setItem("correo", datos.correo.trim().toLowerCase());
   localStorage.setItem("password", datos.password);
   return obtenerUsuario();
