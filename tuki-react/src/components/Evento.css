@@ -40,6 +40,7 @@
 }
 
 .tarjeta_placeholder {
+  color: var(--color-texto-tenue);
   position: absolute;
   inset: 0;
   display: grid;
@@ -62,11 +63,13 @@
 }
 
 .tarjeta_dato {
+  color: var(--color-texto-apagado);
   margin: 0 0 6px;
   font-size: 13px;
 }
 
 .tarjeta_pie {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -78,6 +81,7 @@
 }
 
 .tarjeta_ver {
+  text-decoration: none;
   color: var(--color-morado-claro);
   font-size: 13px;
   font-weight: 600;

@@ -7,20 +7,20 @@ function Evento({ evento }) {
         {evento.imagen ? (
           <img className="tarjeta_foto" src={evento.imagen} alt={evento.nombre} />
         ) : (
-          <span className="tarjeta_placeholder texto_small">Sin imagen</span>
+          <span className="tarjeta_placeholder">Sin imagen</span>
         )}
       </div>
       <div className="tarjeta_cuerpo">
         <span className="tarjeta_tag">{evento.categoria}</span>
         <h3 className="tarjeta_nombre">{evento.nombre}</h3>
-        <p className="tarjeta_dato texto_secundario">{evento.recinto}</p>
-        <p className="tarjeta_dato texto_secundario">{evento.fecha}</p>
-        <div className="tarjeta_pie flex_H">
+        <p className="tarjeta_dato">{evento.recinto}</p>
+        <p className="tarjeta_dato">{evento.fecha}</p>
+        <div className="tarjeta_pie">
           <strong className="tarjeta_precio">
             ${evento.precio.toLocaleString('es-CL')}
           </strong>
           {evento.enlace && (
-            <a className="enlace tarjeta_ver" href={evento.enlace} aria-label={`Ver ${evento.nombre}`}>
+            <a className="tarjeta_ver" href={evento.enlace} aria-label={`Ver ${evento.nombre}`}>
               Ver <span aria-hidden="true">→</span>
             </a>
           )}
@@ -31,4 +31,3 @@ function Evento({ evento }) {
 }
 
 export default Evento
-
