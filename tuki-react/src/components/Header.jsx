@@ -1,6 +1,6 @@
 ﻿import './Header.css'
 
-function Header() {
+function Header({ categoria, onCategoria }) {
   return (
     <header className="header">
       <div className="header_barra">
@@ -25,10 +25,10 @@ function Header() {
       </div>
 
       <nav className="categorias" aria-label="Categorías">
-        <a className="categorias_chip">Música</a>
-        <a className="categorias_chip">Artes y Teatro</a>
-        <a className="categorias_chip">Deportes</a>
-        <a className="categorias_chip">Ferias &amp; Expos</a>
+        <a href="#catalogo" className={`categorias_chip ${categoria === 'musica' ? 'is-activo' : ''}`} onClick={() => onCategoria?.('musica')}>Música</a>
+        <a href="#catalogo" className={`categorias_chip ${categoria === 'artes' ? 'is-activo' : ''}`} onClick={() => onCategoria?.('artes')}>Artes y Teatro</a>
+        <a href="#catalogo" className={`categorias_chip ${categoria === 'deportes' ? 'is-activo' : ''}`} onClick={() => onCategoria?.('deportes')}>Deportes</a>
+        <a href="#catalogo" className={`categorias_chip ${categoria === 'ferias' ? 'is-activo' : ''}`} onClick={() => onCategoria?.('ferias')}>Ferias &amp; Expos</a>
       </nav>
     </header>
   )

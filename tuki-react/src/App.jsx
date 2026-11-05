@@ -1,4 +1,7 @@
-﻿import Cuenta from './components/Cuenta';
+﻿import { useState } from 'react';
+import CatalogoEventos from './components/CatalogoEventos';
+import { catalogo } from './data/catalogo';
+import Cuenta from './components/Cuenta';
 import { entradas } from './data/entradas';
 import { perfil } from './data/perfil';
 import SeleccionEntradas from "./components/SeleccionEntradas";
@@ -16,9 +19,10 @@ import { eventos } from "./data/eventos";
 import "./App.css";
 
 function App() {
+  const [categoria, setCategoria] = useState('musica');
   return (
     <>
-      <Header />
+      <Header categoria={categoria} onCategoria={setCategoria} />
       <main className="inicio-base">
         <PasosCompra etapa="entradas" />{" "}
         {/*esta es la barra al intentar comprar, hya que moverla*/}
@@ -32,6 +36,7 @@ function App() {
             ))}
           </div>
         </section>
+        <CatalogoEventos key={categoria} categoria={categoria} eventos={catalogo} />
         <SeleccionEntradas seleccion={seleccion} />
         {/*seleccion cantidad de entradas*/}
         <FormularioPago />
