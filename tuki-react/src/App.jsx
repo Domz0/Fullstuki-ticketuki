@@ -1,4 +1,5 @@
-﻿import FormularioRegistro from './components/FormularioRegistro';
+﻿import FormularioLogin from './components/FormularioLogin';
+import FormularioRegistro from './components/FormularioRegistro';
 import Confirmacion from './components/Confirmacion';
 import { compra } from './data/compra';
 import FormularioPago from "./components/FormularioPago";
@@ -24,6 +25,7 @@ function App() {
         <FormularioPago />
         <Confirmacion compra={compra} />
         <FormularioRegistro />
+        <FormularioLogin />
       </main>
       <Footer />
     </>

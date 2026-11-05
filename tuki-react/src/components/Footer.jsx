@@ -48,7 +48,7 @@ function Footer() {
 
               <p className="footer_rotulo">Atención</p>
               <p className="footer_dato">
-                Lunes a viernes 9:00–19:00 · Sábado 10:00–14:00
+                Lunes a viernes 9:00-19:00 · Sábado 10:00-14:00
               </p>
               <p className="footer_dato footer_dato--nota">
                 Respondemos correos dentro de 24 horas hábiles.
