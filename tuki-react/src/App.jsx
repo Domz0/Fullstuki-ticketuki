@@ -1,4 +1,5 @@
-﻿import Footer from "./components/Footer";
+﻿import FormularioPago from "./components/FormularioPago";
+import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Evento from "./components/Evento";
 import { eventos } from "./data/eventos";
@@ -17,6 +18,7 @@ function App() {
             ))}
           </div>
         </section>
+        <FormularioPago />
       </main>
       <Footer />
     </>
