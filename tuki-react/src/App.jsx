@@ -1,12 +1,14 @@
-﻿import { useState } from 'react';
+﻿import DetalleEvento from './components/DetalleEvento';
+import { detalleEvento } from './data/detalleEvento';
+import { useState } from 'react';
 import CatalogoEventos from './components/CatalogoEventos';
 import { catalogo } from './data/catalogo';
 import Cuenta from './components/Cuenta';
 import { entradas } from './data/entradas';
 import { perfil } from './data/perfil';
-import SeleccionEntradas from "./components/SeleccionEntradas";
+import ElegirEntradas from "./components/ElegirEntradas";
 import { seleccion } from "./data/seleccion";
-import PasosCompra from "./components/PasosCompra";
+
 import FormularioLogin from "./components/FormularioLogin";
 import FormularioRegistro from "./components/FormularioRegistro";
 import Confirmacion from "./components/Confirmacion";
@@ -24,8 +26,6 @@ function App() {
     <>
       <Header categoria={categoria} onCategoria={setCategoria} />
       <main className="inicio-base">
-        <PasosCompra etapa="entradas" />{" "}
-        {/*esta es la barra al intentar comprar, hya que moverla*/}
         <section aria-labelledby="titulo-eventos">
           <h2 id="titulo-eventos">Próximos eventos</h2>
           <div className="eventos_contenedor">
@@ -37,7 +37,8 @@ function App() {
           </div>
         </section>
         <CatalogoEventos key={categoria} categoria={categoria} eventos={catalogo} />
-        <SeleccionEntradas seleccion={seleccion} />
+        <DetalleEvento evento={detalleEvento} />
+        <ElegirEntradas evento={detalleEvento} seleccion={seleccion} />
         {/*seleccion cantidad de entradas*/}
         <FormularioPago />
         {/*paso 2*/}

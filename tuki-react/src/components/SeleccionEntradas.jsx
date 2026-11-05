@@ -4,6 +4,15 @@ import './SeleccionEntradas.css'
 
 function SeleccionEntradas({ seleccion }) {
   const [cantidad, setCantidad] = useState(1)
+  if (!seleccion) {
+    return (
+      <section className="seleccion" aria-label="Tu selección">
+        <h2 className="seleccion_titulo">Tu selección</h2>
+        <p className="seleccion_vacio">Elige un área para ver precios y continuar.</p>
+      </section>
+    )
+  }
+
   const subtotal = seleccion.precio * cantidad
   const cargo = Math.round(subtotal * seleccion.tasaServicio)
   const total = subtotal + cargo

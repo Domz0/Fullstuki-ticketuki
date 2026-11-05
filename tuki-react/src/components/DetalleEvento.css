@@ -1,0 +1,560 @@
+﻿.detalle_evento {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 24px var(--lado) 0;
+}
+
+.detalle_evento .evento_subtitulo {
+  margin: 28px 0 12px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Botones y enlaces */
+
+.detalle_evento .boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 18px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 8px;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.detalle_evento .boton:hover {
+  border-color: var(--color-morado);
+}
+
+.detalle_evento .boton_morado {
+  border-color: var(--color-morado);
+  background: var(--color-morado);
+  color: var(--color-blanco);
+}
+
+.detalle_evento .boton_morado:hover {
+  background: var(--color-morado-oscuro);
+}
+
+.detalle_evento .enlace-morado {
+  color: var(--color-morado-claro);
+  font-weight: 600;
+}
+
+.detalle_evento .enlace-morado:hover {
+  text-decoration: underline;
+}
+
+/* Trailer */
+
+.detalle_evento .trailer {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 12 / 4;
+  overflow: hidden;
+  border: 1px solid var(--color-linea);
+  border-radius: 12px;
+  background: linear-gradient(160deg, #15151d, #0d0d12);
+}
+
+.detalle_evento .trailer_video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.detalle_evento .trailer_volver {
+  position: absolute;
+  z-index: 1;
+  top: 16px;
+  left: 16px;
+  display: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgba(10, 10, 14, 0.7);
+  color: var(--color-texto);
+  font-size: 18px;
+}
+
+/* columns */
+
+.detalle_evento .evento_columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 32px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+.detalle_evento .evento_principal {
+  min-width: 0;
+}
+
+/* ---------- etiquetas ---------- */
+
+.detalle_evento .etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.detalle_evento .etiqueta {
+  padding: 4px 9px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 6px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+
+.detalle_evento .etiquetas .etiqueta:first-child {
+  border-color: var(--color-morado-borde);
+  background: var(--color-morado-fondo);
+  color: var(--color-morado-texto);
+}
+
+.detalle_evento .evento_titulo {
+  margin: 0;
+  font-size: clamp(26px, 2.2vw, 32px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.detalle_evento .evento_bajada {
+  max-width: 62ch;
+  margin: 10px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* ---------- ficha ---------- */
+
+.detalle_evento .fichas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0 0;
+}
+
+.detalle_evento .ficha {
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  background: var(--color-fondo-alto);
+}
+
+.detalle_evento .ficha_rotulo {
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.detalle_evento .ficha_dato {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+/* fechas */
+
+.detalle_evento .fechas_lista {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.detalle_evento .fecha {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  background: var(--color-fondo-alto);
+}
+
+.detalle_evento .fecha_dia {
+  display: grid;
+  flex: 0 0 auto;
+  justify-items: center;
+  width: 46px;
+  margin: 0;
+  padding-right: 14px;
+  border-right: 1px solid var(--color-linea);
+}
+
+.detalle_evento .fecha_numero {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.detalle_evento .fecha_mes {
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.detalle_evento .fecha_texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.detalle_evento .fecha_horario {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.detalle_evento .fecha_recinto {
+  margin: 2px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}
+
+.detalle_evento .fecha_estado {
+  margin: 0;
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.detalle_evento .fecha_accion {
+  flex: 0 0 auto;
+  height: 34px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.detalle_evento .fecha_accion_inactiva {
+  border-color: var(--color-linea);
+  background: var(--color-linea);
+  color: var(--color-texto-apagado);
+  cursor: not-allowed;
+}
+
+.detalle_evento .fecha_agotada .fecha_numero,
+.detalle_evento .fecha_agotada .fecha_horario {
+  color: var(--color-texto-apagado);
+}
+
+/* recinto */
+
+.detalle_evento .recinto_tarjeta {
+  padding: 14px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+}
+
+.detalle_evento .recinto_pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0 0;
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+}
+
+.detalle_evento .recinto_enlace {
+  color: var(--color-morado-claro);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.detalle_evento .recinto_enlace:hover {
+  text-decoration: underline;
+}
+
+/* panel de compra */
+
+.detalle_evento .reserva {
+  position: sticky;
+  top: 24px;
+  padding: 18px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+}
+
+.detalle_evento .reserva_rotulo {
+  margin: 0;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}
+
+.detalle_evento .reserva_precio {
+  margin: 4px 0 0;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.detalle_evento .reserva_nota {
+  margin: 4px 0 16px;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}
+
+.detalle_evento .reserva_botones {
+  display: grid;
+  gap: 8px;
+}
+
+.detalle_evento .reserva_comprar,
+.detalle_evento .reserva_favorito {
+  width: 100%;
+  height: 44px;
+}
+
+.detalle_evento .reserva_lista {
+  margin: 18px 0 0;
+  padding: 18px 0 0;
+  border-top: 1px solid var(--color-linea);
+  list-style: none;
+}
+
+.detalle_evento .reserva_lista li {
+  position: relative;
+  padding: 0 0 0 16px;
+  color: var(--color-texto-apagado);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.detalle_evento .reserva_lista li + li {
+  margin-top: 8px;
+}
+
+.detalle_evento .reserva_lista li::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-morado);
+}
+
+.detalle_evento .reserva_convenios {
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-linea);
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Barra de compra mobile */
+
+.detalle_evento .compra {
+
+  display: none;
+  position: static;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 60;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-linea);
+  background: rgba(14, 15, 20, 0.97);
+  backdrop-filter: blur(8px);
+}
+
+.detalle_evento .compra_precio {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.detalle_evento .compra_desde {
+  display: block;
+  color: var(--color-texto-apagado);
+  font-size: 11px;
+}
+
+.detalle_evento .compra_monto {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.detalle_evento .compra_accion {
+  flex: 1;
+  height: 48px;
+  font-size: 15px;
+}
+
+@media (max-width: 1100px) {
+  .detalle_evento .evento_columnas {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 860px) {
+  .detalle_evento {
+    --lado: 16px;
+  }
+
+  .detalle_evento {
+
+    padding: 0;
+  }
+
+
+  .detalle_evento .trailer {
+    aspect-ratio: 4 / 3;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .detalle_evento .trailer_volver {
+    display: grid;
+  }
+
+  .detalle_evento .evento_columnas {
+    display: block;
+    margin-top: 0;
+    padding: 16px var(--lado) 0;
+  }
+
+  .detalle_evento .evento_titulo {
+    font-size: 26px;
+  }
+
+
+  .detalle_evento .fichas {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .detalle_evento .ficha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .detalle_evento .ficha_dato {
+    margin: 0;
+    text-align: right;
+  }
+
+
+  .detalle_evento .fecha {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .detalle_evento .fecha_estado {
+    order: 3;
+    width: 100%;
+    margin-top: -4px;
+    padding-left: 60px;
+  }
+
+  .detalle_evento .fecha_accion {
+    height: 36px;
+  }
+
+  .detalle_evento .reserva {
+    position: static;
+    margin-top: 28px;
+  }
+
+
+  .detalle_evento .reserva_rotulo,
+  .detalle_evento .reserva_precio,
+  .detalle_evento .reserva_nota,
+  .detalle_evento .reserva_botones {
+    display: none;
+  }
+
+  .detalle_evento .reserva_lista {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .detalle_evento .compra {
+    display: flex;
+  }
+}
+
+@media (max-width: 420px) {
+  .detalle_evento .fecha_dia {
+    width: 40px;
+    padding-right: 10px;
+  }
+
+  .detalle_evento .fecha_estado {
+    padding-left: 52px;
+  }
+
+  .detalle_evento .compra_accion {
+    font-size: 14px;
+  }
+}
+
+/* Espacio para mostrar el detalle junto a los otros componentes. */
+.detalle_evento {
+  --ancho: 1600px;
+  --lado: 32px;
+  margin-top: 40px;
+}
+.detalle_evento button {
+  font-family: inherit;
+}
+.detalle_evento .trailer_volver {
+  text-decoration: none;
+}
+@media (max-width: 860px) {
+  .detalle_evento {
+    --lado: 16px;
+  }
+  .detalle_evento .compra {
+    margin-top: 24px;
+  }
+}
+
+.detalle_evento .recinto_pendiente {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+}

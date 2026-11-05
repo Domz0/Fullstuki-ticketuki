@@ -1,0 +1,25 @@
+﻿export const detalleEvento = {
+  nombre: 'Lollapalooza 2026',
+  categoria: 'Música',
+  subcategoria: 'Rock',
+  trailer: 'https://www.youtube.com/embed/eFd4Da_FDCo?rel=0',
+  descripcion: 'Tres escenarios, doce bandas y una jornada completa de música en vivo en el Estadio Nacional. Apertura de puertas a las 17:00.',
+  recinto: 'Estadio Nacional',
+  ubicacion: 'Estadio Nacional, Ñuñoa',
+  duracion: '8 horas · 3 escenarios',
+  edad: 'Todo público · menores con adulto',
+  precio: 35000,
+  precioConCargo: 38500,
+  fechas: [
+    { id: '14-nov', dia: '14', mes: 'nov', horario: 'Sábado · 20:00', estado: 'Disponible' },
+    { id: '15-nov', dia: '15', mes: 'nov', horario: 'Domingo · 19:00', estado: 'Últimas entradas' },
+    { id: '21-nov', dia: '21', mes: 'nov', horario: 'Sábado · 20:00', estado: 'Agotado' },
+  ],
+  condiciones: [
+    'Entradas digitales con QR único por persona',
+    'Reventa oficial habilitada dentro de la plataforma',
+    'Descuentos vigentes canjeando un código',
+    'Cambio de titular hasta 48 horas antes',
+  ],
+  convenios: 'Hay descuentos vigentes de hasta 15% con algunas empresas.',
+}
