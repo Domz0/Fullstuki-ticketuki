@@ -39,19 +39,19 @@ function CampoPago({
   );
 }
 
-function FormularioPago({ onValidado }) {
+function FormularioPago({ onValidado, usuario, comprador, codigoAplicado = "", onAplicarCodigo }) {
   const [datos, setDatos] = useState({
-    nombre: "",
-    apellido: "",
-    rut: "",
-    correo: "",
+    nombre: comprador?.nombre || usuario?.nombre || "",
+    apellido: comprador?.apellido || usuario?.apellido || "",
+    rut: comprador?.rut || usuario?.rut || "",
+    correo: comprador?.correo || usuario?.correo || "",
     numero_tarjeta: "",
     vencimiento: "",
     cvv: "",
   });
   const [metodo, setMetodo] = useState("debito");
   const [cuotas, setCuotas] = useState(1);
-  const [codigo, setCodigo] = useState("");
+  const [codigo, setCodigo] = useState(codigoAplicado);
   const [mensajeCodigo, setMensajeCodigo] = useState("");
   const [errores, setErrores] = useState({});
   const [validado, setValidado] = useState(false);
@@ -86,14 +86,10 @@ function FormularioPago({ onValidado }) {
     setErrores(nuevosErrores);
     setValidado(true);
     if (Object.keys(nuevosErrores).length === 0) {
-      onValidado(metodo);
+      onValidado(datos, metodo, cuotas);
       return;
     }
-    setMensaje(
-      Object.keys(nuevosErrores).length === 0
-        ? "Los datos cumplen las comprobaciones de formato. No se realizó ningún pago ni se guardaron los datos."
-        : "Revisa los campos marcados.",
-    );
+    setMensaje("Revisa los campos marcados.");
     if (Object.keys(nuevosErrores).length > 0) {
       event.currentTarget.elements
         .namedItem(Object.keys(nuevosErrores)[0])
@@ -164,15 +160,20 @@ function FormularioPago({ onValidado }) {
               <button
                 type="button"
                 className="boton pago_aplicar"
-                onClick={() =>
-                  setMensajeCodigo(
-                    codigo.trim() === "ROCK20"
-                      ? "Código válido. Solo comprobación, sin aplicar descuento."
-                      : "Código no válido",
-                  )
-                }
+                onClick={() => {
+                  if (codigo.trim() !== "ROCK20") {
+                    setMensajeCodigo("Código no válido");
+                    return;
+                  }
+                  try {
+                    onAplicarCodigo("ROCK20");
+                    setMensajeCodigo("Descuento del 20% aplicado.");
+                  } catch {
+                    setMensajeCodigo("No se pudo aplicar el descuento. Inténtalo nuevamente.");
+                  }
+                }}
               >
-                Comprobar
+                Aplicar
               </button>
             </div>
             <p

@@ -34,6 +34,16 @@ function Confirmacion({ compra }) {
           <h3>Datos de la compra</h3>
           <dl className="flex_H confirmacion_fila">
             <div className="flex_V confirmacion_campo">
+              <dt className="texto_small">COMPRADOR</dt>
+              <dd>{compra.comprador.nombre} {compra.comprador.apellido}</dd>
+            </div>
+            <div className="flex_V confirmacion_campo">
+              <dt className="texto_small">CORREO</dt>
+              <dd>{compra.comprador.correo}</dd>
+            </div>
+          </dl>
+          <dl className="flex_H confirmacion_fila">
+            <div className="flex_V confirmacion_campo">
               <dt className="texto_small">ORDEN</dt>
               <dd>{compra.orden}</dd>
             </div>

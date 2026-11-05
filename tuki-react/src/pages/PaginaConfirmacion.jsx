@@ -1,30 +1,19 @@
 import PasosCompra from "../components/PasosCompra";
 import Confirmacion from "../components/Confirmacion";
-import { compra } from "../data/compra";
+import { leerCompra } from "../utils/compra";
+import qrEjemplo from "../assets/qr-ejemplo.png";
 
-function PaginaConfirmacion({ evento, fecha, seleccion, cantidad, metodo }) {
-  const metodos = {
-    debito: "Débito",
-    credito: "Crédito",
-    transferencia: "Transferencia bancaria",
-  };
-  const datosCompra = {
-    ...compra,
-    evento: evento.nombre,
-    recinto: evento.recinto,
-    fecha: `${fecha.dia} ${fecha.mes} · ${fecha.horario}`,
-    cantidad,
-    area: seleccion.area,
-    total: Math.round(seleccion.precio * cantidad * 1.1),
-    metodoPago: metodos[metodo] || "Débito",
-  };
-
+function PaginaConfirmacion({ evento, fecha }) {
+  const compra = leerCompra();
+  if (!compra || compra.estado !== "confirmada" || compra.eventoId !== evento.id || compra.fechaId !== fecha.id) {
+    return <section><h2>No hay una compra confirmada para esta función</h2><a href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Elegir entradas</a></section>;
+  }
+  const metodos = { debito: "Débito", credito: "Crédito", transferencia: "Transferencia bancaria" };
   return (
     <>
       <PasosCompra etapa="confirmacion" />
-      <Confirmacion compra={datosCompra} />
+      <Confirmacion compra={{ ...compra, metodoPago: metodos[compra.metodo], qr: qrEjemplo }} />
     </>
   );
 }
-
 export default PaginaConfirmacion;

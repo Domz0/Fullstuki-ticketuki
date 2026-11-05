@@ -4,7 +4,7 @@ function CantidadEntradas({ cantidad, onCambiar }) {
   const maximo = 6;
 
   function cambiarCantidad(paso) {
-    onCambiar((actual) => Math.max(1, Math.min(maximo, actual + paso)));
+    onCambiar(Math.max(1, Math.min(maximo, cantidad + paso)));
   }
 
   return (

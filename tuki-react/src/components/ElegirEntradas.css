@@ -47,14 +47,14 @@
   max-width: none;
 }
 
-/* Espacio temporal del mapa y botón de simulación. */
 .elegir_entradas .plano_pendiente {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   min-height: 320px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo);
 }
-
 .elegir_entradas .plano_simular {
   padding: 12px 18px;
   background: var(--color-morado);
@@ -62,8 +62,33 @@
   font: inherit;
 }
 
-.elegir_entradas .plano_simular[aria-pressed="true"] {
-  background: var(--color-morado-oscuro);
+.elegir_entradas .seleccion_sectores {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+}
+.elegir_entradas .seleccion_sector {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 12px;
+  align-items: center;
+  text-align: left;
+  cursor: pointer;
+}
+.elegir_entradas .seleccion_sector[aria-pressed="true"] {
+  border-color: var(--color-morado);
+  background: var(--color-superficie);
+}
+.elegir_entradas .seleccion_sector:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @media (max-width: 1100px) {
@@ -80,7 +105,5 @@
   .elegir_entradas .plano {
     padding: 10px;
   }
-  .elegir_entradas .plano_pendiente {
-    min-height: 220px;
-  }
+
 }

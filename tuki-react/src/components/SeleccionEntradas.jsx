@@ -1,9 +1,8 @@
-﻿import { useState } from "react";
+﻿import { calcularTotales } from "../utils/compra";
 import CantidadEntradas from "./CantidadEntradas";
 import "./SeleccionEntradas.css";
 
-function SeleccionEntradas({ seleccion, onContinuar }) {
-  const [cantidad, setCantidad] = useState(1);
+function SeleccionEntradas({ seleccion, cantidad, onCambiarCantidad, onContinuar, children }) {
   if (!seleccion) {
     return (
       <section className="seleccion" aria-label="Tu selección">
@@ -11,13 +10,12 @@ function SeleccionEntradas({ seleccion, onContinuar }) {
         <p className="seleccion_vacio">
           Elige un área para ver precios y continuar.
         </p>
+        {children}
       </section>
     );
   }
 
-  const subtotal = seleccion.precio * cantidad;
-  const cargo = Math.round(subtotal * seleccion.tasaServicio);
-  const total = subtotal + cargo;
+  const { subtotal, cargo, total } = calcularTotales(seleccion.precio, cantidad);
 
   function pesos(valor) {
     return "$" + valor.toLocaleString("es-CL");
@@ -32,7 +30,7 @@ function SeleccionEntradas({ seleccion, onContinuar }) {
           {pesos(seleccion.precio)} por entrada
         </p>
       </div>
-      <CantidadEntradas cantidad={cantidad} onCambiar={setCantidad} />
+      <CantidadEntradas cantidad={cantidad} onCambiar={onCambiarCantidad} />
       <dl className="totales" aria-live="polite">
         <div className="totales_fila">
           <dt>{cantidad} × entrada</dt>
@@ -50,7 +48,7 @@ function SeleccionEntradas({ seleccion, onContinuar }) {
       <button
         type="button"
         className="boton seleccion_continuar"
-        onClick={() => onContinuar(cantidad)}
+        onClick={onContinuar}
       >
         Continuar al pago
       </button>

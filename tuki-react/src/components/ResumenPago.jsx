@@ -1,9 +1,8 @@
-﻿import "./ResumenPago.css";
+import { calcularTotales } from "../utils/compra";
+import "./ResumenPago.css";
 
-function ResumenPago({ evento, fecha, seleccion, cantidad }) {
-  const subtotal = seleccion.precio * cantidad;
-  const cargo = Math.round(subtotal * seleccion.tasaServicio);
-  const total = subtotal + cargo;
+function ResumenPago({ evento, fecha, seleccion, cantidad, codigo = "" }) {
+  const { subtotal, cargo, descuento, total } = calcularTotales(seleccion.precio, cantidad, codigo);
   function pesos(valor) {
     return "$" + valor.toLocaleString("es-CL");
   }
@@ -40,7 +39,7 @@ function ResumenPago({ evento, fecha, seleccion, cantidad }) {
         </div>
         <div className="resumen_fila">
           <dt>Descuento aplicado</dt>
-          <dd>$0</dd>
+          <dd>{descuento ? "-" + pesos(descuento) : pesos(0)}</dd>
         </div>
       </dl>
       <div className="separador"></div>

@@ -48,16 +48,10 @@ function App() {
     ? id
     : "musica";
   const evento = obtenerEvento(id);
-  const cantidadPedida = Number(parametros.get("cantidad")) || 1;
-  const cantidad = Math.max(1, Math.min(6, Math.floor(cantidadPedida)));
   const fecha =
     evento?.fechas.find((item) => item.id === parametros.get("fecha")) ||
     evento?.fechas[0];
-  const seleccion = {
-    area: "Cancha Preferencial",
-    precio: evento?.precio || 85000,
-    tasaServicio: 0.1,
-  };
+
   let contenido;
 
   if (pantalla === "inicio") contenido = <Inicio />;
@@ -81,15 +75,14 @@ function App() {
     contenido = <PaginaEvento evento={evento} />;
   else if (evento && pantalla === "entradas")
     contenido = (
-      <PaginaEntradas evento={evento} fecha={fecha} seleccion={seleccion} />
+      <PaginaEntradas evento={evento} fecha={fecha} />
     );
   else if (evento && pantalla === "pago")
     contenido = (
       <PaginaPago
+        usuario={usuario}
         evento={evento}
         fecha={fecha}
-        seleccion={seleccion}
-        cantidad={cantidad}
       />
     );
   else if (evento && pantalla === "confirmacion")
@@ -97,9 +90,6 @@ function App() {
       <PaginaConfirmacion
         evento={evento}
         fecha={fecha}
-        seleccion={seleccion}
-        cantidad={cantidad}
-        metodo={parametros.get("metodo")}
       />
     );
   else contenido = <PaginaNoEncontrada />;
