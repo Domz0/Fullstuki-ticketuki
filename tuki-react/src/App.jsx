@@ -1,4 +1,5 @@
-﻿import Confirmacion from './components/Confirmacion';
+﻿import FormularioRegistro from './components/FormularioRegistro';
+import Confirmacion from './components/Confirmacion';
 import { compra } from './data/compra';
 import FormularioPago from "./components/FormularioPago";
 import Footer from "./components/Footer";
@@ -22,6 +23,7 @@ function App() {
         </section>
         <FormularioPago />
         <Confirmacion compra={compra} />
+        <FormularioRegistro />
       </main>
       <Footer />
     </>
