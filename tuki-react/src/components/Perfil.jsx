@@ -1,6 +1,9 @@
-﻿import './Perfil.css'
+﻿import { useState } from 'react'
+import EditarDatosAcceso from './EditarDatosAcceso'
+import './Perfil.css'
 
 function Perfil({ usuario }) {
+  const [editando, setEditando] = useState(false)
   return (
       <section className="cuenta_contenido" aria-labelledby="perfil_titulo">
         <h3 id="perfil_titulo" className="cuenta_titulo">Datos personales</h3>
@@ -23,7 +26,11 @@ function Perfil({ usuario }) {
             <span className="campo_cuenta_rotulo">Correo electrónico</span>
             <p className="campo_cuenta_valor">{usuario.correo}</p>
           </div>
-          <button type="button" className="perfil_editar">Editar datos de acceso</button>
+          {editando ? (
+            <EditarDatosAcceso onCancelar={() => setEditando(false)} />
+          ) : (
+            <button type="button" className="perfil_editar" onClick={() => setEditando(true)}>Editar datos de acceso</button>
+          )}
         </div>
       </section>
   )
