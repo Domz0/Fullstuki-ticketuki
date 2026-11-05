@@ -2,7 +2,7 @@
 import { navegar } from "../utils/navegacion";
 import "./Header.css";
 
-function Header({ categoria }) {
+function Header({ categoria, usuario, onCerrarSesion }) {
   const [busqueda, setBusqueda] = useState("");
   function buscar(event) {
     event.preventDefault();
@@ -34,15 +34,38 @@ function Header({ categoria }) {
           </button>
         </form>
         <nav className="menu" aria-label="Acceso">
-          <a className="menu_enlace" href="#/registro">
-            Crear cuenta
-          </a>
-          <a className="menu_enlace" href="#/login">
-            Iniciar sesión
-          </a>
-          <a className="menu_enlace" href="#/cuenta/datos">
-            Mi cuenta
-          </a>
+          {usuario ? (
+            <>
+              <button
+                type="button"
+                className="menu_enlace menu_salir"
+                onClick={onCerrarSesion}
+              >
+                Cerrar sesión
+              </button>
+              <a
+                className="menu_cuenta"
+                href="#/cuenta/datos"
+                aria-label={`Mi cuenta: ${usuario.nombre} ${usuario.apellido}`}
+              >
+                <span className="menu_avatar" aria-hidden="true">
+                  {(
+                    usuario.nombre.charAt(0) + usuario.apellido.charAt(0)
+                  ).toUpperCase()}
+                </span>
+                <span className="menu_cuenta-texto">Mi cuenta</span>
+              </a>
+            </>
+          ) : (
+            <>
+              <a className="menu_enlace" href="#/registro">
+                Crear cuenta
+              </a>
+              <a className="menu_enlace" href="#/login">
+                Iniciar sesión
+              </a>
+            </>
+          )}
         </nav>
       </div>
       <nav className="categorias" aria-label="Categorías">

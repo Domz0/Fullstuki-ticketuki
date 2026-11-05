@@ -1,9 +1,10 @@
-﻿import { useState } from "react";
+﻿import { actualizarDatosAcceso } from "../utils/sesion";
+import { useState } from "react";
 import { validarLogin as validarDatosAcceso } from "../utils/validarLogin";
 import "./EditarDatosAcceso.css";
 
-function EditarDatosAcceso({ onCancelar }) {
-  const [datos, setDatos] = useState({ correo: "", password: "" });
+function EditarDatosAcceso({ usuario, onCancelar, onActualizarUsuario }) {
+  const [datos, setDatos] = useState({ correo: usuario.correo, password: "" });
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState("");
 
@@ -23,9 +24,18 @@ function EditarDatosAcceso({ onCancelar }) {
       setMensaje("Revisa los campos marcados.");
       event.currentTarget.elements.namedItem(primerError).focus();
     } else {
-      setMensaje(
-        "Los datos cumplen las validaciones. No se guardaron cambios en tu cuenta.",
-      );
+      try {
+        const actualizado = actualizarDatosAcceso(datos);
+        if (!actualizado) {
+          setErrores({ correo: "Debes iniciar sesión para guardar cambios." });
+          return;
+        }
+        onActualizarUsuario(actualizado);
+        setDatos({ correo: actualizado.correo, password: "" });
+        setMensaje("Datos de acceso guardados.");
+      } catch {
+        setErrores({ correo: "No se pudieron guardar los cambios." });
+      }
     }
   }
 
@@ -83,7 +93,7 @@ function EditarDatosAcceso({ onCancelar }) {
       </div>
       <div className="editar_acceso_botones">
         <button type="submit" className="editar_acceso_validar">
-          Validar datos
+          Guardar cambios
         </button>
         <button
           type="button"

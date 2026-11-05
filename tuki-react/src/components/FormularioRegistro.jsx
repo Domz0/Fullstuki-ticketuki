@@ -30,10 +30,11 @@ function FormularioRegistro({ onValidado }) {
       setMensaje("Revisa los campos marcados.");
       event.currentTarget.elements.namedItem(primerError).focus();
     } else {
-      onValidado();
-      setMensaje(
-        "Los datos cumplen las validaciones. No se creó una cuenta ni se guardaron datos.",
-      );
+      const resultado = onValidado(datos);
+      if (resultado?.error) {
+        setErrores({ correo: resultado.error });
+        setMensaje(resultado.error);
+      }
     }
   }
 

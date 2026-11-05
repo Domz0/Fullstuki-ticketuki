@@ -13,10 +13,21 @@ import PaginaConfirmacion from "./pages/PaginaConfirmacion";
 import PaginaGestionEntrada from "./pages/PaginaGestionEntrada";
 import PaginaNoEncontrada from "./pages/PaginaNoEncontrada";
 import { obtenerEvento } from "./data/obtenerEvento";
-import { leerRuta } from "./utils/navegacion";
+import { obtenerUsuario, cerrarSesion } from "./utils/sesion";
+import { leerRuta, navegar } from "./utils/navegacion";
 import "./App.css";
 
 function App() {
+  const [usuario, setUsuario] = useState(() => {
+    try { return obtenerUsuario(); } catch { return null; }
+  });
+
+  function salir() {
+    cerrarSesion();
+    setUsuario(null);
+    navegar("/inicio");
+  }
+
   const [hash, setHash] = useState(window.location.hash);
   useEffect(() => {
     function actualizar() {
@@ -28,6 +39,11 @@ function App() {
   }, []);
 
   const { pantalla, id, parametros } = leerRuta(hash);
+  useEffect(() => {
+    if (pantalla === "cuenta" && !usuario) navegar("/login");
+    if (["login", "registro"].includes(pantalla) && usuario) navegar("/cuenta/datos");
+  }, [pantalla, usuario]);
+
   const categoria = ["musica", "artes", "deportes", "ferias"].includes(id)
     ? id
     : "musica";
@@ -53,11 +69,12 @@ function App() {
       />
     );
   else if (pantalla === "registro") contenido = <PaginaRegistro />;
-  else if (pantalla === "login") contenido = <PaginaLogin />;
-  else if (pantalla === "cuenta")
+  else if (pantalla === "login") contenido = <PaginaLogin onIniciarSesion={setUsuario} registroExitoso={parametros.get("registro") === "ok"} />;
+  else if (pantalla === "cuenta" && usuario)
     contenido = (
-      <PaginaCuenta seccion={id === "entradas" ? "entradas" : "datos"} />
+      <PaginaCuenta usuario={usuario} onCerrarSesion={salir} onActualizarUsuario={setUsuario} seccion={id === "entradas" ? "entradas" : "datos"} />
     );
+  else if (pantalla === "cuenta") contenido = null;
   else if (["transferir", "revender"].includes(pantalla))
     contenido = <PaginaGestionEntrada accion={pantalla} codigo={id} />;
   else if (evento && pantalla === "evento")
@@ -89,7 +106,7 @@ function App() {
 
   return (
     <>
-      <Header categoria={pantalla === "catalogo" ? categoria : undefined} />
+      <Header usuario={usuario} onCerrarSesion={salir} categoria={pantalla === "catalogo" ? categoria : undefined} />
       <main className={`pantalla pantalla_${pantalla}`} key={hash}>
         {contenido}
       </main>

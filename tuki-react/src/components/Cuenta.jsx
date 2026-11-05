@@ -3,7 +3,7 @@ import Perfil from "./Perfil";
 import MisEntradas from "./MisEntradas";
 import "./Cuenta.css";
 
-function Cuenta({ usuario, entradas, seccion = "datos" }) {
+function Cuenta({ usuario, entradas, seccion = "datos", onCerrarSesion, onActualizarUsuario }) {
   {
     /*parte en los datos y cambia segun el botons*/
   }
@@ -48,13 +48,13 @@ function Cuenta({ usuario, entradas, seccion = "datos" }) {
         <button
           type="button"
           className="cuenta_seccion cuenta_seccion_salir"
-          onClick={() => navegar("/inicio")}
+          onClick={onCerrarSesion}
         >
           Cerrar sesión
         </button>
       </nav>
       {seccion === "datos" ? (
-        <Perfil usuario={usuario} />
+        <Perfil usuario={usuario} onActualizarUsuario={onActualizarUsuario} />
       ) : (
         <MisEntradas entradas={entradas} />
       )}

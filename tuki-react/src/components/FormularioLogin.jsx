@@ -2,7 +2,7 @@
 import { validarLogin } from "../utils/validarLogin";
 import "./FormularioLogin.css";
 
-function FormularioLogin({ onValidado }) {
+function FormularioLogin({ onValidado, registroExitoso = false }) {
   const [datos, setDatos] = useState({ correo: "", password: "" });
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState("");
@@ -23,10 +23,11 @@ function FormularioLogin({ onValidado }) {
       setMensaje("Revisa los campos marcados.");
       event.currentTarget.elements.namedItem(primerError).focus();
     } else {
-      onValidado();
-      setMensaje(
-        "Los campos cumplen las validaciones. No se comprobaron las credenciales ni se inició sesión.",
-      );
+      const resultado = onValidado(datos);
+      if (resultado?.error) {
+        setErrores({ password: resultado.error });
+        setMensaje(resultado.error);
+      }
     }
   }
 
@@ -43,6 +44,7 @@ function FormularioLogin({ onValidado }) {
           autoComplete="off"
         >
           <h2 id="titulo_login">Ingresar a tu cuenta</h2>
+          {registroExitoso && <p className="txt_exito" role="status">Cuenta creada. Ya puedes iniciar sesión.</p>}
           <div className="login_campo">
             <label htmlFor="login_correo">Correo electrónico</label>
             <input

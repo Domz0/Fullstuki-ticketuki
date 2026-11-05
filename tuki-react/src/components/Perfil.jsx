@@ -2,7 +2,7 @@
 import EditarDatosAcceso from "./EditarDatosAcceso";
 import "./Perfil.css";
 
-function Perfil({ usuario }) {
+function Perfil({ usuario, onActualizarUsuario }) {
   const [editando, setEditando] = useState(false);
   return (
     <section className="cuenta_contenido" aria-labelledby="perfil_titulo">
@@ -29,7 +29,7 @@ function Perfil({ usuario }) {
           <p className="campo_cuenta_valor">{usuario.correo}</p>
         </div>
         {editando ? (
-          <EditarDatosAcceso onCancelar={() => setEditando(false)} />
+          <EditarDatosAcceso usuario={usuario} onActualizarUsuario={onActualizarUsuario} onCancelar={() => setEditando(false)} />
         ) : (
           <button
             type="button"
