@@ -1,7 +1,13 @@
 import Cuenta from "../components/Cuenta";
-import { entradas } from "../data/entradas";
+import { obtenerEntradas } from "../utils/entradas";
 
 function PaginaCuenta({ seccion, usuario, onCerrarSesion, onActualizarUsuario }) {
+  let entradas;
+  try {
+    entradas = obtenerEntradas(usuario);
+  } catch {
+    return <p role="alert">No se pudieron cargar tus entradas. Inténtalo nuevamente.</p>;
+  }
   return (
     <Cuenta
       usuario={usuario}

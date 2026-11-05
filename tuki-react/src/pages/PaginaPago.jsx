@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PasosCompra from "../components/PasosCompra";
 import FormularioPago from "../components/FormularioPago";
 import ResumenPago from "../components/ResumenPago";
 import { leerCompra, guardarCompra, confirmarCompra } from "../utils/compra";
+import { guardarEntrada } from "../utils/entradas";
 import { navegar } from "../utils/navegacion";
 
 function PaginaPago({ evento, fecha, usuario }) {
   const [compra, setCompra] = useState(leerCompra);
   const [mensaje, setMensaje] = useState("");
+  const confirmando = useRef(false);
   if (!compra || compra.eventoId !== evento.id || compra.fechaId !== fecha.id) {
     return <section><h2>Elige tus entradas primero</h2><a href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Elegir entradas</a></section>;
   }
@@ -19,10 +21,17 @@ function PaginaPago({ evento, fecha, usuario }) {
   }
 
   function continuarAConfirmacion(datos, metodo, cuotas) {
+    if (confirmando.current) return;
+    confirmando.current = true;
     try {
-      guardarCompra(confirmarCompra(compra, datos, metodo, cuotas));
+      const confirmada = compra.estado === "confirmada"
+        ? compra : confirmarCompra(compra, datos, metodo, cuotas);
+      guardarCompra(confirmada);
+      setCompra(confirmada);
+      guardarEntrada(confirmada, usuario);
       navegar(`/confirmacion/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`);
     } catch {
+      confirmando.current = false;
       setMensaje("No se pudo confirmar la compra. Inténtalo nuevamente.");
     }
   }

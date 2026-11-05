@@ -1,5 +1,4 @@
 ﻿import { navegar } from "../utils/navegacion";
-import { catalogo } from "../data/catalogo";
 import { useState } from "react";
 import "./MisEntradas.css";
 
@@ -35,7 +34,7 @@ function MisEntradas({ entradas }) {
       <ul className="lista">
         {visibles.map((entrada) => (
           <li
-            key={entrada.codigo}
+            key={entrada.orden}
             className={`entrada ${entrada.estado !== "proximas" ? "entrada_cerrada" : ""}`}
           >
             <div className="entrada_datos">
@@ -58,7 +57,7 @@ function MisEntradas({ entradas }) {
                 className="boton entrada_detalle"
                 onClick={() =>
                   navegar(
-                    `/evento/${catalogo.find((evento) => evento.nombre === entrada.nombre)?.id || "destacado"}`,
+                    `/evento/${entrada.eventoId}`,
                   )
                 }
               >
