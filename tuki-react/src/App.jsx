@@ -55,6 +55,7 @@ function App() {
     evento?.fechas.find((item) => item.id === parametros.get("fecha")) ||
     evento?.fechas[0];
 
+  const esAcceso = pantalla === "login" || pantalla === "registro";
   let contenido;
 
   if (pantalla === "admin") {
@@ -105,11 +106,11 @@ function App() {
 
   return (
     <>
-      <Header usuario={usuario} onCerrarSesion={salir} categoria={pantalla === "catalogo" ? categoria : undefined} />
+      {!esAcceso && <Header usuario={usuario} onCerrarSesion={salir} categoria={pantalla === "catalogo" ? categoria : undefined} />}
       <main className={`pantalla pantalla_${pantalla}`} key={hash}>
         {contenido}
       </main>
-      <Footer />
+      {!esAcceso && <Footer />}
     </>
   );
 }

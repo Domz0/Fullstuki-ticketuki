@@ -1,7 +1,8 @@
 ﻿/* Diseño del login original con reglas limitadas al componente. */
 .login {
   display: flex;
-  margin-top: 40px;
+  min-height: 100vh;
+  margin-top: 0;
   background-color: var(--color-fondo);
 }
 
@@ -70,7 +71,6 @@
   text-decoration: none;
 }
 
-/* La imagen sigue la altura del formulario, sin forzar 100vh. */
 .login_imagen {
   position: relative;
   width: 50%;

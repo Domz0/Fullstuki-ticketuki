@@ -1,4 +1,5 @@
-﻿import { useState } from "react";
+import ImagenAcceso from "./ImagenAcceso";
+import { useState } from "react";
 import { validarRegistro } from "../utils/validarRegistro";
 import "./FormularioRegistro.css";
 
@@ -136,13 +137,7 @@ function FormularioRegistro({ onValidado }) {
           </p>
         </form>
       </div>
-      <div className="registro_imagen">
-        <img
-          src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y29uY2llcnRvfGVufDB8fDB8fHww"
-          alt=""
-          loading="lazy"
-        />
-      </div>
+      <ImagenAcceso className="registro_imagen" />
     </section>
   );
 }

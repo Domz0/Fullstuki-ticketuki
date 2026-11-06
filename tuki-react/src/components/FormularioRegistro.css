@@ -1,6 +1,7 @@
 ﻿.registro {
   display: flex;
-  margin-top: 40px;
+  min-height: 100vh;
+  margin-top: 0;
   background-color: var(--color-fondo);
 }
 

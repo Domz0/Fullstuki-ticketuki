@@ -1,4 +1,5 @@
-﻿import { useState } from "react";
+import ImagenAcceso from "./ImagenAcceso";
+import { useState } from "react";
 import { validarLogin } from "../utils/validarLogin";
 import "./FormularioLogin.css";
 
@@ -105,13 +106,7 @@ function FormularioLogin({ onValidado, registroExitoso = false }) {
           </p>
         </form>
       </div>
-      <div className="login_imagen">
-        <img
-          src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y29uY2llcnRvfGVufDB8fDB8fHww"
-          alt=""
-          loading="lazy"
-        />
-      </div>
+      <ImagenAcceso className="login_imagen" />
     </section>
   );
 }

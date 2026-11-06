@@ -44,6 +44,11 @@
 .pantalla_pago {
   max-width: 1600px;
 }
+.pantalla.pantalla_login,
+.pantalla.pantalla_registro {
+  max-width: none;
+  padding: 0;
+}
 .pantalla_confirmacion {
   max-width: 1000px;
 }
