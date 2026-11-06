@@ -1,4 +1,4 @@
-﻿import { navegar } from "../utils/navegacion";
+import { navegar } from "../utils/navegacion";
 import "./DetalleEvento.css";
 
 function DetalleEvento({ evento }) {
@@ -89,11 +89,8 @@ function DetalleEvento({ evento }) {
             <h3 className="evento_subtitulo">Recinto</h3>
             <div className="recinto_tarjeta">
               <div className="recinto_pendiente">
-                <button
-                  type="button"
-                  onClick={() => navegar(`/entradas/${evento.id}`)}
-                  className="boton boton_morado"
-                >
+                <button type="button" className="boton boton_morado"
+                  onClick={() => navegar(`/entradas/${evento.id}`)}>
                   falta agregar
                 </button>
               </div>

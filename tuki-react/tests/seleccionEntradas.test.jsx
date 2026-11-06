@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import PaginaEntradas from "../src/pages/PaginaEntradas";
 
@@ -22,11 +22,11 @@ describe("Selección de entradas", () => {
       screen.queryByLabelText("Cantidad seleccionada"),
     ).not.toBeInTheDocument();
     fireEvent.click(
-      screen.getByRole("button", { name: /Cancha Preferencial/ }),
+      within(screen.getByRole("region", { name: "Tu selección" })).getByRole("button", { name: /Cancha Preferencial/ }),
     );
 
     expect(
-      screen.queryByRole("button", { name: /Cancha General/ }),
+      within(screen.getByRole("region", { name: "Tu selección" })).queryByRole("button", { name: /Cancha General/ }),
     ).not.toBeInTheDocument();
     expect(screen.getByLabelText("Cantidad seleccionada")).toHaveTextContent(
       "1",
@@ -51,7 +51,7 @@ describe("Selección de entradas", () => {
 
   it("limita la cantidad entre una y seis entradas", () => {
     render(<PaginaEntradas evento={evento} fecha={fecha} />);
-    fireEvent.click(screen.getByRole("button", { name: /Cancha General/ }));
+    fireEvent.click(within(screen.getByRole("region", { name: "Tu selección" })).getByRole("button", { name: /Cancha General/ }));
     const quitar = screen.getByRole("button", { name: "Quitar una entrada" });
     const agregar = screen.getByRole("button", { name: "Agregar una entrada" });
     expect(quitar).toBeDisabled();
@@ -73,7 +73,7 @@ describe("Selección de entradas", () => {
 
   it("no permite seleccionar un sector agotado", () => {
     render(<PaginaEntradas evento={evento} fecha={fecha} />);
-    const agotado = screen.getByRole("button", { name: /Tribuna Pacífico/ });
+    const agotado = within(screen.getByRole("region", { name: "Tu selección" })).getByRole("button", { name: /Tribuna Pacífico/ });
     expect(agotado).toBeDisabled();
     fireEvent.click(agotado);
     expect(
