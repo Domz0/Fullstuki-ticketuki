@@ -41,7 +41,9 @@ describe("Formulario de login", () => {
     fireEvent.change(password, { target: { value: "incorrecta" } });
     fireEvent.click(boton);
 
-    expect(screen.getByRole("status")).toHaveTextContent("Correo o contraseña incorrectos.");
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Correo o contraseña incorrectos.",
+    );
     expect(password).toHaveAttribute("aria-invalid", "true");
     expect(onIniciarSesion).not.toHaveBeenCalled();
     expect(localStorage.getItem("sesionIniciada")).toBe("false");
