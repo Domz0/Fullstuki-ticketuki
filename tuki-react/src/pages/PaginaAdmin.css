@@ -38,6 +38,9 @@
 .admin_formulario > button { padding: 12px; background: var(--color-morado); color: var(--color-texto); }
 .admin_formulario > button:disabled { opacity: 0.5; cursor: default; }
 .admin_formulario a { color: var(--color-morado-claro); text-decoration: underline; }
+.admin_acciones { display: flex; flex-wrap: wrap; gap: 12px; }
+.admin_acciones a, .admin .admin_enlace { color: var(--color-morado-claro); text-decoration: underline; }
+.admin_acciones button { border: 0; padding: 0; background: transparent; color: var(--color-morado-claro); font: inherit; text-decoration: underline; cursor: pointer; }
 @media (max-width: 1000px) { .admin_indicadores { grid-template-columns: 1fr; } }
 @media (max-width: 700px) {
   .admin_fila { grid-template-columns: 1fr; }

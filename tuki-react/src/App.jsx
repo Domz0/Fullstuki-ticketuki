@@ -60,7 +60,7 @@ function App() {
 
   if (pantalla === "admin") {
     return usuario?.rol === "admin"
-      ? <PaginaAdmin seccion={id} onCerrarSesion={salir} />
+      ? <PaginaAdmin seccion={id} eventoId={parametros.get("id")} onCerrarSesion={salir} />
       : null;
   }
 

@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { categorias, recintos, ciudades, subcategoriasDe, validarEvento, guardarEvento } from "../utils/eventos";
+import { categorias, recintos, ciudades, subcategoriasDe, validarEvento, guardarEvento, actualizarEvento, datosDeEvento } from "../utils/eventos";
 import { obtenerSectores } from "../data/sectores";
 
-function CrearEvento() {
-  const [datos, setDatos] = useState({ nombre: "", categoria: "musica", subcategoria: "", recinto: recintos[0], ciudad: ciudades[0], fecha: "", hora: "", descripcion: "" });
+// Sin la prop evento crea uno nuevo; con ella edita el evento recibido.
+function CrearEvento({ evento }) {
+  const editando = Boolean(evento);
+  const [datos, setDatos] = useState(() => evento ? datosDeEvento(evento) : { nombre: "", categoria: "musica", subcategoria: "", recinto: recintos[0], ciudad: ciudades[0], fecha: "", hora: "", descripcion: "" });
   const [errores, setErrores] = useState({});
   const [creado, setCreado] = useState(null);
   const [mensaje, setMensaje] = useState("");
@@ -25,9 +27,9 @@ function CrearEvento() {
       return;
     }
     try {
-      setCreado(guardarEvento(datos));
+      setCreado(editando ? actualizarEvento(evento.id, datos) : guardarEvento(datos));
       setMensaje("");
-    } catch { setMensaje("No se pudo crear el evento. Inténtalo nuevamente."); }
+    } catch { setMensaje(`No se pudo ${editando ? "actualizar" : "crear"} el evento. Inténtalo nuevamente.`); }
   }
   function campo(nombre, etiqueta, tipo = "text", opciones) {
     return (
@@ -47,7 +49,7 @@ function CrearEvento() {
   }
   return (
     <section>
-      <h1>Crear evento</h1>
+      <h1>{editando ? "Editar evento" : "Crear evento"}</h1>
       <form className="admin_formulario" onSubmit={guardar} noValidate>
         {campo("nombre", "Nombre del evento")}
         <div className="admin_fila">
@@ -67,9 +69,9 @@ function CrearEvento() {
           <h2>Sectores y precios del recinto</h2>
           <ul>{sectores.map((sector) => <li key={sector.id}>{sector.nombre}: {"$" + sector.precio.toLocaleString("es-CL")}{sector.estado === "agotada" ? " · Agotado" : ""}</li>)}</ul>
         </div>
-        <button className="boton" type="submit" disabled={Boolean(creado)}>Crear evento</button>
+        <button className="boton" type="submit" disabled={Boolean(creado)}>{editando ? "Guardar cambios" : "Crear evento"}</button>
         {mensaje && <p role="alert" className="txt_error">{mensaje}</p>}
-        {creado && <p role="status">Evento creado. <a href={`#/evento/${creado.id}`}>Ver evento</a> · <a href={`#/catalogo/${creado.categoria}`}>Ver en catálogo</a></p>}
+        {creado && <p role="status">{editando ? "Evento actualizado." : "Evento creado."} <a href={`#/evento/${creado.id}`}>Ver evento</a> · <a href={`#/catalogo/${creado.categoria}`}>Ver en catálogo</a> · <a href="#/admin/eventos">Gestionar eventos</a></p>}
       </form>
     </section>
   );

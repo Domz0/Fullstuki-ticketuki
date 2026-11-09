@@ -28,13 +28,18 @@ export function validarEvento(datos) {
   if (!datos.descripcion.trim()) errores.descripcion = "Ingresa una descripción.";
   return errores;
 }
-export function guardarEvento(datos) {
+function escribirEventos(eventos) {
+  localStorage.setItem("eventosCreados", JSON.stringify(eventos));
+}
+function comprobarDatos(datos) {
   if (Object.keys(validarEvento(datos)).length) throw new Error("Datos inválidos");
+}
+function construirEvento(datos, id) {
   const fecha = new Date(`${datos.fecha}T${datos.hora}`);
   const sectores = obtenerSectores({ recinto: datos.recinto, categoriaId: datos.categoria });
   const precio = Math.min(...sectores.filter((sector) => sector.estado !== "agotada").map((sector) => sector.precio));
-  const evento = {
-    id: crypto.randomUUID(),
+  return {
+    id,
     nombre: datos.nombre.trim(),
     categoria: datos.categoria,
     subcategoria: datos.subcategoria,
@@ -54,6 +59,40 @@ export function guardarEvento(datos) {
       estado: "Disponible",
     }],
   };
-  localStorage.setItem("eventosCreados", JSON.stringify([...leerEventosCreados(), evento]));
+}
+export function guardarEvento(datos) {
+  comprobarDatos(datos);
+  const evento = construirEvento(datos, crypto.randomUUID());
+  escribirEventos([...leerEventosCreados(), evento]);
   return evento;
+}
+// Solo se editan y eliminan los eventos creados desde el panel; el catálogo base es fijo.
+export function actualizarEvento(id, datos) {
+  comprobarDatos(datos);
+  const eventos = leerEventosCreados();
+  if (!eventos.some((evento) => evento.id === id)) throw new Error("Evento no encontrado");
+  const actualizado = construirEvento(datos, id);
+  escribirEventos(eventos.map((evento) => (evento.id === id ? actualizado : evento)));
+  return actualizado;
+}
+export function eliminarEvento(id) {
+  const eventos = leerEventosCreados();
+  const restantes = eventos.filter((evento) => evento.id !== id);
+  if (restantes.length === eventos.length) return false;
+  escribirEventos(restantes);
+  return true;
+}
+export function datosDeEvento(evento) {
+  const fecha = new Date(evento.fechaInicio);
+  const dosDigitos = (numero) => String(numero).padStart(2, "0");
+  return {
+    nombre: evento.nombre,
+    categoria: evento.categoria,
+    subcategoria: evento.subcategoria,
+    recinto: evento.recinto,
+    ciudad: evento.ciudad,
+    fecha: `${fecha.getFullYear()}-${dosDigitos(fecha.getMonth() + 1)}-${dosDigitos(fecha.getDate())}`,
+    hora: `${dosDigitos(fecha.getHours())}:${dosDigitos(fecha.getMinutes())}`,
+    descripcion: evento.descripcion,
+  };
 }
