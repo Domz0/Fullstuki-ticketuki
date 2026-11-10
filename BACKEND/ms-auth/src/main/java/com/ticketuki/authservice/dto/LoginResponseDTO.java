@@ -1,5 +1,7 @@
 package com.ticketuki.authservice.dto;
 
+import com.ticketuki.authservice.model.Rol;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +15,7 @@ public class LoginResponseDTO {
     private String tipo;        // "Bearer"
     private String username;
     private long expiraEnMs;
+    private Long authId;
+    private Long usuarioId;
+    private Rol rol;
 }

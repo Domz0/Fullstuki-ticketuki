@@ -27,7 +27,7 @@ public class AuthService {
         UsuarioAuth usuario = usuarioAuthRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new CredencialesInvalidasException("Usuario o contraseña incorrectos"));
 
-        // 2. Verificar la contraseña (comparación directa en texto plano)
+        // 2. Comparación directa de credenciales
         if (!usuario.getPassword().equals(dto.getPassword())) {
             throw new CredencialesInvalidasException("Usuario o contraseña incorrectos");
         }
@@ -37,6 +37,7 @@ public class AuthService {
         log.info("Login exitoso para usuario: {}", usuario.getUsername());
 
         return new LoginResponseDTO(token, "Bearer", usuario.getUsername(),
-                jwtUtil.getExpiracionMs());
+                jwtUtil.getExpiracionMs(), usuario.getId_usuario_auth(),
+                usuario.getUsuarioId(), usuario.getRol());
     }
 }
