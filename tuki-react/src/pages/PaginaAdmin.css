@@ -44,7 +44,8 @@
 @media (max-width: 1000px) { .admin_indicadores { grid-template-columns: 1fr; } }
 @media (max-width: 700px) {
   .admin_fila { grid-template-columns: 1fr; }
-  .admin { grid-template-columns: 1fr; }
+  .admin { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .admin_pie { margin-top: 0; }
   .admin_lateral { border-right: 0; border-bottom: 1px solid var(--color-linea); gap: 12px; }
   .admin_menu, .admin_pie { flex-direction: row; flex-wrap: wrap; align-items: center; }
   .admin_contenido { padding: 16px; }

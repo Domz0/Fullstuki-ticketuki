@@ -1,5 +1,7 @@
 import PasosCompra from "./PasosCompra";
 import SeleccionEntradas from "./SeleccionEntradas";
+import MapaRecinto from "./MapaRecinto";
+import { obtenerPlano } from "../data/sectores";
 import "./ElegirEntradas.css";
 
 function ElegirEntradas({ evento, seleccion, fechaElegida, sectores, onElegir, onCambiarCantidad, onContinuar }) {
@@ -13,16 +15,18 @@ function ElegirEntradas({ evento, seleccion, fechaElegida, sectores, onElegir, o
       </header>
       <div className="entradas_columnas">
         <section className="plano" aria-label="Elegir sector">
-          <div className="plano_pendiente">
-            <button className="boton plano_simular" type="button"
-              disabled={fecha.estado === "Agotado"}
-              onClick={() => {
-                const sector = sectores.find((item) => item.estado !== "agotada");
-                if (sector) onElegir(sector.id);
-              }}>
-              falta agregar
-            </button>
+          <div className="leyenda">
+            <span className="leyenda_item"><span className="leyenda_marca" aria-hidden="true"></span> Disponible</span>
+            <span className="leyenda_item"><span className="leyenda_marca leyenda_marca_activa" aria-hidden="true"></span> Seleccionada</span>
+            <span className="leyenda_item"><span className="leyenda_marca leyenda_marca_agotada" aria-hidden="true"></span> Agotada</span>
           </div>
+          <MapaRecinto
+            sectores={sectores}
+            plano={obtenerPlano(evento)}
+            seleccionId={seleccion?.sectorId}
+            onElegir={onElegir}
+            fechaAgotada={fecha.estado === "Agotado"}
+          />
           <p className="plano_nota">Selección por área. La ubicación exacta dentro del área se asigna al ingresar al recinto.</p>
         </section>
         <SeleccionEntradas seleccion={seleccion} cantidad={seleccion?.cantidad || 1}

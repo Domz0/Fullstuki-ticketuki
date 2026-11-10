@@ -557,4 +557,13 @@
 
 
 
-.detalle_evento .recinto_pendiente { display: grid; place-items: center; min-height: 220px; }
+.detalle_evento .recinto_enlace {
+  color: var(--color-morado-claro);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.detalle_evento .recinto_enlace:hover {
+  text-decoration: underline;
+}

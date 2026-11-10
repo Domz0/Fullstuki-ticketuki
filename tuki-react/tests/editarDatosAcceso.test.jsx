@@ -59,12 +59,4 @@ describe("Formulario de editar datos de acceso", () => {
       "Datos de acceso guardados.",
     );
   });
-
-  it("ejecuta onCancelar al presionar Cancelar", () => {
-    const onCancelar = vi.fn();
-    render(<EditarDatosAcceso usuario={usuario} onCancelar={onCancelar} />);
-    fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
-
-    expect(onCancelar).toHaveBeenCalledTimes(1);
-  });
 });

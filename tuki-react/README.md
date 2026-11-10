@@ -31,6 +31,13 @@ La aplicación queda disponible en la dirección que muestra Vite, por defecto `
 
 El panel se abre en `#/admin/dashboard` iniciando sesión con la cuenta de demostración definida en `src/utils/sesion.js`.
 
+## Tarjeta de prueba
+
+En el pago con crédito se puede usar la tarjeta `4000 0000 0000 0000` con cualquier CVV de 3 números.
+
+- Con una fecha de vencimiento futura, como `12/30`, el pago se aprueba.
+- Con una fecha pasada, como `12/25`, el pago se rechaza y se abre la pantalla de pago fallido.
+
 ## Estructura
 
 | Carpeta | Contenido |

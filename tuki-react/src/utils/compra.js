@@ -33,17 +33,33 @@ export function crearSeleccion(evento, fecha, sector, cantidad) {
   };
 }
 
+function limpiarComprador(comprador) {
+  return {
+    nombre: comprador.nombre.trim(),
+    apellido: comprador.apellido.trim(),
+    rut: comprador.rut.trim(),
+    correo: comprador.correo.trim(),
+  };
+}
+
+export function rechazarCompra(compra, comprador, metodo, motivo) {
+  return {
+    ...compra,
+    ...calcularTotales(compra.precio, compra.cantidad, compra.codigoDescuento),
+    comprador: limpiarComprador(comprador),
+    metodo,
+    estado: "rechazada",
+    motivo,
+  };
+}
+
 export function confirmarCompra(compra, comprador, metodo, cuotas) {
   const referencia = crypto.randomUUID().toUpperCase();
   return {
     ...compra,
     ...calcularTotales(compra.precio, compra.cantidad, compra.codigoDescuento),
-    comprador: {
-      nombre: comprador.nombre.trim(),
-      apellido: comprador.apellido.trim(),
-      rut: comprador.rut.trim(),
-      correo: comprador.correo.trim(),
-    },
+    comprador: limpiarComprador(comprador),
+    motivo: undefined,
     metodo,
     cuotas: metodo === "credito" ? cuotas : 1,
     estado: "confirmada",

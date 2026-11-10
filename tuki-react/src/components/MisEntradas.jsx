@@ -64,22 +64,13 @@ function MisEntradas({ entradas }) {
                 Ver detalle
               </button>
               {entrada.estado === "proximas" && (
-                <>
-                  <button
-                    className="boton"
-                    type="button"
-                    onClick={() => navegar(`/transferir/${entrada.codigo}`)}
-                  >
-                    Transferir
-                  </button>
-                  <button
-                    className="boton entrada_revender"
-                    type="button"
-                    onClick={() => navegar(`/revender/${entrada.codigo}`)}
-                  >
-                    Revender
-                  </button>
-                </>
+                <button
+                  className="boton"
+                  type="button"
+                  onClick={() => navegar(`/transferir/${entrada.codigo}`)}
+                >
+                  Transferir
+                </button>
               )}
             </div>
           </li>

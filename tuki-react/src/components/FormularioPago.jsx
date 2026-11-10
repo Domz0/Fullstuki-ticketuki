@@ -249,6 +249,9 @@ function FormularioPago({ onValidado, usuario, comprador, codigoAplicado = "", o
             <div className="pago_tarjeta">
               <div className="separador"></div>
               <h3>Datos de la tarjeta</h3>
+              <p className="pago_nota_prueba">
+                Tarjeta de prueba: 4000 0000 0000 0000. Usa una fecha futura para aprobar el pago o una pasada, como 12/25, para simular un rechazo.
+              </p>
               {campo("numero_tarjeta", "Dígitos de tarjeta", {
                 placeholder: "0000 0000 0000 0000",
                 maxLength: 19,

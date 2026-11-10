@@ -252,3 +252,10 @@
     width: calc(50% - 6px);
   }
 }
+
+.pago_nota_prueba {
+  margin: 0;
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+  line-height: 1.5;
+}

@@ -3,7 +3,8 @@ import "./PaginaPago.css";
 import PasosCompra from "../components/PasosCompra";
 import FormularioPago from "../components/FormularioPago";
 import ResumenPago from "../components/ResumenPago";
-import { leerCompra, guardarCompra, confirmarCompra } from "../utils/compra";
+import { leerCompra, guardarCompra, confirmarCompra, rechazarCompra } from "../utils/compra";
+import { tarjetaVencida } from "../utils/validarPago";
 import { guardarEntrada } from "../utils/entradas";
 import { navegar } from "../utils/navegacion";
 
@@ -25,6 +26,11 @@ function PaginaPago({ evento, fecha, usuario }) {
     if (confirmando.current) return;
     confirmando.current = true;
     try {
+      if (compra.estado !== "confirmada" && metodo === "credito" && tarjetaVencida(datos.vencimiento)) {
+        guardarCompra(rechazarCompra(compra, datos, metodo, "Tarjeta vencida"));
+        navegar(`/pago-fallido/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`);
+        return;
+      }
       const confirmada = compra.estado === "confirmada"
         ? compra : confirmarCompra(compra, datos, metodo, cuotas);
       guardarCompra(confirmada);
