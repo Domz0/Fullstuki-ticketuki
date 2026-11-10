@@ -1,0 +1,22 @@
+.pago_volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto-suave);
+  font-size: 14px;
+  text-decoration: none;
+}
+.pago_volver::before { content: "←"; }
+.pago_volver:hover {
+  border-color: var(--color-morado);
+  color: var(--color-morado-claro);
+}
+.pago_volver:focus-visible {
+  outline: 2px solid var(--color-morado);
+  outline-offset: 3px;
+}

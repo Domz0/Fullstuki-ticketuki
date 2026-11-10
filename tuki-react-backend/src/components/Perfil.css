@@ -1,0 +1,53 @@
+﻿.datos_usuario {
+  gap: 16px;
+  min-width: 0;
+  line-height: 1.5;
+}
+.cuenta_fila {
+  gap: 16px;
+}
+.campo_cuenta {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.campo_cuenta_rotulo {
+  color: var(--color-texto-suave);
+  font-size: 0.8rem;
+}
+.campo_cuenta_valor {
+  margin: 0;
+  padding: 0.8rem;
+  border: solid var(--color-linea) 1px;
+  border-radius: 0.5rem;
+  background-color: var(--color-superficie);
+}
+.perfil_editar {
+  align-self: flex-start;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--color-morado);
+  color: var(--color-texto);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.campo_cuenta_valor {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1023px) {
+  .cuenta_fila {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .perfil_editar {
+    width: 100%;
+  }
+}

@@ -1,0 +1,58 @@
+.transferir {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+.transferir h1 { margin: 0; font-size: 28px; }
+.transferir h2 { margin: 0; font-size: 16px; }
+.transferir_resumen,
+.transferir_formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+}
+.transferir_resumen { gap: 6px; }
+.transferir_resumen p { margin: 0; color: var(--color-texto-suave); font-size: 14px; }
+.transferir_resumen .transferir_codigo {
+  margin-top: 6px;
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+.transferir_campo { display: flex; flex-direction: column; gap: 8px; }
+.transferir_campo label { font-size: 14px; }
+.transferir_campo input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+}
+.transferir_campo input:focus-visible { outline: 2px solid var(--color-morado); outline-offset: 1px; }
+.transferir_campo input.input_error { border-color: var(--color-error); }
+.transferir_formulario .boton {
+  padding: 12px 18px;
+  background: var(--color-morado);
+  color: var(--color-blanco);
+  font: inherit;
+  font-weight: 600;
+}
+.transferir_nota { margin: 0; color: var(--color-texto-apagado); font-size: 13px; }
+.transferir_volver { color: var(--color-morado-claro); font-size: 14px; }
+
+@media (max-width: 600px) {
+  .transferir { padding: 28px 16px; }
+  .transferir h1 { font-size: 22px; }
+}

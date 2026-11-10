@@ -1,0 +1,289 @@
+
+.mis_entradas {
+  --qr: 96px;
+}
+
+.mis_entradas .enlace-morado {
+  color: var(--color-morado-claro);
+  font-weight: 600;
+}
+
+.mis_entradas .enlace-morado:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   Filtros
+   ============================================================ */
+
+.mis_entradas .filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 20px;
+}
+
+.mis_entradas .filtro {
+  height: 34px;
+  padding: 0 16px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 8px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mis_entradas .filtro:hover {
+  border-color: var(--color-morado);
+}
+
+.mis_entradas .filtro.is-activo {
+  border-color: var(--color-morado);
+  background: var(--color-morado);
+  color: var(--color-blanco);
+}
+
+/* ============================================================
+   Listado
+   ============================================================ */
+
+.mis_entradas .lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mis_entradas .entrada {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "datos acceso"
+    "acciones acceso";
+  align-content: start;
+  min-width: 0;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+}
+
+
+.mis_entradas .lista[hidden],
+.mis_entradas .entrada[hidden],
+.mis_entradas .vacio[hidden] {
+  display: none;
+}
+
+.mis_entradas .entrada_datos {
+  grid-area: datos;
+  min-width: 0;
+  padding: 18px 18px 0;
+}
+
+.mis_entradas .entrada_acciones {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: acciones;
+  gap: 8px;
+  padding: 14px 18px 18px;
+}
+
+.mis_entradas .entrada_acceso {
+  display: flex;
+  grid-area: acceso;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px;
+  border-left: 1px solid var(--color-linea);
+}
+
+/* ---------- textos ---------- */
+
+.mis_entradas .entrada_rotulo {
+  margin: 0;
+  color: var(--color-morado-claro);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.mis_entradas .entrada_titulo {
+  margin: 8px 0 10px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.mis_entradas .entrada_recinto,
+.mis_entradas .entrada_fecha {
+  margin: 0 0 3px;
+  color: var(--color-texto-apagado);
+  font-size: 13px;
+}
+
+.mis_entradas .entrada_sector {
+  margin: 3px 0 0;
+  color: var(--color-texto-suave);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+
+.mis_entradas .entrada_rotulo_codigo {
+  display: none;
+}
+
+.mis_entradas .entrada_codigo_caja {
+  min-width: 0;
+}
+
+.mis_entradas .entrada_codigo {
+  margin: 0;
+  color: var(--color-texto-apagado);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+/* ---------- QR ---------- */ 
+/* -- pendiente */
+
+.mis_entradas .qr {
+  width: var(--qr);
+  height: var(--qr);
+  flex: 0 0 auto;
+  border: 1px dashed var(--color-linea-suave);
+  border-radius: 6px;
+  background: var(--color-fondo);
+}
+
+/* ---------- botones ---------- */
+
+.mis_entradas .boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 8px;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.mis_entradas .boton:hover {
+  border-color: var(--color-morado);
+}
+
+
+
+
+.mis_entradas .entrada_cerrada .entrada_rotulo {
+  color: var(--color-texto-tenue);
+}
+
+/* ---------- sin resultados ---------- */
+
+.mis_entradas .vacio {
+  margin: 24px 0 0;
+  padding: 28px;
+  border: 1px solid var(--color-linea);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+  color: var(--color-texto-apagado);
+  font-size: 14px;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .mis_entradas .lista {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .mis_entradas {
+    --lado: 16px;
+  }
+
+  .mis_entradas .filtros {
+    margin: 14px 0 16px;
+  }
+
+  .mis_entradas {
+    --qr: 78px;
+  }
+
+  .mis_entradas .entrada {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "datos"
+      "acceso"
+      "acciones";
+  }
+
+  .mis_entradas .entrada_datos {
+    padding: 16px 16px 14px;
+    border-bottom: 1px dashed var(--color-linea);
+  }
+
+  .mis_entradas .entrada_acceso {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 14px 16px 10px;
+    border-left: 0;
+  }
+
+
+  .mis_entradas .entrada_acciones {
+    padding: 0 16px 16px calc(var(--qr) + 28px);
+  }
+
+  .mis_entradas .entrada_rotulo_codigo {
+    display: block;
+    color: var(--color-texto-tenue);
+  }
+
+  .mis_entradas .entrada_codigo {
+    margin-top: 3px;
+    font-size: 13px;
+    color: var(--color-texto);
+  }
+
+
+  .mis_entradas .entrada_detalle {
+    display: none;
+  }
+
+  .mis_entradas .entrada_cerrada .entrada_acceso {
+    padding-bottom: 16px;
+  }
+
+  .mis_entradas .entrada_cerrada .entrada_acciones {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .mis_entradas .boton {
+    padding: 0 12px;
+    font-size: 12px;
+  }
+}
+

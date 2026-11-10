@@ -1,0 +1,100 @@
+﻿/* Diseño del login original con reglas limitadas al componente. */
+.login {
+  display: flex;
+  min-height: 100vh;
+  margin-top: 0;
+  background-color: var(--color-fondo);
+}
+
+.login_contenido {
+  width: 50%;
+  min-width: 0;
+}
+
+.login_marca {
+  padding: 1rem;
+  font-weight: 700;
+  display: inline-block;
+  color: var(--color-texto);
+}
+
+.login_formulario {
+  padding: 5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.login_formulario h2 {
+  color: var(--color-texto);
+}
+
+.login_campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.login_campo label {
+  color: var(--color-texto-suave);
+  font-size: 0.8rem;
+}
+
+.login_formulario button {
+  padding: 0.8rem;
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-morado);
+  font-weight: 700;
+  color: var(--color-texto-suave);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login_formulario button:hover {
+  background-color: var(--color-morado-oscuro);
+}
+
+.login_crear {
+  display: flex;
+  flex-wrap: wrap;
+  color: var(--color-texto-suave);
+  justify-content: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.login_crear a {
+  color: var(--color-morado);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.login_imagen {
+  position: relative;
+  width: 50%;
+  overflow: hidden;
+}
+
+.login_imagen img {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  filter: blur(2px);
+}
+
+@media (max-width: 1023px) {
+  .login_contenido {
+    width: 100%;
+  }
+
+  .login_imagen {
+    display: none;
+  }
+
+  .login_formulario {
+    padding: 1rem;
+  }
+}
