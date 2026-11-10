@@ -10,7 +10,8 @@ import PaginaEvento from "./pages/PaginaEvento";
 import PaginaEntradas from "./pages/PaginaEntradas";
 import PaginaPago from "./pages/PaginaPago";
 import PaginaConfirmacion from "./pages/PaginaConfirmacion";
-import PaginaGestionEntrada from "./pages/PaginaGestionEntrada";
+import PaginaPagoFallido from "./pages/PaginaPagoFallido";
+import PaginaTransferir from "./pages/PaginaTransferir";
 import PaginaNoEncontrada from "./pages/PaginaNoEncontrada";
 import PaginaAdmin from "./pages/PaginaAdmin";
 import { obtenerEvento } from "./data/obtenerEvento";
@@ -41,7 +42,7 @@ function App() {
 
   const { pantalla, id, parametros } = leerRuta(hash);
   useEffect(() => {
-    if (pantalla === "cuenta" && !usuario) navegar("/login");
+    if (["cuenta", "transferir"].includes(pantalla) && !usuario) navegar("/login");
     if (["login", "registro", "cuenta"].includes(pantalla) && usuario?.rol === "admin") navegar("/admin/dashboard");
     else if (["login", "registro"].includes(pantalla) && usuario) navegar("/cuenta/datos");
     if (pantalla === "admin" && usuario?.rol !== "admin") navegar(usuario ? "/inicio" : "/login");
@@ -79,8 +80,8 @@ function App() {
       <PaginaCuenta usuario={usuario} onCerrarSesion={salir} onActualizarUsuario={setUsuario} seccion={id === "entradas" ? "entradas" : "datos"} />
     );
   else if (pantalla === "cuenta") contenido = null;
-  else if (["transferir", "revender"].includes(pantalla))
-    contenido = <PaginaGestionEntrada accion={pantalla} codigo={id} />;
+  else if (pantalla === "transferir")
+    contenido = usuario ? <PaginaTransferir usuario={usuario} codigo={id} /> : null;
   else if (evento && pantalla === "evento")
     contenido = <PaginaEvento evento={evento} />;
   else if (evento && pantalla === "entradas")
@@ -95,6 +96,8 @@ function App() {
         fecha={fecha}
       />
     );
+  else if (evento && pantalla === "pago-fallido")
+    contenido = <PaginaPagoFallido evento={evento} fecha={fecha} />;
   else if (evento && pantalla === "confirmacion")
     contenido = (
       <PaginaConfirmacion

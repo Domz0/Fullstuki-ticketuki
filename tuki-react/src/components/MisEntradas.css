@@ -1,4 +1,4 @@
-﻿
+
 .mis_entradas {
   --qr: 96px;
 }
@@ -190,9 +190,6 @@
 }
 
 
-.mis_entradas .entrada_revender {
-  display: none;
-}
 
 
 .mis_entradas .entrada_cerrada .entrada_rotulo {
@@ -269,9 +266,6 @@
     color: var(--color-texto);
   }
 
-  .mis_entradas .entrada_revender {
-    display: inline-flex;
-  }
 
   .mis_entradas .entrada_detalle {
     display: none;

@@ -17,7 +17,6 @@
   ],
   condiciones: [
     'Entradas digitales con QR único por persona',
-    'Reventa oficial habilitada dentro de la plataforma',
     'Descuentos vigentes canjeando un código',
     'Cambio de titular hasta 48 horas antes',
   ],

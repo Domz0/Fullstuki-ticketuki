@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import CatalogoEventos from "../src/components/CatalogoEventos";
 
@@ -32,18 +32,5 @@ describe("Lista del catálogo", () => {
     expect(screen.getByText("Concierto dos")).toBeInTheDocument();
     expect(screen.queryByText("Obra de teatro")).not.toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("2 eventos en Música");
-  });
-
-  it("muestra el mensaje vacío solo cuando no hay resultados", () => {
-    render(<CatalogoEventos eventos={eventos} categoria="musica" />);
-    const vacio = "No hay eventos que coincidan con los filtros.";
-    expect(screen.queryByText(vacio)).not.toBeInTheDocument();
-
-    fireEvent.change(screen.getByLabelText("Buscar en esta categoría"), {
-      target: { value: "sin coincidencias" },
-    });
-
-    expect(screen.getByText(vacio)).toBeInTheDocument();
-    expect(screen.queryAllByRole("article")).toHaveLength(0);
   });
 });

@@ -1,4 +1,4 @@
-function normalizarRut(rut) {
+export function normalizarRut(rut) {
   return rut.trim().replaceAll(".", "").toUpperCase();
 }
 
@@ -23,8 +23,8 @@ export function obtenerEntradas(usuario) {
     .filter((compra) => compra.titularRut === rut)
     .reverse()
     .map((compra) => ({
-      estado: "proximas",
-      rotulo: "Próximo evento",
+      estado: compra.transferencia ? "transferidas" : "proximas",
+      rotulo: compra.transferencia ? `Transferida a ${compra.transferencia.correo}` : "Próximo evento",
       eventoId: compra.eventoId,
       nombre: compra.evento,
       recinto: compra.recinto,
@@ -33,4 +33,20 @@ export function obtenerEntradas(usuario) {
       codigo: compra.codigo,
       orden: compra.orden,
     }));
+}
+
+export function transferirEntrada(codigo, destinatario, usuario) {
+  const rut = normalizarRut(usuario.rut);
+  const compras = leerCompras();
+  const compra = compras.find(
+    (item) => item.codigo === codigo && item.titularRut === rut && !item.transferencia,
+  );
+  if (!compra) return false;
+  compra.transferencia = {
+    nombre: destinatario.nombre.trim(),
+    rut: normalizarRut(destinatario.rut),
+    correo: destinatario.correo.trim().toLowerCase(),
+  };
+  localStorage.setItem("compras", JSON.stringify(compras));
+  return true;
 }

@@ -1,5 +1,14 @@
 ﻿// Comprobaciones de formato locales: no verifican una tarjeta ni realizan pagos.
-export function validarPago(datos, metodo, hoy = new Date()) {
+export function tarjetaVencida(vencimiento, hoy = new Date()) {
+  const [mes, anio] = vencimiento.split("/").map(Number);
+  return (
+    2000 + anio < hoy.getFullYear() ||
+    (2000 + anio === hoy.getFullYear() && mes < hoy.getMonth() + 1)
+  );
+}
+
+// Una tarjeta vencida pasa esta validación: el rechazo ocurre al procesar el pago.
+export function validarPago(datos, metodo) {
   const errores = {};
   if (!datos.nombre.trim()) errores.nombre = "Ingresa tu nombre";
   if (!datos.apellido.trim()) errores.apellido = "Ingresa tu apellido";
@@ -26,14 +35,6 @@ export function validarPago(datos, metodo, hoy = new Date()) {
     }
     if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(datos.vencimiento)) {
       errores.vencimiento = "Usa MM/AA con un mes entre 01 y 12";
-    } else {
-      const [mes, anio] = datos.vencimiento.split("/").map(Number);
-      if (
-        2000 + anio < hoy.getFullYear() ||
-        (2000 + anio === hoy.getFullYear() && mes < hoy.getMonth() + 1)
-      ) {
-        errores.vencimiento = "La tarjeta está vencida";
-      }
     }
     if (!/^\d{3,4}$/.test(datos.cvv))
       errores.cvv = "El CVV debe tener 3 o 4 números";

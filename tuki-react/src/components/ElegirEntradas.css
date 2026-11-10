@@ -47,21 +47,6 @@
   max-width: none;
 }
 
-.elegir_entradas .plano_pendiente {
-  display: grid;
-  place-items: center;
-  min-height: 320px;
-  border: 1px solid var(--color-linea);
-  border-radius: 10px;
-  background: var(--color-fondo);
-}
-.elegir_entradas .plano_simular {
-  padding: 12px 18px;
-  background: var(--color-morado);
-  color: var(--color-blanco);
-  font: inherit;
-}
-
 .elegir_entradas .seleccion_sectores {
   display: grid;
   gap: 6px;

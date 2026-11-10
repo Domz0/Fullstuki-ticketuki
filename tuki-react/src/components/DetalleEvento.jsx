@@ -1,7 +1,11 @@
 import { navegar } from "../utils/navegacion";
+import MapaRecinto from "./MapaRecinto";
+import { obtenerPlano, obtenerSectores } from "../data/sectores";
 import "./DetalleEvento.css";
 
 function DetalleEvento({ evento }) {
+  const sectores = obtenerSectores(evento);
+  const disponibles = sectores.filter((sector) => sector.estado !== "agotada").length;
   function pesos(valor) {
     return "$" + valor.toLocaleString("es-CL");
   }
@@ -27,7 +31,7 @@ function DetalleEvento({ evento }) {
             allow="encrypted-media; picture-in-picture; fullscreen"
           ></iframe>
         ) : (
-          <p className="texto_secundario">Tráiler por agregar</p>
+          <p className="texto_secundario">Este evento no tiene tráiler disponible.</p>
         )}
       </section>
       <div className="evento_columnas">
@@ -88,13 +92,13 @@ function DetalleEvento({ evento }) {
           <section className="recinto" aria-label="Recinto">
             <h3 className="evento_subtitulo">Recinto</h3>
             <div className="recinto_tarjeta">
-              <div className="recinto_pendiente">
-                <button type="button" className="boton boton_morado"
-                  onClick={() => navegar(`/entradas/${evento.id}`)}>
-                  falta agregar
-                </button>
-              </div>
-              <p className="recinto_pie">{evento.ubicacion}</p>
+              <MapaRecinto sectores={sectores} plano={obtenerPlano(evento)} vista />
+              <p className="recinto_pie">
+                <span>{evento.recinto} · {disponibles} áreas disponibles</span>
+                <a className="recinto_enlace" href={`#/entradas/${evento.id}`}>
+                  Elegir área <span aria-hidden="true">→</span>
+                </a>
+              </p>
             </div>
           </section>
         </div>

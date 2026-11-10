@@ -1,0 +1,15 @@
+.pago_fallido_icono {
+  width: 186px;
+  max-width: 100%;
+  aspect-ratio: 1;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-error);
+  border-radius: 6px;
+  color: var(--color-error);
+  font-size: 88px;
+  line-height: 1;
+}
+
+.pago_fallido_estado {
+  color: var(--color-error);
+}
