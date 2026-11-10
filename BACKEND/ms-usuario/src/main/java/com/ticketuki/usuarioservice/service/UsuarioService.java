@@ -5,7 +5,6 @@ import com.ticketuki.usuarioservice.dto.UsuarioRequestDTO;
 import com.ticketuki.usuarioservice.dto.UsuarioResponseDTO;
 import com.ticketuki.usuarioservice.exception.UsuarioDuplicadoException;
 import com.ticketuki.usuarioservice.exception.UsuarioNotFoundException;
-import org.springframework.dao.DataIntegrityViolationException;
 import com.ticketuki.usuarioservice.model.DireccionUsuario;
 import com.ticketuki.usuarioservice.model.Usuario;
 import com.ticketuki.usuarioservice.repository.DireccionUsuarioRepository;
@@ -15,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +23,17 @@ import java.util.stream.Collectors;
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final DireccionUsuarioRepository direccionRepository;
+
+    private void validarDuplicados(UsuarioRequestDTO dto, Long id) {
+        dto.setRun(dto.getRun());
+        dto.setEmail(dto.getEmail());
+        usuarioRepository.findByRun(dto.getRun())
+                .filter(usuario -> !Objects.equals(usuario.getId_usuario(), id))
+                .ifPresent(usuario -> { throw new UsuarioDuplicadoException("El RUN ya existe"); });
+        usuarioRepository.findByEmailIgnoreCase(dto.getEmail())
+                .filter(usuario -> !Objects.equals(usuario.getId_usuario(), id))
+                .ifPresent(usuario -> { throw new UsuarioDuplicadoException("El email ya existe"); });
+    }
 
     private UsuarioResponseDTO toResponseDTO(Usuario usuario) {
         DireccionDTO direccionDTO = null;
@@ -69,6 +80,7 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponseDTO crearUsuario(UsuarioRequestDTO usuarioDTO) {
         log.info("Creando nuevo usuario con run: {}", usuarioDTO.getRun());
+        validarDuplicados(usuarioDTO, null);
 
         DireccionUsuario direccion = new DireccionUsuario(
             null,
@@ -90,13 +102,7 @@ public class UsuarioService {
             direccion
         );
 
-        Usuario usuarioGuardado;
-        try {
-            usuarioGuardado = usuarioRepository.save(usuario);
-        } catch (DataIntegrityViolationException e) {
-            log.warn("Intento creacion usuario con run duplicado: {}", usuarioDTO.getRun());
-            throw new UsuarioDuplicadoException("Run ya existe!");
-        }
+        Usuario usuarioGuardado = usuarioRepository.saveAndFlush(usuario);
         log.info("Usuario creado exitosamente con ID: {}", usuarioGuardado.getId_usuario());
 
         return toResponseDTO(usuarioGuardado);
@@ -111,6 +117,7 @@ public class UsuarioService {
                     return new UsuarioNotFoundException("Usuario no encontrado con ID: " + id);
                 });
 
+        validarDuplicados(usuarioDTO, id);
         usuario.setRun(usuarioDTO.getRun());
         usuario.setP_nombre(usuarioDTO.getP_nombre());
         usuario.setS_nombre(usuarioDTO.getS_nombre());
@@ -118,14 +125,17 @@ public class UsuarioService {
         usuario.setA_paterno(usuarioDTO.getA_paterno());
         usuario.setEmail(usuarioDTO.getEmail());
 
-        if (usuarioDTO.getDireccion() != null && usuario.getDireccion() != null) {
+        if (usuarioDTO.getDireccion() != null) {
+            if (usuario.getDireccion() == null) {
+                usuario.setDireccion(new DireccionUsuario());
+            }
             usuario.getDireccion().setCalle(usuarioDTO.getDireccion().getCalle());
             usuario.getDireccion().setRegion(usuarioDTO.getDireccion().getRegion());
             usuario.getDireccion().setComuna(usuarioDTO.getDireccion().getComuna());
             usuario.getDireccion().setNum_calle(usuarioDTO.getDireccion().getNum_calle());
         }
 
-        Usuario usuarioActualizado = usuarioRepository.save(usuario);
+        Usuario usuarioActualizado = usuarioRepository.saveAndFlush(usuario);
         log.info("Usuario actualizado exitosamente: {}", id);
         return toResponseDTO(usuarioActualizado);
     }

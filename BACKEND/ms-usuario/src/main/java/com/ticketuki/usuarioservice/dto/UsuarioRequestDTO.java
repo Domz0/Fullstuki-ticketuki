@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.Locale;
 
 @Data
 @NoArgsConstructor
@@ -33,9 +34,26 @@ public class UsuarioRequestDTO {
 
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "El email debe ser válido")
+    @Size(max = 100, message = "El email no puede exceder 100 caracteres")
     private String email;
 
     @Valid
     @NotNull(message = "Dirección es obligatoria")
     private DireccionDTO direccion;
+
+    public void setRun(String run) {
+        if (run == null) {
+            this.run = null;
+            return;
+        }
+        String valor = run.trim().toUpperCase(Locale.ROOT);
+        if (valor.matches("[0-9]{7,8}-[0-9K]")) {
+            valor = valor.replaceFirst("^([0-9]{1,2})([0-9]{3})([0-9]{3})(-[0-9K])$", "$1.$2.$3$4");
+        }
+        this.run = valor;
+    }
+
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.trim().toLowerCase(Locale.ROOT);
+    }
 }

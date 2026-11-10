@@ -39,7 +39,7 @@ public class Usuario {
 
     @NotBlank(message = "El email es requerido")
     @Email(message = "El email debe ser válido")
-    @Column(name = "email", nullable = false, unique = true, length = 50)
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
     @OneToOne(cascade = CascadeType.ALL)
