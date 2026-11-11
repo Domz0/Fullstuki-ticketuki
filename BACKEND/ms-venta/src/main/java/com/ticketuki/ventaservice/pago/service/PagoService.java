@@ -130,9 +130,27 @@ public class PagoService {
             throw new IllegalStateException(
                     "Solo se puede completar un pago en estado PENDIENTE. Estado actual: " + p.getEstado());
         }
+        if (tareas.requiereReserva(id)) {
+            if (!tareas.reservaEnEstado(id, "RESERVADA"))
+                throw new IllegalStateException("La compra aún no tiene una reserva vigente");
+            tareas.solicitar(id, "CONFIRMAR");
+            return toResponseDTO(p);
+        }
         actualizarVenta(p.getVenta_id(), "CONFIRMADA");
         p.setEstado(EstadoPago.COMPLETADO);
         if (tareas.esCompra(id)) tareas.solicitar(id, "EMITIR");
+        return toResponseDTO(pagoRepository.save(p));
+    }
+
+    @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "ACTUALIZAR", id = "id_pago")
+    public PagoResponseDTO confirmarPagoReservado(Long id) {
+        Pago p = pagoRepository.findForUpdate(id).orElseThrow();
+        if (p.getEstado() == EstadoPago.COMPLETADO) return toResponseDTO(p);
+        if (p.getEstado() != EstadoPago.PENDIENTE || !tareas.reservaEnEstado(id, "CONFIRMADA"))
+            throw new IllegalStateException("La reserva no está confirmada para este pago");
+        actualizarVenta(p.getVenta_id(), "CONFIRMADA");
+        p.setEstado(EstadoPago.COMPLETADO);
         return toResponseDTO(pagoRepository.save(p));
     }
 

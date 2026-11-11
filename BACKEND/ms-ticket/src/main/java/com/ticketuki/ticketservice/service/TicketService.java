@@ -155,8 +155,8 @@ public class TicketService {
             throw new TicketOperacionInvalidaException("Capacidad sin configurar");
         if (dto.getNum_asiento() > sector.capacidad_sector())
             throw new TicketOperacionInvalidaException("El asiento supera la capacidad del sector");
-        if (ticketRepository.contarEvento(evento.id_evento()) >= evento.aforo_evento()
-                || ticketRepository.contarSector(evento.id_evento(), sector.id_sector()) >= sector.capacidad_sector())
+        if (ticketRepository.contarEvento(evento.id_evento()) + operaciones.reservadosEvento(evento.id_evento()) >= evento.aforo_evento()
+                || ticketRepository.contarSector(evento.id_evento(), sector.id_sector()) + operaciones.reservadosSector(evento.id_evento(), sector.id_sector()) >= sector.capacidad_sector())
             throw new TicketOperacionInvalidaException("No quedan cupos para este evento y sector");
         if (dto.getVenta_id_venta() == null) throw new IllegalArgumentException("La venta es obligatoria");
         var venta = referencias.venta(dto.getVenta_id_venta());
@@ -171,16 +171,17 @@ public class TicketService {
             throw new TicketOperacionInvalidaException("No hay tickets comprados pendientes de emitir para este evento y sector");
     }
 
-    public record Disponibilidad(long emitidos_evento, long emitidos_sector) {}
+    public record Disponibilidad(long emitidos_evento, long emitidos_sector, long reservados_evento, long reservados_sector) {}
 
     @Transactional(readOnly = true)
     public Disponibilidad disponibilidad(Long evento, Long sector) {
-        return new Disponibilidad(ticketRepository.contarEvento(evento), ticketRepository.contarSector(evento, sector));
+        return new Disponibilidad(ticketRepository.contarEvento(evento), ticketRepository.contarSector(evento, sector),
+                operaciones.reservadosEvento(evento), operaciones.reservadosSector(evento, sector));
     }
 
     private void validarAsientoDisponible(Integer numAsiento, Long eventoId, Long sectorId) {
         if (ticketRepository.existsByNum_asientoAndEvento_id_eventoAndSector_id_sector(
-                numAsiento, eventoId, sectorId)) {
+                numAsiento, eventoId, sectorId) || operaciones.asientoReservado(eventoId, sectorId, numAsiento)) {
             throw new TicketOperacionInvalidaException(
                     "El asiento " + numAsiento + " ya está ocupado en este evento y sector");
         }
@@ -188,7 +189,7 @@ public class TicketService {
 
     // ── Operaciones CRUD ──────────────────────────────────────────────────────
 
-    @Transactional
+    @Transactional(isolation = org.springframework.transaction.annotation.Isolation.READ_COMMITTED)
     @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "CREAR", id = "id_ticket")
     public TicketResponseDTO crearTicket(TicketRequestDTO dto) {
         dto.setRun_titular(dto.getRun_titular());

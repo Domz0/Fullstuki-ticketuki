@@ -84,8 +84,8 @@ public class CatalogoVentaClient {
             if (evento.aforo_evento() == null || sector.capacidad_sector() == null
                     || !usados.hasNonNull("emitidos_evento") || !usados.hasNonNull("emitidos_sector"))
                 throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Disponibilidad sin datos");
-            if (usados.path("emitidos_evento").asLong() + porEvento.get(grupo.evento()) > evento.aforo_evento()
-                    || usados.path("emitidos_sector").asLong() + entry.getValue() > sector.capacidad_sector())
+            if (usados.path("emitidos_evento").asLong() + usados.path("reservados_evento").asLong() + porEvento.get(grupo.evento()) > evento.aforo_evento()
+                    || usados.path("emitidos_sector").asLong() + usados.path("reservados_sector").asLong() + entry.getValue() > sector.capacidad_sector())
                 throw new IllegalArgumentException("La compra supera los cupos disponibles");
         }
     }

@@ -13,6 +13,16 @@ public class PagoTareas {
         return jdbc.queryForObject("SELECT COUNT(*) FROM compra WHERE pago_id=?", Long.class, pago) > 0;
     }
 
+    public boolean requiereReserva(Long pago) {
+        return jdbc.queryForObject("SELECT COUNT(*) FROM compra WHERE pago_id=? AND reserva_estado IS NOT NULL",
+                Long.class, pago) > 0;
+    }
+
+    public boolean reservaEnEstado(Long pago, String estado) {
+        return jdbc.queryForObject("SELECT COUNT(*) FROM compra WHERE pago_id=? AND reserva_estado=?",
+                Long.class, pago, estado) > 0;
+    }
+
     public boolean cancelacionPendiente(Long pago) {
         return jdbc.queryForObject("SELECT COUNT(*) FROM pago_tarea WHERE pago_id=? AND tipo IN ('CANCELAR','REEMBOLSAR') AND estado <> 'RECHAZADA'",
                 Long.class, pago) > 0;

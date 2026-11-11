@@ -64,7 +64,7 @@ public class PagoController {
     @PutMapping("/{id}/completar")
     public ResponseEntity<PagoResponseDTO> completarPago(@PathVariable Long id) {
         log.info("PUT /pagos/{}/completar", id);
-        return ResponseEntity.ok(pagoService.completarPago(id));
+        return ResponseEntity.accepted().body(pagoService.completarPago(id));
     }
 
     @PutMapping("/{id}/reembolso")

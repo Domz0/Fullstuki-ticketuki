@@ -23,6 +23,27 @@ public class TicketsVentaInternoController {
 
     public record Emision(@NotEmpty @Size(max = 100) List<@NotNull @Valid TicketRequestDTO> tickets) {}
 
+    @PostMapping("/{id}/reserva")
+    public com.ticketuki.ticketservice.service.OperacionVentaStore.Reserva reservar(@PathVariable Long id,
+            @RequestHeader(value="X-Internal-Key", required=false) String key, @Valid @RequestBody Emision emision) {
+        ClaveInterna.validar(clave, key);
+        return service.reservar(id, emision.tickets());
+    }
+
+    @GetMapping("/{id}/reserva")
+    public com.ticketuki.ticketservice.service.OperacionVentaStore.Reserva reserva(@PathVariable Long id,
+            @RequestHeader(value="X-Internal-Key", required=false) String key) {
+        ClaveInterna.validar(clave, key);
+        return service.consultarReserva(id);
+    }
+
+    @PostMapping("/{id}/reserva/confirmar")
+    public com.ticketuki.ticketservice.service.OperacionVentaStore.Reserva confirmar(@PathVariable Long id,
+            @RequestHeader(value="X-Internal-Key", required=false) String key) {
+        ClaveInterna.validar(clave, key);
+        return service.confirmarReserva(id);
+    }
+
     @PostMapping("/{id}/tickets")
     public List<TicketResponseDTO> emitir(@PathVariable Long id, @RequestHeader(value="X-Internal-Key", required=false) String key,
             @Valid @RequestBody Emision emision) {
