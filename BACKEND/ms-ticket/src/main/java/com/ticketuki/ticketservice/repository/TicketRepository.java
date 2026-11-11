@@ -3,6 +3,8 @@ package com.ticketuki.ticketservice.repository;
 import com.ticketuki.ticketservice.model.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Lock;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -10,6 +12,14 @@ import java.util.Optional;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT t FROM Ticket t WHERE t.id_ticket = :id")
+    Optional<Ticket> findByIdForUpdate(@Param("id") Long id);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT t FROM Ticket t WHERE t.cod_qr = :qr")
+    Optional<Ticket> findByQrForUpdate(@Param("qr") String qr);
 
     @Query("SELECT t FROM Ticket t WHERE t.cod_qr = :cod_qr")
     Optional<Ticket> findByCod_qr(@Param("cod_qr") String cod_qr);

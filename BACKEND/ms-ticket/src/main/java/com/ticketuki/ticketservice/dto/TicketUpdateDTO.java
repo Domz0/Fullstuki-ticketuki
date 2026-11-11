@@ -2,6 +2,8 @@ package com.ticketuki.ticketservice.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import com.ticketuki.ticketservice.util.RunUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +14,14 @@ import lombok.NoArgsConstructor;
 public class TicketUpdateDTO {
 
     @NotBlank(message = "El nombre del titular es requerido")
+    @Size(max = 50, message = "El nombre del titular no puede exceder 50 caracteres")
     private String nombre_titular;
 
     @NotBlank(message = "El RUN del titular es requerido")
     @Pattern(regexp = "\\d{1,2}\\.\\d{3}\\.\\d{3}-[\\dKk]", message = "Formato de RUN inválido (ej: 12.345.678-9)")
     private String run_titular;
+
+    public void setRun_titular(String run) {
+        this.run_titular = RunUtil.normalizar(run);
+    }
 }

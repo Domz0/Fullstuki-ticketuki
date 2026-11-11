@@ -25,7 +25,6 @@ ORDER=(
   "8004:ms-estado"
   "8008:ms-recinto"
   "8001:ms-usuario"
-  "8002:ms-artista"
   "8003:ms-evento"
   "8007:ms-promocion"
   "8010:ms-historial"
@@ -50,8 +49,8 @@ wait_port() {
 }
 
 # --- Liberar puertos ocupados por instancias previas -----------------------
-echo "🧹 Liberando puertos (8001-8011 y 8080) si están ocupados..."
-for p in $(seq 8001 8011) 8080; do
+echo "🧹 Liberando puertos (8001, 8003-8011 y 8080) si están ocupados..."
+for p in 8001 $(seq 8003 8011) 8080; do
   pid=$(lsof -ti "tcp:$p" -sTCP:LISTEN 2>/dev/null || true)
   [ -n "$pid" ] && kill "$pid" 2>/dev/null && echo "   detenido :$p (PID $pid)"
 done

@@ -1,0 +1,1 @@
+ALTER TABLE evento ADD COLUMN participantes VARCHAR(500) NULL;

@@ -11,6 +11,7 @@ import com.ticketuki.ticketservice.exception.TicketOperacionInvalidaException;
 import com.ticketuki.ticketservice.model.Ticket;
 import com.ticketuki.ticketservice.repository.TicketRepository;
 import com.ticketuki.ticketservice.util.QRGenerator;
+import com.ticketuki.ticketservice.util.RunUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -72,7 +74,7 @@ public class TicketService {
         if (texto == null) return "";
         return Normalizer.normalize(texto, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}", "")
-                .toUpperCase();
+                .trim().toUpperCase(Locale.ROOT);
     }
 
     // ── Caché de estados desde ms-estado ─────────────────────────────────────
@@ -99,14 +101,14 @@ public class TicketService {
                     log.info("Cache de estados de ticket cargada: {} estados", estadosCache.size());
                 } else {
                     log.warn("ms-estado devolvió lista vacía de estadosTicket, no se cacheará");
-                    return estadosCache != null ? estadosCache : List.of();
+                    throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "No hay estados de ticket disponibles");
                 }
             } catch (WebClientRequestException e) {
                 log.warn("No se pudo conectar con ms-estado para obtener estados de ticket: {}", e.getMessage());
-                return estadosCache != null ? estadosCache : List.of();
+                throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "ms-estado no disponible", e);
             } catch (ResponseStatusException e) {
                 log.warn("ms-estado respondió con error al obtener estados de ticket: {}", e.getMessage());
-                return estadosCache != null ? estadosCache : List.of();
+                throw e;
             }
         }
         return estadosCache;
@@ -124,7 +126,7 @@ public class TicketService {
     private Long obtenerIdPorNombre(String fragmento) {
         String norm = normalizar(fragmento);
         return obtenerEstadosTicket().stream()
-                .filter(e -> e.getNombre() != null && normalizar(e.getNombre()).contains(norm))
+                .filter(e -> e.getNombre() != null && normalizar(e.getNombre()).equals(norm))
                 .findFirst()
                 .map(EstadoTicketDTO::getId)
                 .orElse(null);
@@ -133,7 +135,7 @@ public class TicketService {
     private Long obtenerEstadoInicial() {
         Long id = obtenerIdPorNombre("VALIDO");
         if (id == null) {
-            log.warn("No se encontró estado 'VALIDO' en ms-estado, el ticket se creará sin estado");
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Estado VALIDO no disponible");
         }
         return id;
     }
@@ -142,9 +144,9 @@ public class TicketService {
 
     private void verificarModificable(Ticket ticket) {
         String nombre = obtenerNombreEstado(ticket.getEstado_ticket_id_estado());
-        if (nombre == null) return;
+        if (nombre == null) throw new TicketOperacionInvalidaException("Estado de ticket desconocido");
         String n = normalizar(nombre);
-        if (n.contains("USADO") || n.contains("CANCELADO")) {
+        if (!n.equals("VALIDO") && !n.equals("TRANSFERIDO")) {
             throw new TicketOperacionInvalidaException(
                     "No se puede modificar un ticket en estado '" + nombre + "'");
         }
@@ -152,9 +154,9 @@ public class TicketService {
 
     private void verificarCambiableEstado(Ticket ticket) {
         String nombre = obtenerNombreEstado(ticket.getEstado_ticket_id_estado());
-        if (nombre == null) return;
+        if (nombre == null) throw new TicketOperacionInvalidaException("Estado de ticket desconocido");
         String n = normalizar(nombre);
-        if (n.contains("USADO") || n.contains("CANCELADO")) {
+        if (!n.equals("VALIDO") && !n.equals("TRANSFERIDO")) {
             throw new TicketOperacionInvalidaException(
                     "No se puede cambiar el estado de un ticket en estado '" + nombre + "'");
         }
@@ -162,8 +164,8 @@ public class TicketService {
 
     private void verificarEliminable(Ticket ticket) {
         String nombre = obtenerNombreEstado(ticket.getEstado_ticket_id_estado());
-        if (nombre == null) return;
-        if (normalizar(nombre).contains("USADO")) {
+        if (nombre == null) throw new TicketOperacionInvalidaException("Estado de ticket desconocido");
+        if (!List.of("VALIDO", "TRANSFERIDO", "CANCELADO").contains(normalizar(nombre))) {
             throw new TicketOperacionInvalidaException(
                     "No se puede eliminar un ticket en estado '" + nombre + "'");
         }
@@ -270,6 +272,7 @@ public class TicketService {
 
     @Transactional
     public TicketResponseDTO crearTicket(TicketRequestDTO dto) {
+        dto.setRun_titular(dto.getRun_titular());
         log.info("Creando ticket para evento: {}", dto.getEvento_id_evento());
         validarEvento(dto.getEvento_id_evento());
         validarSector(dto.getSector_id_sector());
@@ -290,24 +293,18 @@ public class TicketService {
                 dto.getEvento_id_evento(),
                 dto.getSector_id_sector()
         );
-        try {
-            return toResponseDTO(ticketRepository.save(ticket));
-        } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
-            if (msg.contains("cod_qr") || msg.contains("unique") && !msg.contains("num_asiento")) {
-                log.warn("Colisión de código QR, reintentando...");
-                ticket.setCod_qr(QRGenerator.generarCodigoQR());
-                return toResponseDTO(ticketRepository.save(ticket));
-            }
-            throw e;
-        }
+        return toResponseDTO(ticketRepository.saveAndFlush(ticket));
     }
 
     @Transactional
     public TicketResponseDTO actualizarTicket(Long id, TicketUpdateDTO dto) {
-        Ticket ticket = ticketRepository.findById(id)
+        dto.setRun_titular(dto.getRun_titular());
+        Ticket ticket = ticketRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
         verificarModificable(ticket);
+        if (!ticket.getRun_titular().equalsIgnoreCase(dto.getRun_titular())) {
+            throw new TicketOperacionInvalidaException("Use la transferencia para cambiar el RUN del titular");
+        }
         ticket.setNombre_titular(dto.getNombre_titular());
         ticket.setRun_titular(dto.getRun_titular());
         return toResponseDTO(ticketRepository.save(ticket));
@@ -316,16 +313,20 @@ public class TicketService {
     @Transactional
     public TicketResponseDTO cambiarEstado(Long id, Long idEstado) {
         validarEstado(idEstado);
-        Ticket ticket = ticketRepository.findById(id)
+        Ticket ticket = ticketRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
         verificarCambiableEstado(ticket);
+        String destino = normalizar(obtenerNombreEstado(idEstado));
+        if (!destino.equals("USADO") && !destino.equals("CANCELADO")) {
+            throw new TicketOperacionInvalidaException("Solo se permite cambiar a USADO o CANCELADO por esta operación");
+        }
         ticket.setEstado_ticket_id_estado(idEstado);
         return toResponseDTO(ticketRepository.save(ticket));
     }
 
     @Transactional
     public void eliminarTicket(Long id) {
-        Ticket ticket = ticketRepository.findById(id)
+        Ticket ticket = ticketRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
         verificarEliminable(ticket);
         ticketRepository.deleteById(id);
@@ -333,10 +334,10 @@ public class TicketService {
 
     @Transactional
     public ValidarTicketResponseDTO validarTicket(String codQR) {
-        Ticket ticket = ticketRepository.findByCod_qr(codQR)
+        Ticket ticket = ticketRepository.findByQrForUpdate(codQR)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado para QR: " + codQR));
         String nombreEstado = obtenerNombreEstado(ticket.getEstado_ticket_id_estado());
-        if (nombreEstado == null || !normalizar(nombreEstado).contains("VALIDO")) {
+        if (!List.of("VALIDO", "TRANSFERIDO").contains(normalizar(nombreEstado))) {
             return new ValidarTicketResponseDTO(false,
                     "Ticket no válido. Estado actual: " + nombreEstado,
                     toResponseDTO(ticket));
@@ -353,22 +354,27 @@ public class TicketService {
 
     @Transactional
     public TicketResponseDTO transferirTicket(Long id, TransferirTicketDTO dto) {
-        Ticket ticket = ticketRepository.findById(id)
+        dto.setRun_titular(dto.getRun_titular());
+        Ticket ticket = ticketRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
         String nombreEstado = obtenerNombreEstado(ticket.getEstado_ticket_id_estado());
-        if (nombreEstado == null || !normalizar(nombreEstado).contains("VALIDO")) {
+        if (!List.of("VALIDO", "TRANSFERIDO").contains(normalizar(nombreEstado))) {
             throw new TicketOperacionInvalidaException(
-                    "Solo se pueden transferir tickets en estado 'VALIDO'. Estado actual: " + nombreEstado);
+                    "Solo se pueden transferir tickets VALIDOS o TRANSFERIDOS. Estado actual: " + nombreEstado);
         }
         Long idTransferido = obtenerIdPorNombre("TRANSFERIDO");
         if (idTransferido == null) {
             throw new TicketOperacionInvalidaException(
                     "Estado 'TRANSFERIDO' no encontrado en ms-estado");
         }
+        if (ticket.getRun_titular().equalsIgnoreCase(dto.getRun_titular())) {
+            throw new TicketOperacionInvalidaException("El nuevo titular debe tener un RUN distinto");
+        }
         ticket.setNombre_titular(dto.getNombre_titular());
         ticket.setRun_titular(dto.getRun_titular());
+        ticket.setCod_qr(QRGenerator.generarCodigoQR());
         ticket.setEstado_ticket_id_estado(idTransferido);
-        return toResponseDTO(ticketRepository.save(ticket));
+        return toResponseDTO(ticketRepository.saveAndFlush(ticket));
     }
 
     // ── Consultas ─────────────────────────────────────────────────────────────
@@ -412,7 +418,7 @@ public class TicketService {
 
     @Transactional(readOnly = true)
     public List<TicketResponseDTO> listarPorRun(String run) {
-        return ticketRepository.findByRun_titular(run).stream()
+        return ticketRepository.findByRun_titular(RunUtil.normalizar(run)).stream()
                 .map(this::toResponseDTO).collect(Collectors.toList());
     }
 }

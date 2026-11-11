@@ -26,7 +26,8 @@ public class EventoService {
                 evento.getFecha_evento(),
                 evento.getDescripcion(),
                 evento.getEstado_evento_id_estado(),
-                evento.getRecinto_id_recinto());
+                evento.getRecinto_id_recinto(),
+                evento.getParticipantes());
     }
 
     @Transactional(readOnly = true)
@@ -55,7 +56,8 @@ public class EventoService {
                 eventoDTO.getFecha_evento(),
                 eventoDTO.getDescripcion(),
                 eventoDTO.getEstado_evento_id_estado(),
-                eventoDTO.getRecinto_id_recinto());
+                eventoDTO.getRecinto_id_recinto(),
+                eventoDTO.getParticipantes());
         return toResponseDTO(eventoRepository.save(evento));
     }
 
@@ -73,6 +75,7 @@ public class EventoService {
         evento.setDescripcion(eventoDTO.getDescripcion());
         evento.setEstado_evento_id_estado(eventoDTO.getEstado_evento_id_estado());
         evento.setRecinto_id_recinto(eventoDTO.getRecinto_id_recinto());
+        evento.setParticipantes(eventoDTO.getParticipantes());
         return toResponseDTO(eventoRepository.save(evento));
     }
 

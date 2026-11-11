@@ -16,4 +16,5 @@ public class EventoResponseDTO {
     private String descripcion;
     private Long estado_evento_id_estado;
     private Long recinto_id_recinto;
+    private String participantes;
 }

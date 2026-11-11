@@ -19,11 +19,6 @@ spring:
           predicates:
             - Path=/usuarios/**
 
-        - id: ms-artista
-          uri: ${MS_ARTISTA_URL:http://localhost:8002}
-          predicates:
-            - Path=/artistas/**
-
         - id: ms-evento
           uri: ${MS_EVENTO_URL:http://localhost:8003}
           predicates:

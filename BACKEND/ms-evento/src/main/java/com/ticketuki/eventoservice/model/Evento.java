@@ -34,4 +34,7 @@ public class Evento {
 
     @Column(name = "recinto_id_recinto")
     private Long recinto_id_recinto;
+
+    @Column(name = "participantes", length = 500)
+    private String participantes;
 }

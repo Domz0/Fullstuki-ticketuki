@@ -71,7 +71,7 @@ class TicketServiceTest {
     // ───────4 validar ticket con QR inexistente (error) ───────
     @Test
     void validarTicket_qrInexistente_lanzaNotFound() {
-        when(ticketRepository.findByCod_qr("QR-FALSO")).thenReturn(Optional.empty());
+        when(ticketRepository.findByQrForUpdate("QR-FALSO")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> ticketService.validarTicket("QR-FALSO"))
                 .isInstanceOf(TicketNotFoundException.class)
