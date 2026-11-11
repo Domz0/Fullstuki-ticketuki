@@ -5,14 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "usuario_auth")
 public class UsuarioAuth {
@@ -40,4 +38,22 @@ public class UsuarioAuth {
     @Positive
     @Column(name = "usuario_id", unique = true)
     private Long usuarioId;
+
+    @Column(nullable = false)
+    private boolean activo = true;
+
+    @Column(name = "registro_id", unique = true, length = 36)
+    private String registroId;
+
+    @JsonIgnore @ToString.Exclude
+    @Column(name = "registro_fingerprint", length = 64)
+    private String registroFingerprint;
+
+    public UsuarioAuth(Long id, String username, String password, Rol rol, Long usuarioId) {
+        this.id_usuario_auth = id;
+        this.username = username;
+        this.password = password;
+        this.rol = rol;
+        this.usuarioId = usuarioId;
+    }
 }

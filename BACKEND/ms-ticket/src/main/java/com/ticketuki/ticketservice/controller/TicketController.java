@@ -92,4 +92,9 @@ public class TicketController {
     public ResponseEntity<List<TicketResponseDTO>> listarPorRun(@PathVariable String run) {
         return ResponseEntity.ok(ticketService.listarPorRun(run));
     }
+
+    @GetMapping("/disponibilidad/{evento}/{sector}")
+    public TicketService.Disponibilidad disponibilidad(@PathVariable Long evento, @PathVariable Long sector) {
+        return ticketService.disponibilidad(evento, sector);
+    }
 }

@@ -55,4 +55,7 @@ public class DetalleVenta {
 
     @Column(name = "descuento_monto")
     private Long descuento_monto;
+
+    @Column(name = "evento_id_evento")
+    private Long evento_id_evento;
 }

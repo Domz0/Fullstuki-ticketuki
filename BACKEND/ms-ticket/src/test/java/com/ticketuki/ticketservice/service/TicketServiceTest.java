@@ -29,7 +29,7 @@ class TicketServiceTest {
     @BeforeEach
     void setUp() {
         // metodos probados solo usan el repositorio - WebClients en null
-        ticketService = new TicketService(ticketRepository, null, null, null);
+        ticketService = new TicketService(ticketRepository, null, null);
     }
 
     private Ticket ticketEjemplo() {

@@ -22,7 +22,6 @@ public class VentaRequestDTO {
     @Size(max = 50)
     private String cod_autorizacion;
 
-    @NotNull(message = "El estado de la venta es requerido")
     private Long estado_venta_id_estado;
 
     @Valid

@@ -117,6 +117,9 @@ public class UsuarioService {
                     return new UsuarioNotFoundException("Usuario no encontrado con ID: " + id);
                 });
 
+        usuarioDTO.setRun(usuarioDTO.getRun());
+        if (!usuario.getRun().equalsIgnoreCase(usuarioDTO.getRun()))
+            throw new IllegalArgumentException("El RUN del perfil no se puede cambiar");
         validarDuplicados(usuarioDTO, id);
         usuario.setRun(usuarioDTO.getRun());
         usuario.setP_nombre(usuarioDTO.getP_nombre());

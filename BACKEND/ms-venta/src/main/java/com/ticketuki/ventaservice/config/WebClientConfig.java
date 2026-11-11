@@ -28,4 +28,14 @@ public class WebClientConfig {
     public WebClient ticketWebClient(@Value("${ms.ticket.url:http://localhost:8005}") String url) {
         return WebClient.builder().baseUrl(url).clientConnector(jvmDnsConnector()).build();
     }
+
+    @Bean("recintoWebClient")
+    public WebClient recintoWebClient(@Value("${ms.recinto.url:http://localhost:8008}") String url) {
+        return WebClient.builder().baseUrl(url).clientConnector(jvmDnsConnector()).build();
+    }
+
+    @Bean("eventoWebClient")
+    public WebClient eventoWebClient(@Value("${ms.evento.url:http://localhost:8003}") String url) {
+        return WebClient.builder().baseUrl(url).clientConnector(jvmDnsConnector()).build();
+    }
 }

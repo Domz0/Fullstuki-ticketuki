@@ -17,6 +17,7 @@ import java.util.List;
 @Slf4j
 public class EventoService {
     private final EventoRepository eventoRepository;
+    private final com.ticketuki.eventoservice.client.RecintoEventoClient recintos;
 
     private EventoResponseDTO toResponseDTO(Evento evento) {
         return new EventoResponseDTO(
@@ -50,6 +51,7 @@ public class EventoService {
     @Transactional
     public EventoResponseDTO crear(EventoRequestDTO eventoDTO) {
         log.info("Creando evento: {}", eventoDTO.getNombre_evento());
+        recintos.validar(eventoDTO.getRecinto_id_recinto(), eventoDTO.getAforo_evento());
         Evento evento = new Evento(null,
                 eventoDTO.getNombre_evento(),
                 eventoDTO.getAforo_evento(),
@@ -64,11 +66,16 @@ public class EventoService {
     @Transactional
     public EventoResponseDTO actualizar(Long id, EventoRequestDTO eventoDTO) {
         log.info("Actualizando evento: {}", id);
-        Evento evento = eventoRepository.findById(id)
+        Evento evento = eventoRepository.findForUpdate(id)
                 .orElseThrow(() -> {
                     log.warn("Evento no encontrado para actualizar: {}", id);
                     return new EventoNotFoundException("Evento no encontrado: " + id);
                 });
+        if (eventoDTO.getAforo_evento() < evento.getAforo_evento())
+            throw new IllegalArgumentException("No se puede reducir el aforo de un evento existente");
+        if (evento.getRecinto_id_recinto() != null && !java.util.Objects.equals(evento.getRecinto_id_recinto(), eventoDTO.getRecinto_id_recinto()))
+            throw new IllegalArgumentException("No se puede cambiar el recinto de un evento existente");
+        recintos.validar(eventoDTO.getRecinto_id_recinto(), eventoDTO.getAforo_evento());
         evento.setNombre_evento(eventoDTO.getNombre_evento());
         evento.setAforo_evento(eventoDTO.getAforo_evento());
         evento.setFecha_evento(eventoDTO.getFecha_evento());
@@ -110,7 +117,7 @@ public class EventoService {
     @Transactional
     public EventoResponseDTO cambiarEstado(Long id, Long idEstado) {
         log.info("Cambiando estado del evento {} a {}", id, idEstado);
-        Evento evento = eventoRepository.findById(id)
+        Evento evento = eventoRepository.findForUpdate(id)
                 .orElseThrow(() -> {
                     log.warn("Evento no encontrado para cambiar estado: {}", id);
                     return new EventoNotFoundException("Evento no encontrado: " + id);

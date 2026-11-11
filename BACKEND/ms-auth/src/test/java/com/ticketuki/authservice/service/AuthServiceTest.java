@@ -60,4 +60,13 @@ class AuthServiceTest {
         verifyNoInteractions(jwt);
     }
 
+
+    @Test
+    void registroPendienteNoPuedeIniciarSesion() {
+        usuario.setActivo(false);
+        assertThatThrownBy(() -> service.login(new LoginRequestDTO("cliente", "clave-correcta")))
+                .isInstanceOf(CredencialesInvalidasException.class);
+        verifyNoInteractions(jwt);
+    }
+
 }

@@ -27,10 +27,7 @@ public class SectorService {
     @Transactional
     public SectorDTO crearSector(SectorDTO dto) {
         log.info("Creando sector: {}", dto.getNombre_sector());
-        if (!recintoRepository.existsById(dto.getRecinto_id_recinto())) {
-            log.warn("Recinto no encontrado al crear sector: {}", dto.getRecinto_id_recinto());
-            throw new RecintoNotFoundException("Recinto no encontrado: " + dto.getRecinto_id_recinto());
-        }
+        validarCapacidad(dto, null);
         Sector sector = new Sector(null, dto.getNombre_sector(), dto.getCapacidad_sector(), dto.getPrecio_sector(), dto.getRecinto_id_recinto());
         return toResponseDTO(sectorRepository.save(sector));
     }
@@ -45,6 +42,9 @@ public class SectorService {
                 });
         if (!java.util.Objects.equals(sector.getRecinto_id_recinto(), dto.getRecinto_id_recinto()))
             throw new IllegalArgumentException("No se puede cambiar el recinto de un sector existente");
+        if (dto.getCapacidad_sector() < sector.getCapacidad_sector())
+            throw new IllegalArgumentException("No se puede reducir la capacidad de un sector existente");
+        validarCapacidad(dto, id);
         sector.setNombre_sector(dto.getNombre_sector());
         sector.setCapacidad_sector(dto.getCapacidad_sector());
         sector.setPrecio_sector(dto.getPrecio_sector());
@@ -74,5 +74,15 @@ public class SectorService {
                 });
         sectorRepository.delete(sector);
         log.info("Sector eliminado exitosamente: {}", id);
+    }
+
+    private void validarCapacidad(SectorDTO dto, Long excluir) {
+        var recinto = recintoRepository.findForUpdate(dto.getRecinto_id_recinto())
+                .orElseThrow(() -> new RecintoNotFoundException("Recinto no encontrado: " + dto.getRecinto_id_recinto()));
+        long ocupada = sectorRepository.findForUpdateByRecinto(dto.getRecinto_id_recinto()).stream()
+                .filter(s -> !java.util.Objects.equals(s.getId_sector(), excluir))
+                .mapToLong(Sector::getCapacidad_sector).sum();
+        if (dto.getCapacidad_sector() <= 0 || ocupada + dto.getCapacidad_sector() > recinto.getCapacidad_total())
+            throw new IllegalArgumentException("La suma de capacidades de los sectores supera la capacidad del recinto");
     }
 }

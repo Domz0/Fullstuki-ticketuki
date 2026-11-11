@@ -20,4 +20,6 @@ public class DetalleVentaResponseDTO {
     private Long sector_id_sector;
     private Long promocion_id;
     private Long descuento_monto;
+
+    private Long evento_id_evento;
 }

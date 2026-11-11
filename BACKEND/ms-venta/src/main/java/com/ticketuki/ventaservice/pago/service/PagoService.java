@@ -25,15 +25,18 @@ public class PagoService {
 
     private final PagoRepository pagoRepository;
     private final com.ticketuki.ventaservice.repository.VentaRepository ventaRepository;
+    private final com.ticketuki.ventaservice.repository.DetalleVentaRepository detalles;
     private final WebClient usuarioWebClient;
     private final WebClient ticketWebClient;
 
     public PagoService(PagoRepository pagoRepository,
                        com.ticketuki.ventaservice.repository.VentaRepository ventaRepository,
+                       com.ticketuki.ventaservice.repository.DetalleVentaRepository detalles,
                        @Qualifier("usuarioWebClient") WebClient usuarioWebClient,
                        @Qualifier("ticketWebClient") WebClient ticketWebClient) {
         this.pagoRepository = pagoRepository;
         this.ventaRepository = ventaRepository;
+        this.detalles = detalles;
         this.usuarioWebClient = usuarioWebClient;
         this.ticketWebClient = ticketWebClient;
     }
@@ -153,8 +156,11 @@ public class PagoService {
         if (pagoRepository.findByVenta_id(dto.getVenta_id()).stream()
                 .anyMatch(p -> p.getEstado() == EstadoPago.PENDIENTE || p.getEstado() == EstadoPago.COMPLETADO))
             throw new IllegalStateException("La venta ya tiene un pago activo");
+        var lineas = detalles.findByVenta_id_venta(dto.getVenta_id());
+        if (lineas.isEmpty() || lineas.stream().anyMatch(d -> !java.util.Objects.equals(d.getUsuario_id_usuario(), dto.getUsuario_id())))
+            throw new IllegalArgumentException("El pago debe pertenecer al comprador de la venta");
         validarUsuarioExiste(dto.getUsuario_id());
-        Pago p = new Pago(null, dto.getMonto(), dto.getMedio_pago(), dto.getCod_autorizacion(),
+        Pago p = new Pago(null, venta.getMonto_total(), dto.getMedio_pago(), dto.getCod_autorizacion(),
                 LocalDateTime.now(), EstadoPago.PENDIENTE, dto.getVenta_id(), dto.getUsuario_id());
         return toResponseDTO(pagoRepository.save(p));
     }

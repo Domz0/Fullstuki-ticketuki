@@ -15,8 +15,6 @@ public class DetalleVentaRequestDTO {
     @Positive(message = "La cantidad de tickets debe ser mayor a 0")
     private Integer cantidad_ticket;
 
-    @NotNull(message = "El precio neto es requerido")
-    @Positive(message = "El precio neto debe ser mayor a 0")
     private Long precio_neto;
 
     @NotNull(message = "El usuario es requerido")
@@ -26,4 +24,7 @@ public class DetalleVentaRequestDTO {
     private Long sector_id_sector;
 
     private Long promocion_id;
+
+    @NotNull @Positive
+    private Long evento_id_evento;
 }

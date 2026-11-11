@@ -19,12 +19,13 @@ import static org.mockito.ArgumentMatchers.*;
 class PagoServiceTest {
     PagoRepository pagos = mock(PagoRepository.class);
     VentaRepository ventas = mock(VentaRepository.class);
+    com.ticketuki.ventaservice.repository.DetalleVentaRepository detalles = mock(com.ticketuki.ventaservice.repository.DetalleVentaRepository.class);
     PagoService service;
     Venta venta;
 
     @BeforeEach
     void setup() {
-        service = new PagoService(pagos, ventas, null, null);
+        service = new PagoService(pagos, ventas, detalles, null, null);
         venta = new Venta(5L, LocalDateTime.now(), "CREDITO", "AUTH", 25800L, 1L, null, null);
         when(ventas.findForUpdate(5L)).thenReturn(Optional.of(venta));
         when(pagos.save(any(Pago.class))).thenAnswer(i -> i.getArgument(0));
@@ -87,7 +88,7 @@ class PagoServiceTest {
         WebClient prohibido = WebClient.builder().exchangeFunction(r -> {
             throw new AssertionError("Completar pago no debe consultar servicios HTTP");
         }).build();
-        service = new PagoService(pagos, ventas, prohibido, prohibido);
+        service = new PagoService(pagos, ventas, detalles, prohibido, prohibido);
         when(pagos.findForUpdate(1L)).thenReturn(Optional.of(pago(EstadoPago.PENDIENTE)));
         assertThat(service.completarPago(1L).getEstado()).isEqualTo(EstadoPago.COMPLETADO);
         verify(ventas).save(venta);
@@ -107,7 +108,7 @@ class PagoServiceTest {
                 ClientResponse.create(HttpStatus.OK).header("Content-Type", "application/json")
                     .body(r.url().getPath().equals("/estadosTicket")
                         ? "[{\"id\":3,\"nombre\":\"CANCELADO\"}]" : "[]").build())).build();
-        service = new PagoService(pagos, ventas, null, tickets);
+        service = new PagoService(pagos, ventas, detalles, null, tickets);
         venta.setEstado_venta_id_estado(2L);
         when(pagos.findForUpdate(1L)).thenReturn(Optional.of(pago(EstadoPago.COMPLETADO)));
         assertThat(service.procesarReembolso(1L).getEstado()).isEqualTo(EstadoPago.REEMBOLSADO);

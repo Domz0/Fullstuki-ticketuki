@@ -32,6 +32,7 @@ public class EventoRequestDTO {
     private Long estado_evento_id_estado;
 
     @Positive
+    @NotNull
     private Long recinto_id_recinto;
 
     @Size(max = 500, message = "Los participantes no pueden exceder 500 caracteres")

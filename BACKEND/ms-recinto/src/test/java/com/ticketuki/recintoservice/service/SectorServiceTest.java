@@ -32,7 +32,7 @@ class SectorServiceTest {
     @Test
     void crearSector_recintoInexistente_lanzaRecintoNotFound() {
         SectorDTO dto = new SectorDTO(null, "Platea Baja", 1200, 35000, 7L);
-        when(recintoRepository.existsById(7L)).thenReturn(false);
+        when(recintoRepository.findForUpdate(7L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> sectorService.crearSector(dto))
                 .isInstanceOf(RecintoNotFoundException.class)
@@ -56,4 +56,15 @@ class SectorServiceTest {
                 .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("recinto");
         org.mockito.Mockito.verify(sectorRepository, org.mockito.Mockito.never()).save(org.mockito.ArgumentMatchers.any());
     }
+
+    @Test void sumaSectoresNoPuedeSuperarRecinto() {
+        when(recintoRepository.findForUpdate(7L)).thenReturn(Optional.of(
+            new com.ticketuki.recintoservice.model.Recinto(7L, "Recinto", 100, null)));
+        when(sectorRepository.findForUpdateByRecinto(7L)).thenReturn(java.util.List.of(
+            new com.ticketuki.recintoservice.model.Sector(1L, "Platea", 80, 5000, 7L)));
+        assertThatThrownBy(() -> sectorService.crearSector(new SectorDTO(null, "Galeria", 30, 1000, 7L)))
+            .isInstanceOf(IllegalArgumentException.class);
+        org.mockito.Mockito.verify(sectorRepository, org.mockito.Mockito.never()).save(org.mockito.ArgumentMatchers.any());
+    }
+
 }

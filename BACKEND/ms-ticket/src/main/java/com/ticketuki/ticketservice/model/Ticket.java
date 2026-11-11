@@ -10,10 +10,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "ticket", uniqueConstraints = {
-        @UniqueConstraint(name = "uq_asiento_evento_sector",
-                columnNames = {"num_asiento", "evento_id_evento", "sector_id_sector"})
-})
+@Table(name = "ticket")
 public class Ticket {
 
     @Id

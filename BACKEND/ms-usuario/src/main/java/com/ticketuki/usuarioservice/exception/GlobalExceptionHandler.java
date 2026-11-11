@@ -90,6 +90,20 @@ public class GlobalExceptionHandler {
     }
 
     //cualquier excepción no controlada para evitar exponer al servidor
+    @ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+    public ResponseEntity<ErrorResponse> handleStatus(org.springframework.web.server.ResponseStatusException ex, HttpServletRequest request) {
+        return ResponseEntity.status(ex.getStatusCode()).body(ErrorResponse.builder()
+                .timestamp(LocalDateTime.now()).status(ex.getStatusCode().value())
+                .message(ex.getReason()).path(request.getRequestURI()).build());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleArgument(IllegalArgumentException ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(ErrorResponse.builder()
+                .timestamp(LocalDateTime.now()).status(400).message(ex.getMessage())
+                .path(request.getRequestURI()).build());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
         log.error("Error interno no manejado: ", ex);

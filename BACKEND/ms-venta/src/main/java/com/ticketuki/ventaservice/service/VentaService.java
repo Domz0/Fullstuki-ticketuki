@@ -32,6 +32,7 @@ public class VentaService {
     private final VentaRepository ventaRepository;
     private final DetalleVentaRepository detalleVentaRepository;
     private final PromocionRepository promocionRepository;
+    private final com.ticketuki.ventaservice.client.CatalogoVentaClient catalogo;
 
 
     // ── Helpers ──────────────────────────────────────────────────────────────
@@ -54,6 +55,7 @@ public class VentaService {
     }
 
     private DetalleVenta calcularDetalle(DetalleVentaRequestDTO dto, Long ventaId) {
+        long precioNeto = catalogo.precioPara(dto);
         long descuentoMonto = 0;
         Long promocionId = null;
 
@@ -61,30 +63,30 @@ public class VentaService {
         if (dto.getPromocion_id() != null) {
             Promocion promo = obtenerPromocionActiva(dto.getPromocion_id());
             if (promo != null) {
-                descuentoMonto = Math.round(dto.getPrecio_neto() * promo.getDescuento() / 100.0);
+                descuentoMonto = Math.round(precioNeto * promo.getDescuento() / 100.0);
                 promocionId = promo.getId_promocion();
                 log.info("Promoción {} aplicada: descuento de {} sobre precio neto {}",
-                        promocionId, descuentoMonto, dto.getPrecio_neto());
+                        promocionId, descuentoMonto, precioNeto);
             }
         }
 
         // El IVA y la comisión se calculan sobre el precio ya descontado
-        long precioBase  = dto.getPrecio_neto() - descuentoMonto;
+        long precioBase  = precioNeto - descuentoMonto;
         long precioIva   = Math.round(precioBase * PORCENTAJE_IVA);
         long comision    = Math.round(precioBase * PORCENTAJE_COMISION);
         long precioTotal = (precioBase + precioIva + comision) * dto.getCantidad_ticket();
 
-        return new DetalleVenta(null, dto.getCantidad_ticket(), dto.getPrecio_neto(),
+        return new DetalleVenta(null, dto.getCantidad_ticket(), precioNeto,
                 precioIva, precioTotal, comision,
                 dto.getUsuario_id_usuario(), ventaId, dto.getSector_id_sector(),
-                promocionId, descuentoMonto);
+                promocionId, descuentoMonto, dto.getEvento_id_evento());
     }
 
     private DetalleVentaResponseDTO mapDetalleToDTO(DetalleVenta d) {
         return new DetalleVentaResponseDTO(d.getId_detalle(), d.getCantidad_ticket(),
                 d.getPrecio_neto(), d.getPrecio_iva(), d.getPrecio_total(), d.getComision(),
                 d.getUsuario_id_usuario(), d.getVenta_id_venta(), d.getSector_id_sector(),
-                d.getPromocion_id(), d.getDescuento_monto());
+                d.getPromocion_id(), d.getDescuento_monto(), d.getEvento_id_evento());
     }
 
     private VentaResponseDTO toResponseDTO(Venta v, List<DetalleVentaResponseDTO> detalles) {
@@ -100,7 +102,14 @@ public class VentaService {
         log.info("Creando venta con medio de pago: {}", dto.getMedio_pago());
 
         // 1. Validar el estado de venta
-        EstadoVentaDTO estado = obtenerEstado(dto.getEstado_venta_id_estado());
+        if (dto.getEstado_venta_id_estado() != null && !EstadoVenta.PENDIENTE.getId().equals(dto.getEstado_venta_id_estado()))
+            throw new IllegalArgumentException("Una venta nueva debe quedar PENDIENTE");
+        EstadoVentaDTO estado = obtenerEstado(EstadoVenta.PENDIENTE.getId());
+        Long comprador = dto.getDetalles().getFirst().getUsuario_id_usuario();
+        if (dto.getDetalles().stream().anyMatch(d -> !java.util.Objects.equals(comprador, d.getUsuario_id_usuario())))
+            throw new IllegalArgumentException("Todos los detalles deben pertenecer al mismo comprador");
+        catalogo.validarUsuario(comprador);
+        catalogo.validarCupos(dto.getDetalles());
 
         // 2. Calcular detalles en memoria (descuento, IVA 19%, comisión 10%)
         List<DetalleVenta> detallesCalculados = dto.getDetalles().stream()
@@ -114,7 +123,7 @@ public class VentaService {
 
         // 4. Guardar la venta con el monto calculado
         Venta venta = new Venta(null, LocalDateTime.now(), dto.getMedio_pago(),
-                dto.getCod_autorizacion(), montoTotal, dto.getEstado_venta_id_estado(), null, null);
+                dto.getCod_autorizacion(), montoTotal, EstadoVenta.PENDIENTE.getId(), null, null);
         Venta ventaGuardada = ventaRepository.save(venta);
         log.info("Venta creada con id: {}, monto total: {}", ventaGuardada.getId_venta(), montoTotal);
 
@@ -136,12 +145,12 @@ public class VentaService {
     public VentaResponseDTO cambiarEstado(Long id, Long idEstado) {
         Venta venta = ventaRepository.findById(id)
                 .orElseThrow(() -> new VentaNotFoundException("Venta no encontrada: " + id));
-        EstadoVentaDTO estado = obtenerEstado(idEstado);
-        venta.setEstado_venta_id_estado(idEstado);
-        Venta guardada = ventaRepository.save(venta);
-        return new VentaResponseDTO(guardada.getId_venta(), guardada.getFecha_venta(),
-                guardada.getMedio_pago(), guardada.getCod_autorizacion(),
-                guardada.getMonto_total(), estado, null);
+        obtenerEstado(idEstado);
+        if (!java.util.Objects.equals(venta.getEstado_venta_id_estado(), idEstado))
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT,
+                    "El estado de venta se modifica mediante las operaciones de pago");
+        return toResponseDTO(venta, listarDetallesPorVenta(id));
+
     }
 
     @Transactional(readOnly = true)

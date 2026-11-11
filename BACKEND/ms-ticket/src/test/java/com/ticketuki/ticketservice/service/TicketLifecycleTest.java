@@ -21,6 +21,8 @@ import static org.mockito.Mockito.*;
 
 class TicketLifecycleTest {
     private final TicketRepository repository = mock(TicketRepository.class);
+    private final com.ticketuki.ticketservice.repository.CupoEventoRepository cupos = mock(com.ticketuki.ticketservice.repository.CupoEventoRepository.class);
+    private final com.ticketuki.ticketservice.client.ReferenciasTicketClient referencias = mock(com.ticketuki.ticketservice.client.ReferenciasTicketClient.class);
     private TicketService service;
     private Ticket ticket;
 
@@ -31,8 +33,13 @@ class TicketLifecycleTest {
 
     @BeforeEach
     void preparar() {
-        WebClient referencia = client(HttpStatus.OK, "{}");
-        service = new TicketService(repository, referencia, referencia, referencia);
+        service = new TicketService(repository, cupos, referencias);
+        when(cupos.bloquear(1L)).thenReturn(Optional.of(new com.ticketuki.ticketservice.model.CupoEvento()));
+        when(referencias.evento(1L)).thenReturn(new com.ticketuki.ticketservice.client.ReferenciasTicketClient.Evento(1L, 100, LocalDate.now().plusDays(1), 2L, 1L));
+        when(referencias.sector(1L)).thenReturn(new com.ticketuki.ticketservice.client.ReferenciasTicketClient.Sector(1L, 100, 1L));
+        when(referencias.venta(1L)).thenReturn(new com.ticketuki.ticketservice.client.ReferenciasTicketClient.Venta(1L,
+            new com.ticketuki.ticketservice.client.ReferenciasTicketClient.Estado(2L, "CONFIRMADA"),
+            java.util.List.of(new com.ticketuki.ticketservice.client.ReferenciasTicketClient.Detalle(1, 1L, 1L))));
         ticket = new Ticket(1L, "QRANTIGUO1", 1, "Juan", "12.345.678-9",
                 LocalDate.now(), 1L, 1L, 1L, 1L);
     }
@@ -51,14 +58,12 @@ class TicketLifecycleTest {
 
     @Test
     void crearNoConsultaCatalogoExternoDeEstados() {
-        WebClient referencias = WebClient.builder().exchangeFunction(request -> {
-            assertThat(request.url().getPath()).doesNotContain("estados");
-            return Mono.just(ClientResponse.create(HttpStatus.OK)
-                    .header("Content-Type", "application/json").body("{}").build());
-        }).build();
-        service = new TicketService(repository, referencias, referencias, referencias);
+        var orden = inOrder(cupos, repository);
         when(repository.saveAndFlush(any())).thenAnswer(i -> i.getArgument(0));
         assertThat(service.crearTicket(request()).getEstado_ticket_id_estado()).isEqualTo(1L);
+        orden.verify(cupos).asegurar(1L);
+        orden.verify(cupos).bloquear(1L);
+        orden.verify(repository).contarEvento(1L);
     }
 
     @Test
@@ -141,4 +146,27 @@ class TicketLifecycleTest {
         assertThatThrownBy(() -> service.cambiarEstado(1L, 4L)).isInstanceOf(TicketOperacionInvalidaException.class);
         verify(repository, never()).save(any());
     }
+
+    @Test void noEmiteSiEventoEstaLleno() {
+        when(repository.contarEvento(1L)).thenReturn(100L);
+        assertThatThrownBy(() -> service.crearTicket(request())).isInstanceOf(TicketOperacionInvalidaException.class);
+        verify(repository, never()).saveAndFlush(any());
+    }
+    @Test void noEmiteEnSectorDeOtroRecinto() {
+        when(referencias.sector(1L)).thenReturn(new com.ticketuki.ticketservice.client.ReferenciasTicketClient.Sector(1L, 100, 2L));
+        assertThatThrownBy(() -> service.crearTicket(request())).isInstanceOf(IllegalArgumentException.class);
+        verify(repository, never()).saveAndFlush(any());
+    }
+    @Test void noEmiteSinPagoConfirmado() {
+        when(referencias.venta(1L)).thenReturn(new com.ticketuki.ticketservice.client.ReferenciasTicketClient.Venta(1L,
+            new com.ticketuki.ticketservice.client.ReferenciasTicketClient.Estado(1L, "PENDIENTE"), java.util.List.of()));
+        assertThatThrownBy(() -> service.crearTicket(request())).isInstanceOf(TicketOperacionInvalidaException.class);
+        verify(repository, never()).saveAndFlush(any());
+    }
+    @Test void noEmiteMasDeLoComprado() {
+        when(repository.contarVentaSector(1L, 1L, 1L)).thenReturn(1L);
+        assertThatThrownBy(() -> service.crearTicket(request())).isInstanceOf(TicketOperacionInvalidaException.class);
+        verify(repository, never()).saveAndFlush(any());
+    }
+
 }

@@ -167,6 +167,7 @@ class UsuarioServiceTest {
     @Test
     void actualizarUsuario_rechazaEmailDeOtroUsuarioAntesDeModificar() {
         UsuarioRequestDTO req = requestValido();
+        req.setRun("11.111.111-1");
         Usuario original = new Usuario(1L, "11.111.111-1", "Ana", null, "Pérez", "Soto", "ana@mail.com", null);
         Usuario otro = new Usuario(2L, req.getRun(), "Juan", null, "Pérez", "Soto", req.getEmail(), null);
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(original));
@@ -184,9 +185,9 @@ class UsuarioServiceTest {
         Usuario original = new Usuario(1L, "11.111.111-1", "Ana", null, "Pérez", "Soto", "ana@mail.com", null);
         Usuario otro = new Usuario(2L, req.getRun(), "Juan", null, "Pérez", "Soto", req.getEmail(), null);
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(original));
-        when(usuarioRepository.findByRun(req.getRun())).thenReturn(Optional.of(otro));
+
         assertThatThrownBy(() -> usuarioService.actualizarUsuario(1L, req))
-                .isInstanceOf(UsuarioDuplicadoException.class).hasMessage("El RUN ya existe");
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("no se puede cambiar");
         verify(usuarioRepository, never()).saveAndFlush(any());
     }
 }

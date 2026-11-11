@@ -55,12 +55,14 @@ public class RecintoService {
     @Transactional
     public RecintoDTO actualizarRecinto(Long id, RecintoDTO dto) {
         log.info("Actualizando recinto con ID: {}", id);
-        Recinto recinto = recintoRepository.findById(id)
+        Recinto recinto = recintoRepository.findForUpdate(id)
                 .orElseThrow(() -> {
                     log.warn("Recinto no encontrado para actualizar: {}", id);
                     return new RecintoNotFoundException("Recinto no encontrado: " + id);
                 });
 
+        if (dto.getCapacidad_total() < recinto.getCapacidad_total())
+            throw new IllegalArgumentException("No se puede reducir la capacidad de un recinto existente");
         recinto.setNombre_recinto(dto.getNombre_recinto());
         recinto.setCapacidad_total(dto.getCapacidad_total());
 

@@ -28,7 +28,7 @@ public class AuthService {
                 .orElseThrow(() -> new CredencialesInvalidasException("Usuario o contraseña incorrectos"));
 
         // 2. Comparación directa de credenciales
-        if (!usuario.getPassword().equals(dto.getPassword())) {
+        if (!usuario.isActivo() || !usuario.getPassword().equals(dto.getPassword())) {
             throw new CredencialesInvalidasException("Usuario o contraseña incorrectos");
         }
 

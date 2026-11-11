@@ -32,6 +32,7 @@ public class TicketRequestDTO {
     }
 
     @Positive
+    @jakarta.validation.constraints.NotNull
     private Long venta_id_venta;
 
     @NotNull(message = "El evento es requerido")

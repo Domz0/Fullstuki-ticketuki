@@ -14,13 +14,9 @@ import com.ticketuki.ticketservice.repository.TicketRepository;
 import com.ticketuki.ticketservice.util.QRGenerator;
 import com.ticketuki.ticketservice.util.RunUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.server.ResponseStatusException;
 import java.text.Normalizer;
 import java.time.LocalDate;
@@ -34,20 +30,16 @@ import java.util.stream.Collectors;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
-    private final WebClient eventoWebClient;
-    private final WebClient recintoWebClient;
-    private final WebClient ventaWebClient;
+    private final com.ticketuki.ticketservice.repository.CupoEventoRepository cupos;
+    private final com.ticketuki.ticketservice.client.ReferenciasTicketClient referencias;
 
     public TicketService(TicketRepository ticketRepository,
-                         @Qualifier("eventoWebClient")  WebClient eventoWebClient,
-                         @Qualifier("recintoWebClient") WebClient recintoWebClient,
-                         @Qualifier("ventaWebClient")   WebClient ventaWebClient) {
-        this.ticketRepository  = ticketRepository;
-        this.eventoWebClient   = eventoWebClient;
-        this.recintoWebClient  = recintoWebClient;
-        this.ventaWebClient    = ventaWebClient;
+                         com.ticketuki.ticketservice.repository.CupoEventoRepository cupos,
+                         com.ticketuki.ticketservice.client.ReferenciasTicketClient referencias) {
+        this.ticketRepository = ticketRepository;
+        this.cupos = cupos;
+        this.referencias = referencias;
     }
-
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -143,67 +135,45 @@ public class TicketService {
         }
     }
 
-    private void validarEvento(Long idEvento) {
-        try {
-            eventoWebClient.get()
-                    .uri("/eventos/{id}", idEvento)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError, response ->
-                            response.createException().map(e ->
-                                    new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                            "Evento no encontrado: " + idEvento)))
-                    .onStatus(HttpStatusCode::is5xxServerError, response ->
-                            response.createException().map(e ->
-                                    new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-                                            "ms-evento no disponible")))
-                    .bodyToMono(Object.class)
-                    .block();
-        } catch (WebClientRequestException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-                    "No se pudo conectar con ms-evento: " + idEvento);
-        }
+    private void validarCapacidadYCompra(TicketRequestDTO dto) {
+        cupos.asegurar(dto.getEvento_id_evento());
+        cupos.bloquear(dto.getEvento_id_evento()).orElseThrow();
+        var evento = referencias.evento(dto.getEvento_id_evento());
+        var sector = referencias.sector(dto.getSector_id_sector());
+        if (!java.util.Objects.equals(evento.id_evento(), dto.getEvento_id_evento())
+                || !java.util.Objects.equals(sector.id_sector(), dto.getSector_id_sector()))
+            throw new IllegalArgumentException("Evento o sector de referencia inválido");
+        if (evento.recinto_id_recinto() == null || !java.util.Objects.equals(evento.recinto_id_recinto(), sector.recinto_id_recinto()))
+            throw new IllegalArgumentException("El sector no pertenece al recinto del evento");
+        if (!Long.valueOf(2).equals(evento.estado_evento_id_estado()) || evento.fecha_evento() == null
+                || evento.fecha_evento().isBefore(LocalDate.now()))
+            throw new TicketOperacionInvalidaException("El evento no está disponible");
+        if (evento.aforo_evento() == null || sector.capacidad_sector() == null
+                || evento.aforo_evento() <= 0 || sector.capacidad_sector() <= 0)
+            throw new TicketOperacionInvalidaException("Capacidad sin configurar");
+        if (dto.getNum_asiento() > sector.capacidad_sector())
+            throw new TicketOperacionInvalidaException("El asiento supera la capacidad del sector");
+        if (ticketRepository.contarEvento(evento.id_evento()) >= evento.aforo_evento()
+                || ticketRepository.contarSector(evento.id_evento(), sector.id_sector()) >= sector.capacidad_sector())
+            throw new TicketOperacionInvalidaException("No quedan cupos para este evento y sector");
+        if (dto.getVenta_id_venta() == null) throw new IllegalArgumentException("La venta es obligatoria");
+        var venta = referencias.venta(dto.getVenta_id_venta());
+        if (!java.util.Objects.equals(venta.id_venta(), dto.getVenta_id_venta()) || venta.estado_venta() == null
+                || !"CONFIRMADA".equals(venta.estado_venta().nombre()) || venta.detalles() == null)
+            throw new TicketOperacionInvalidaException("La venta debe estar confirmada antes de emitir tickets");
+        long comprados = venta.detalles().stream()
+                .filter(d -> java.util.Objects.equals(d.evento_id_evento(), evento.id_evento())
+                        && java.util.Objects.equals(d.sector_id_sector(), sector.id_sector()))
+                .mapToLong(d -> d.cantidad_ticket() == null ? 0 : d.cantidad_ticket()).sum();
+        if (ticketRepository.contarVentaSector(venta.id_venta(), evento.id_evento(), sector.id_sector()) >= comprados)
+            throw new TicketOperacionInvalidaException("No hay tickets comprados pendientes de emitir para este evento y sector");
     }
 
-    private void validarSector(Long idSector) {
-        try {
-            recintoWebClient.get()
-                    .uri("/sectores/{id}", idSector)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError, response ->
-                            response.createException().map(e ->
-                                    new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                            "Sector no encontrado: " + idSector)))
-                    .onStatus(HttpStatusCode::is5xxServerError, response ->
-                            response.createException().map(e ->
-                                    new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-                                            "ms-recinto no disponible")))
-                    .bodyToMono(Object.class)
-                    .block();
-        } catch (WebClientRequestException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-                    "No se pudo conectar con ms-recinto: " + idSector);
-        }
-    }
+    public record Disponibilidad(long emitidos_evento, long emitidos_sector) {}
 
-    private void validarVenta(Long idVenta) {
-        try {
-            ventaWebClient.get()
-                    .uri("/ventas/{id}", idVenta)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError, response ->
-                            response.createException().map(e ->
-                                    new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                            "Venta no encontrada: " + idVenta)))
-                    .onStatus(HttpStatusCode::is5xxServerError, response ->
-                            response.createException().map(e ->
-                                    new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-                                            "ms-venta no disponible")))
-                    .bodyToMono(Object.class)
-                    .block();
-        } catch (WebClientRequestException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-                    "No se pudo conectar con ms-venta: " + idVenta);
-        }
+    @Transactional(readOnly = true)
+    public Disponibilidad disponibilidad(Long evento, Long sector) {
+        return new Disponibilidad(ticketRepository.contarEvento(evento), ticketRepository.contarSector(evento, sector));
     }
 
     private void validarAsientoDisponible(Integer numAsiento, Long eventoId, Long sectorId) {
@@ -220,11 +190,7 @@ public class TicketService {
     public TicketResponseDTO crearTicket(TicketRequestDTO dto) {
         dto.setRun_titular(dto.getRun_titular());
         log.info("Creando ticket para evento: {}", dto.getEvento_id_evento());
-        validarEvento(dto.getEvento_id_evento());
-        validarSector(dto.getSector_id_sector());
-        if (dto.getVenta_id_venta() != null) {
-            validarVenta(dto.getVenta_id_venta());
-        }
+        validarCapacidadYCompra(dto);
         validarAsientoDisponible(dto.getNum_asiento(), dto.getEvento_id_evento(), dto.getSector_id_sector());
 
         Ticket ticket = new Ticket(

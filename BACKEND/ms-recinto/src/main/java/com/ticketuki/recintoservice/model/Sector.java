@@ -2,13 +2,11 @@ package com.ticketuki.recintoservice.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "sector")
 public class Sector {
@@ -30,4 +28,15 @@ public class Sector {
 
     @Column(name = "recinto_id_recinto", nullable = false)
     private Long recinto_id_recinto;
+
+    @Version
+    private Long version;
+
+    public Sector(Long id_sector, String nombre_sector, Integer capacidad_sector, Integer precio_sector, Long recinto_id_recinto) {
+        this.id_sector = id_sector;
+        this.nombre_sector = nombre_sector;
+        this.capacidad_sector = capacidad_sector;
+        this.precio_sector = precio_sector;
+        this.recinto_id_recinto = recinto_id_recinto;
+    }
 }

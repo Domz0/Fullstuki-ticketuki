@@ -26,6 +26,9 @@ class EventoServiceTest {
     @Mock
     private EventoRepository eventoRepository;
 
+    @Mock
+    private com.ticketuki.eventoservice.client.RecintoEventoClient recintos;
+
     @InjectMocks
     private EventoService eventoService;
 
@@ -63,7 +66,7 @@ class EventoServiceTest {
     @Test
     void cambiarEstado_eventoExistente_actualizaEstado() {
         Evento evento = eventoEjemplo();   // estado actual = 1
-        when(eventoRepository.findById(1L)).thenReturn(Optional.of(evento));
+        when(eventoRepository.findForUpdate(1L)).thenReturn(Optional.of(evento));
         when(eventoRepository.save(any(Evento.class))).thenReturn(evento);
 
         EventoResponseDTO res = eventoService.cambiarEstado(1L, 3L);
@@ -85,7 +88,7 @@ class EventoServiceTest {
 
     @Test
     void crear_persisteParticipantesSinServicioArtista() {
-        EventoRequestDTO req = new EventoRequestDTO("Festival", 100,
+        EventoRequestDTO req = new EventoRequestDTO("Festival", 5000,
                 LocalDate.of(2027, 1, 10), "Música en vivo", 1L, 8L, "Banda A; Banda B");
         when(eventoRepository.save(any(Evento.class))).thenAnswer(i -> i.getArgument(0));
         EventoResponseDTO res = eventoService.crear(req);
@@ -95,9 +98,9 @@ class EventoServiceTest {
 
     @Test
     void actualizar_cambiaParticipantesConservandoId() {
-        when(eventoRepository.findById(1L)).thenReturn(Optional.of(eventoEjemplo()));
+        when(eventoRepository.findForUpdate(1L)).thenReturn(Optional.of(eventoEjemplo()));
         when(eventoRepository.save(any(Evento.class))).thenAnswer(i -> i.getArgument(0));
-        EventoRequestDTO req = new EventoRequestDTO("Festival", 100,
+        EventoRequestDTO req = new EventoRequestDTO("Festival", 5000,
                 LocalDate.of(2027, 1, 10), null, 1L, 8L, "Compañía de teatro");
         EventoResponseDTO res = eventoService.actualizar(1L, req);
         assertThat(res.getId_evento()).isEqualTo(1L);

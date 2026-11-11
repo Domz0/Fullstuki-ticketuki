@@ -27,7 +27,8 @@ public class VentaController {
     }
 
     @PostMapping("/ventas")
-    public ResponseEntity<VentaResponseDTO> crearVenta(@Valid @RequestBody VentaRequestDTO dto) {
+    public ResponseEntity<VentaResponseDTO> crearVenta(@Valid @RequestBody VentaRequestDTO dto, jakarta.servlet.http.HttpServletRequest request) {
+        dto.getDetalles().forEach(d -> com.ticketuki.ventaservice.security.CompradorRequest.validar(request, d.getUsuario_id_usuario()));
         return ResponseEntity.status(HttpStatus.CREATED).body(ventaService.crearVenta(dto));
     }
 
