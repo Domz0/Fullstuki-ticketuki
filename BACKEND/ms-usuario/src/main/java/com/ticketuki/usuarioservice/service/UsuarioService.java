@@ -78,6 +78,7 @@ public class UsuarioService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "USUARIO", accion = "CREAR", id = "id_usuario")
     public UsuarioResponseDTO crearUsuario(UsuarioRequestDTO usuarioDTO) {
         log.info("Creando nuevo usuario con run: {}", usuarioDTO.getRun());
         validarDuplicados(usuarioDTO, null);
@@ -109,6 +110,7 @@ public class UsuarioService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "USUARIO", accion = "ACTUALIZAR", id = "id_usuario")
     public UsuarioResponseDTO actualizarUsuario(Long id, UsuarioRequestDTO usuarioDTO) {
         log.info("Actualizando usuario con id: {}", id);
         Usuario usuario = usuarioRepository.findById(id)
@@ -144,6 +146,7 @@ public class UsuarioService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "USUARIO", accion = "ELIMINAR")
     public void eliminarUsuario(Long id) {
         log.info("Eliminando usuario con ID: {}", id);
 

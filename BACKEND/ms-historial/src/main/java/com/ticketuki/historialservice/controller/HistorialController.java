@@ -22,10 +22,6 @@ public class HistorialController {
 
     private final HistorialService historialService;
 
-    @PostMapping
-    public ResponseEntity<HistorialResponseDTO> registrar(@Valid @RequestBody HistorialRequestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(historialService.registrar(dto));
-    }
 
     @GetMapping("/{idHistorial}")
     public ResponseEntity<HistorialResponseDTO> obtenerHistorial(@PathVariable Long idHistorial) {

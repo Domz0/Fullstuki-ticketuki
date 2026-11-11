@@ -22,6 +22,8 @@ public class RegistroStore {
         var existente = repository.findForUpdateByUsername(dto.getUsername());
         if (existente.isPresent()) {
             var auth = existente.get();
+            if (!auth.isActivo() && auth.getUsuarioId() != null)
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "La cuenta está desactivada");
             if (!Objects.equals(auth.getRegistroFingerprint(), fingerprint)
                     || !Objects.equals(auth.getPassword(), dto.getPassword()) || auth.getRegistroId() == null)
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "El username ya está registrado o tiene otro registro pendiente");
@@ -36,6 +38,7 @@ public class RegistroStore {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "CUENTA", accion = "CREAR")
     public void activar(Long authId, Long usuarioId) {
         if (usuarioId == null || usuarioId <= 0) throw new IllegalArgumentException("Perfil de usuario inválido");
         var auth = repository.findForUpdate(authId).orElseThrow();

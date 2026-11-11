@@ -49,6 +49,7 @@ public class EventoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "EVENTO", accion = "CREAR", id = "id_evento")
     public EventoResponseDTO crear(EventoRequestDTO eventoDTO) {
         log.info("Creando evento: {}", eventoDTO.getNombre_evento());
         recintos.validar(eventoDTO.getRecinto_id_recinto(), eventoDTO.getAforo_evento());
@@ -64,6 +65,7 @@ public class EventoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "EVENTO", accion = "ACTUALIZAR", id = "id_evento")
     public EventoResponseDTO actualizar(Long id, EventoRequestDTO eventoDTO) {
         log.info("Actualizando evento: {}", id);
         Evento evento = eventoRepository.findForUpdate(id)
@@ -87,6 +89,7 @@ public class EventoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "EVENTO", accion = "ELIMINAR")
     public void eliminar(Long id) {
         log.info("Eliminando evento: {}", id);
         if (!eventoRepository.existsById(id)) {
@@ -115,6 +118,7 @@ public class EventoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "EVENTO", accion = "ACTUALIZAR", id = "id_evento")
     public EventoResponseDTO cambiarEstado(Long id, Long idEstado) {
         log.info("Cambiando estado del evento {} a {}", id, idEstado);
         Evento evento = eventoRepository.findForUpdate(id)

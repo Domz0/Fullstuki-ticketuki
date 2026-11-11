@@ -18,9 +18,9 @@ class PoliticaRolesTest {
         assertThat(PoliticaRoles.permite("CLIENTE", "/pagos/1/completar", HttpMethod.PUT)).isFalse();
         assertThat(PoliticaRoles.permite("CLIENTE", "/historial", HttpMethod.GET)).isFalse();
     }
-    @Test void vendedorOperaSinAdministrarCatalogo() {
-        assertThat(PoliticaRoles.permite("VENDEDOR", "/tickets/validar/QR", HttpMethod.POST)).isTrue();
-        assertThat(PoliticaRoles.permite("VENDEDOR", "/pagos/1/completar", HttpMethod.PUT)).isTrue();
+    @Test void vendedorRetiradoNoTieneAcceso() {
+        assertThat(PoliticaRoles.permite("VENDEDOR", "/tickets/validar/QR", HttpMethod.POST)).isFalse();
+        assertThat(PoliticaRoles.permite("VENDEDOR", "/pagos/1/completar", HttpMethod.PUT)).isFalse();
         assertThat(PoliticaRoles.permite("VENDEDOR", "/eventos/1", HttpMethod.DELETE)).isFalse();
         assertThat(PoliticaRoles.permite("VENDEDOR", "/pagos/1/reembolso", HttpMethod.PUT)).isFalse();
     }
@@ -29,5 +29,14 @@ class PoliticaRolesTest {
         assertThat(PoliticaRoles.permite("ADMIN", "/interno/registros/1", HttpMethod.POST)).isFalse();
         assertThat(PoliticaRoles.permite("ADMIN", "/eventos/../usuarios", HttpMethod.GET)).isFalse();
         assertThat(PoliticaRoles.permite("ADMIN", "/eventos", HttpMethod.POST)).isTrue();
+    }
+
+    @Test void cuentasSoloAdminEHistorialSoloLectura() {
+        assertThat(PoliticaRoles.permite("CLIENTE", "/auth/me", HttpMethod.GET)).isTrue();
+        assertThat(PoliticaRoles.permite("CLIENTE", "/auth/contrasena", HttpMethod.PATCH)).isTrue();
+        assertThat(PoliticaRoles.permite("CLIENTE", "/auth/cuentas", HttpMethod.GET)).isFalse();
+        assertThat(PoliticaRoles.permite("ADMIN", "/auth/cuentas/2/activo", HttpMethod.PATCH)).isTrue();
+        assertThat(PoliticaRoles.permite("ADMIN", "/historial", HttpMethod.POST)).isFalse();
+        assertThat(PoliticaRoles.permite("ADMIN", "/historial", HttpMethod.GET)).isTrue();
     }
 }

@@ -45,6 +45,7 @@ public class RecintoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "RECINTO", accion = "CREAR", id = "id_recinto")
     public RecintoDTO crearRecinto(RecintoDTO dto) {
         log.info("Creando recinto: {}", dto.getNombre_recinto());
         DireccionRecinto dir = direccionFromDTO(dto.getDireccion());
@@ -53,6 +54,7 @@ public class RecintoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "RECINTO", accion = "ACTUALIZAR", id = "id_recinto")
     public RecintoDTO actualizarRecinto(Long id, RecintoDTO dto) {
         log.info("Actualizando recinto con ID: {}", id);
         Recinto recinto = recintoRepository.findForUpdate(id)
@@ -96,6 +98,7 @@ public class RecintoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "RECINTO", accion = "ELIMINAR")
     public void eliminarRecinto(Long id) {
         log.info("Eliminando recinto con ID: {}", id);
         Recinto recinto = recintoRepository.findById(id)

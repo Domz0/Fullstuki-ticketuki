@@ -98,6 +98,7 @@ public class VentaService {
     // ── Operaciones de venta ─────────────────────────────────────────────────
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "VENTA", accion = "CREAR", id = "id_venta")
     public VentaResponseDTO crearVenta(VentaRequestDTO dto) {
         log.info("Creando venta con medio de pago: {}", dto.getMedio_pago());
 

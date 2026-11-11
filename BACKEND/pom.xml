@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>ms-tuki-compartido</module>
         <module>ms-auth</module>
         <module>ms-evento</module>
         <module>ms-gateway</module>

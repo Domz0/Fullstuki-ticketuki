@@ -25,6 +25,7 @@ public class SectorService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "SECTOR", accion = "CREAR", id = "id_sector")
     public SectorDTO crearSector(SectorDTO dto) {
         log.info("Creando sector: {}", dto.getNombre_sector());
         validarCapacidad(dto, null);
@@ -33,6 +34,7 @@ public class SectorService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "SECTOR", accion = "ACTUALIZAR", id = "id_sector")
     public SectorDTO actualizarSector(Long id, SectorDTO dto) {
         log.info("Actualizando sector con ID: {}", id);
         Sector sector = sectorRepository.findById(id)
@@ -65,6 +67,7 @@ public class SectorService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "SECTOR", accion = "ELIMINAR")
     public void eliminarSector(Long id) {
         log.info("Eliminando sector con ID: {}", id);
         Sector sector = sectorRepository.findById(id)

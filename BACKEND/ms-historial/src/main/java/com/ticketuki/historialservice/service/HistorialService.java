@@ -23,13 +23,13 @@ public class HistorialService {
 
     private HistorialResponseDTO toResponseDTO(Historial h) {
         return new HistorialResponseDTO(h.getId_historial(), h.getEntidad(), h.getId_entidad(), h.getAccion(),
-                h.getUsuario_id(), h.getTimestamp(), h.getCambios_anteriores(), h.getCambios_nuevos());
+                h.getUsuario_id(), h.getTimestamp(), h.getCambios_anteriores(), h.getCambios_nuevos(), h.getEventoId(), h.getOrigen(), h.getAuthId());
     }
 
     @Transactional
     public HistorialResponseDTO registrar(HistorialRequestDTO dto) {
         log.info("Registrando acción: {} en entidad: {} id: {}", dto.getAccion(), dto.getEntidad(), dto.getId_entidad());
-        Historial h = new Historial(null, dto.getEntidad(), dto.getId_entidad(), dto.getAccion(),
+        Historial h = new Historial(null, null, null, null, dto.getEntidad(), dto.getId_entidad(), dto.getAccion(),
                 dto.getUsuario_id(), LocalDateTime.now(), dto.getCambios_anteriores(), dto.getCambios_nuevos());
         return toResponseDTO(historialRepository.save(h));
     }

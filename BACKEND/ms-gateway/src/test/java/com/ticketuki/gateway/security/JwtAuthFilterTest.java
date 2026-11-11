@@ -13,7 +13,8 @@ import static org.assertj.core.api.Assertions.*;
 class JwtAuthFilterTest {
     JwtUtil jwt = mock(JwtUtil.class);
     AccesoCliente acceso = mock(AccesoCliente.class);
-    JwtAuthFilter filter = new JwtAuthFilter(jwt, acceso);
+    SesionActivaClient sesiones = mock(SesionActivaClient.class);
+    JwtAuthFilter filter = new JwtAuthFilter(jwt, acceso, sesiones, new com.fasterxml.jackson.databind.ObjectMapper().findAndRegisterModules());
     @Test void rutaPrivadaSinTokenDevuelve401() {
         var exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/eventos"));
         var chain = mock(GatewayFilterChain.class);
@@ -41,5 +42,32 @@ class JwtAuthFilterTest {
             return Mono.empty();
         }).block();
         verifyNoInteractions(jwt);
+    }
+
+    @Test void tokenRevocadoNoLlegaAlServicioYDevuelveErrorJson() {
+        var claims = mock(Claims.class);
+        when(jwt.validarYObtenerClaims("token")).thenReturn(claims);
+        when(claims.get("rol")).thenReturn("ADMIN");
+        when(claims.getSubject()).thenReturn("admin");
+        when(sesiones.validar("Bearer token")).thenReturn(Mono.just(false));
+        var exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/eventos").header("Authorization", "Bearer token"));
+        var chain = mock(GatewayFilterChain.class);
+        filter.filter(exchange, chain).block();
+        assertThat(exchange.getResponse().getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(exchange.getResponse().getBodyAsString().block()).contains("\"status\":401", "\"path\":\"/eventos\"");
+        verifyNoInteractions(chain);
+    }
+
+    @Test void caidaDeAuthImpideAccesoInclusoAdmin() {
+        var claims = mock(Claims.class);
+        when(jwt.validarYObtenerClaims("token")).thenReturn(claims);
+        when(claims.get("rol")).thenReturn("ADMIN");
+        when(claims.getSubject()).thenReturn("admin");
+        when(sesiones.validar("Bearer token")).thenReturn(Mono.error(new IllegalStateException()));
+        var exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/eventos").header("Authorization", "Bearer token"));
+        var chain = mock(GatewayFilterChain.class);
+        filter.filter(exchange, chain).block();
+        assertThat(exchange.getResponse().getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+        verifyNoInteractions(chain);
     }
 }

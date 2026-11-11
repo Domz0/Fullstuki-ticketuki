@@ -12,10 +12,14 @@ import reactor.core.publisher.Mono;
 public class JwtAuthFilter implements GlobalFilter, Ordered {
     private final JwtUtil jwtUtil;
     private final AccesoCliente accesoCliente;
+    private final SesionActivaClient sesiones;
+    private final com.fasterxml.jackson.databind.ObjectMapper mapper;
 
-    public JwtAuthFilter(JwtUtil jwtUtil, AccesoCliente accesoCliente) {
+    public JwtAuthFilter(JwtUtil jwtUtil, AccesoCliente accesoCliente, SesionActivaClient sesiones, com.fasterxml.jackson.databind.ObjectMapper mapper) {
         this.jwtUtil = jwtUtil;
         this.accesoCliente = accesoCliente;
+        this.sesiones = sesiones;
+        this.mapper = mapper;
     }
 
     @Override
@@ -49,16 +53,34 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
             if (claims.get("id") instanceof Number id) headers.set("X-Auth-Id", id.toString());
         }).build();
         var destino = exchange.mutate().request(autenticada).build();
-        if (!"CLIENTE".equals(rol)) return chain.filter(destino);
-        return accesoCliente.permite(path, usuarioId)
+        return sesiones.validar(header)
                 .onErrorResume(ex -> rechazar(exchange, HttpStatus.SERVICE_UNAVAILABLE).thenReturn(false))
-                .flatMap(permitido -> permitido ? chain.filter(destino)
-                        : exchange.getResponse().isCommitted() ? Mono.empty() : rechazar(exchange, HttpStatus.FORBIDDEN));
+                .flatMap(activa -> {
+                    if (exchange.getResponse().isCommitted()) return Mono.empty();
+                    if (!activa) return rechazar(exchange, HttpStatus.UNAUTHORIZED);
+                    if (!"CLIENTE".equals(rol)) return chain.filter(destino);
+                    return accesoCliente.permite(path, usuarioId)
+                        .onErrorResume(ex -> rechazar(exchange, HttpStatus.SERVICE_UNAVAILABLE).thenReturn(false))
+                        .flatMap(permitido -> permitido ? chain.filter(destino)
+                            : exchange.getResponse().isCommitted() ? Mono.empty() : rechazar(exchange, HttpStatus.FORBIDDEN));
+                });
     }
 
     private Mono<Void> rechazar(ServerWebExchange exchange, HttpStatus status) {
         exchange.getResponse().setStatusCode(status);
-        return exchange.getResponse().setComplete();
+        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        String mensaje = switch (status) {
+            case UNAUTHORIZED -> "Sesión inválida o vencida";
+            case FORBIDDEN -> "No tienes permiso para esta operación";
+            default -> "No se pudo verificar el acceso";
+        };
+        try {
+            byte[] body = mapper.writeValueAsBytes(com.ticketuki.common.error.ApiError.of(
+                status.value(), mensaje, exchange.getRequest().getURI().getPath(), null));
+            return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(body)));
+        } catch (Exception ex) {
+            return exchange.getResponse().setComplete();
+        }
     }
 
     @Override public int getOrder() { return -1; }

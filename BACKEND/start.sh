@@ -18,6 +18,8 @@ fi
 export JAVA_HOME="$JAVA21"
 echo "☕ Usando JAVA_HOME=$JAVA_HOME"
 
+mvn -q -o -pl ms-tuki-compartido -am install -DskipTests
+
 # --- Orden de arranque (puerto:servicio) -----------------------------------
 # Respeta dependencias: recinto y usuario primero; venta y ticket al final.
 ORDER=(

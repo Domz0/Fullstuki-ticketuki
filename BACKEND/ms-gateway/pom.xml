@@ -38,6 +38,7 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency><groupId>com.ticketuki</groupId><artifactId>ms-tuki-compartido</artifactId><version>1.0.0</version></dependency>
         <!-- API Gateway reactivo (trae spring-boot-starter-webflux) -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

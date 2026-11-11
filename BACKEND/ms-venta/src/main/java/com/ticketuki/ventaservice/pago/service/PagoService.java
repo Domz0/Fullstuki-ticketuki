@@ -146,6 +146,7 @@ public class PagoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "CREAR", id = "id_pago")
     public PagoResponseDTO procesarPago(PagoRequestDTO dto) {
         log.info("Procesando pago para venta: {}", dto.getVenta_id());
         var venta = obtenerVenta(dto.getVenta_id());
@@ -178,6 +179,7 @@ public class PagoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "ACTUALIZAR", id = "id_pago")
     public PagoResponseDTO completarPago(Long id) {
         Pago p = pagoRepository.findForUpdate(id)
                 .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));
@@ -203,6 +205,7 @@ public class PagoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "ACTUALIZAR", id = "id_pago")
     public PagoResponseDTO procesarReembolso(Long id) {
         Pago saved = marcarPagoReembolsado(id);
         log.info("Reembolso aprobado para pago {}. Coordinando cancelación de tickets y venta {}",
@@ -213,6 +216,7 @@ public class PagoService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "ACTUALIZAR", id = "id_pago")
     public PagoResponseDTO cancelarPago(Long id) {
         Pago p = pagoRepository.findForUpdate(id)
                 .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));

@@ -52,4 +52,15 @@ class RegistroStoreTest {
         assertThatThrownBy(() -> store.activar(7L, 4L))
             .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
     }
+
+    @Test void registroNoReactivaCuentaDesactivadaPorAdmin() {
+        var auth = new UsuarioAuth(7L, "nuevo", "password123", Rol.CLIENTE, 3L);
+        auth.setActivo(false);
+        auth.setRegistroId("clave");
+        auth.setRegistroFingerprint("perfil");
+        when(repository.findForUpdateByUsername("nuevo")).thenReturn(Optional.of(auth));
+        assertThatThrownBy(() -> store.reservar(request(), "perfil"))
+            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(repository, never()).saveAndFlush(any());
+    }
 }

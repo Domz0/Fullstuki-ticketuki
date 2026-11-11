@@ -11,27 +11,21 @@ public final class PoliticaRoles {
     }
 
     public static boolean permite(String rol, String path, HttpMethod method) {
-        if (rol == null || !Set.of("ADMIN", "VENDEDOR", "CLIENTE").contains(rol)) return false;
+        if (rol == null || !Set.of("ADMIN", "CLIENTE").contains(rol)) return false;
         if (path.contains("..") || path.contains(";") || path.contains("//") || path.contains("\\")) return false;
+        if (path.equals("/auth/me")) return method == HttpMethod.GET;
+        if (path.equals("/auth/contrasena")) return method == HttpMethod.PATCH;
+        if (path.matches("/auth/cuentas(/[0-9]+/(activo|rol))?"))
+            return "ADMIN".equals(rol) && (method == HttpMethod.GET || method == HttpMethod.PATCH);
         String raiz = path.split("/", -1).length > 1 ? path.split("/", -1)[1] : "";
         if (!Set.of("usuarios", "eventos", "recintos", "sectores", "promociones",
                 "estadosEvento", "estadosTicket", "estadosVenta", "ventas", "detalleVenta", "pagos", "tickets", "historial").contains(raiz))
             return false;
+        if (raiz.equals("historial")) return "ADMIN".equals(rol) && method == HttpMethod.GET;
         if ("ADMIN".equals(rol)) return true;
         if (method == HttpMethod.GET && path.matches("/tickets/disponibilidad/[0-9]+/[0-9]+")) return true;
         if (Set.of("eventos", "recintos", "sectores", "promociones", "estadosEvento", "estadosTicket", "estadosVenta").contains(raiz))
             return method == HttpMethod.GET;
-        if ("VENDEDOR".equals(rol)) {
-            if (raiz.equals("usuarios")) return method == HttpMethod.GET;
-            if (raiz.equals("historial")) return false;
-            if (raiz.equals("ventas") || raiz.equals("detalleVenta"))
-                return method == HttpMethod.GET || (path.equals("/ventas") && method == HttpMethod.POST);
-            if (raiz.equals("pagos"))
-                return method == HttpMethod.GET || (path.equals("/pagos") && method == HttpMethod.POST)
-                        || (method == HttpMethod.PUT && path.matches("/pagos/[0-9]+/(completar|cancelar)"));
-            return raiz.equals("tickets") && (method == HttpMethod.GET || method == HttpMethod.POST
-                    || (method == HttpMethod.PUT && path.matches("/tickets/[0-9]+(/transferir)?")));
-        }
         if (path.matches("/usuarios/[0-9]+")) return method == HttpMethod.GET || method == HttpMethod.PUT;
         if (method == HttpMethod.POST) return path.equals("/ventas") || path.equals("/pagos");
         if (method == HttpMethod.PUT)

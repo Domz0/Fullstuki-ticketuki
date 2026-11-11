@@ -24,6 +24,10 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
+    public io.jsonwebtoken.Claims validar(String token) {
+        return Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
+    }
+
     public long getExpiracionMs() {
         return expiracionMs;
     }
@@ -38,6 +42,7 @@ public class JwtUtil {
                 .claim("id", usuario.getId_usuario_auth())
                 .claim("rol", usuario.getRol().name())
                 .claim("usuarioId", usuario.getUsuarioId())
+                .claim("version", usuario.getTokenVersion())
                 .issuedAt(ahora)
                 .expiration(vencimiento)
                 .signWith(getKey())

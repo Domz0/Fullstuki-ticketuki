@@ -40,6 +40,7 @@ public class PromocionService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "PROMOCION", accion = "CREAR", id = "id_promocion")
     public PromocionResponseDTO crearPromocion(PromocionRequestDTO dto) {
         log.info("Creando promoción de empresa: {}", dto.getEmpresa());
         validarFechas(dto.getFecha_inicio(), dto.getFecha_expiracion());
@@ -55,6 +56,7 @@ public class PromocionService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "PROMOCION", accion = "ACTUALIZAR", id = "id_promocion")
     public PromocionResponseDTO actualizarPromocion(Long id, PromocionRequestDTO dto) {
         log.info("Actualizando promoción con id: {}", id);
         validarFechas(dto.getFecha_inicio(), dto.getFecha_expiracion());
@@ -92,6 +94,7 @@ public class PromocionService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "PROMOCION", accion = "ELIMINAR")
     public void eliminarPromocion(Long id) {
         if (!promocionRepository.existsById(id)) {
             throw new PromocionNotFoundException("Promoción no encontrada: " + id);

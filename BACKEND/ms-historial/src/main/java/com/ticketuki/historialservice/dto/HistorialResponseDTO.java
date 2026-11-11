@@ -20,4 +20,7 @@ public class HistorialResponseDTO {
     private LocalDateTime timestamp;
     private String cambios_anteriores;
     private String cambios_nuevos;
+    private String eventoId;
+    private String origen;
+    private Long authId;
 }

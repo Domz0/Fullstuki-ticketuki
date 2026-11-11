@@ -187,6 +187,7 @@ public class TicketService {
     // ── Operaciones CRUD ──────────────────────────────────────────────────────
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "CREAR", id = "id_ticket")
     public TicketResponseDTO crearTicket(TicketRequestDTO dto) {
         dto.setRun_titular(dto.getRun_titular());
         log.info("Creando ticket para evento: {}", dto.getEvento_id_evento());
@@ -209,6 +210,7 @@ public class TicketService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ACTUALIZAR", id = "id_ticket")
     public TicketResponseDTO actualizarTicket(Long id, TicketUpdateDTO dto) {
         dto.setRun_titular(dto.getRun_titular());
         Ticket ticket = ticketRepository.findByIdForUpdate(id)
@@ -223,6 +225,7 @@ public class TicketService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ACTUALIZAR", id = "id_ticket")
     public TicketResponseDTO cambiarEstado(Long id, Long idEstado) {
         validarEstado(idEstado);
         Ticket ticket = ticketRepository.findByIdForUpdate(id)
@@ -237,6 +240,7 @@ public class TicketService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ELIMINAR")
     public void eliminarTicket(Long id) {
         Ticket ticket = ticketRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
@@ -245,6 +249,7 @@ public class TicketService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ACTUALIZAR", id = "ticket.id_ticket", condicion = "valido")
     public ValidarTicketResponseDTO validarTicket(String codQR) {
         Ticket ticket = ticketRepository.findByQrForUpdate(codQR)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado para QR: " + codQR));
@@ -265,6 +270,7 @@ public class TicketService {
     }
 
     @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ACTUALIZAR", id = "id_ticket")
     public TicketResponseDTO transferirTicket(Long id, TransferirTicketDTO dto) {
         dto.setRun_titular(dto.getRun_titular());
         Ticket ticket = ticketRepository.findByIdForUpdate(id)

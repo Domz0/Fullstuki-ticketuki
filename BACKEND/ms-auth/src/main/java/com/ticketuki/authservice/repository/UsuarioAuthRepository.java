@@ -17,4 +17,7 @@ public interface UsuarioAuthRepository extends JpaRepository<UsuarioAuth, Long> 
     @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
     @org.springframework.data.jpa.repository.Query("SELECT u FROM UsuarioAuth u WHERE u.id_usuario_auth = :id")
     Optional<UsuarioAuth> findForUpdate(@org.springframework.data.repository.query.Param("id") Long id);
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @org.springframework.data.jpa.repository.Query("select u from UsuarioAuth u where u.rol = com.ticketuki.authservice.model.Rol.ADMIN order by u.id_usuario_auth")
+    java.util.List<com.ticketuki.authservice.model.UsuarioAuth> bloquearAdministradores();
 }
