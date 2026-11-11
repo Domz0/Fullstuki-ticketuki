@@ -24,10 +24,7 @@ class PagoServiceTest {
 
     @BeforeEach
     void setup() {
-        WebClient estados = WebClient.builder().exchangeFunction(request -> Mono.just(
-            ClientResponse.create(HttpStatus.OK).header("Content-Type", "application/json")
-                .body("[{\"id\":1,\"nombre\":\"PENDIENTE\"},{\"id\":2,\"nombre\":\"CONFIRMADA\"}]").build())).build();
-        service = new PagoService(pagos, ventas, null, null, estados);
+        service = new PagoService(pagos, ventas, null, null);
         venta = new Venta(5L, LocalDateTime.now(), "CREDITO", "AUTH", 25800L, 1L, null, null);
         when(ventas.findForUpdate(5L)).thenReturn(Optional.of(venta));
         when(pagos.save(any(Pago.class))).thenAnswer(i -> i.getArgument(0));
@@ -86,13 +83,14 @@ class PagoServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
     @Test
-    void caidaDeEstadosNoGuardaPagoCompletado() {
-        WebClient caido = WebClient.builder().exchangeFunction(r -> Mono.error(new RuntimeException("Sin conexion"))).build();
-        service = new PagoService(pagos, ventas, null, null, caido);
+    void completarNoNecesitaServiciosHttp() {
+        WebClient prohibido = WebClient.builder().exchangeFunction(r -> {
+            throw new AssertionError("Completar pago no debe consultar servicios HTTP");
+        }).build();
+        service = new PagoService(pagos, ventas, prohibido, prohibido);
         when(pagos.findForUpdate(1L)).thenReturn(Optional.of(pago(EstadoPago.PENDIENTE)));
-        assertThatThrownBy(() -> service.completarPago(1L)).isInstanceOf(IllegalStateException.class);
-        verify(pagos, never()).save(any());
-        verify(ventas, never()).save(any());
+        assertThat(service.completarPago(1L).getEstado()).isEqualTo(EstadoPago.COMPLETADO);
+        verify(ventas).save(venta);
     }
 
     @Test
@@ -105,16 +103,15 @@ class PagoServiceTest {
 
     @Test
     void reembolsoActualizaPagoYVenta() {
-        WebClient estados = WebClient.builder().exchangeFunction(r -> Mono.just(
-                ClientResponse.create(HttpStatus.OK).header("Content-Type", "application/json")
-                        .body("[{\"id\":1,\"nombre\":\"PENDIENTE\"},{\"id\":2,\"nombre\":\"CONFIRMADA\"},{\"id\":3,\"nombre\":\"REEMBOLSADA\"},{\"id\":4,\"nombre\":\"CANCELADO\"},{\"id\":5,\"nombre\":\"CANCELADA\"}]").build())).build();
         WebClient tickets = WebClient.builder().exchangeFunction(r -> Mono.just(
-                ClientResponse.create(HttpStatus.OK).header("Content-Type", "application/json").body("[]").build())).build();
-        service = new PagoService(pagos, ventas, null, tickets, estados);
+                ClientResponse.create(HttpStatus.OK).header("Content-Type", "application/json")
+                    .body(r.url().getPath().equals("/estadosTicket")
+                        ? "[{\"id\":3,\"nombre\":\"CANCELADO\"}]" : "[]").build())).build();
+        service = new PagoService(pagos, ventas, null, tickets);
         venta.setEstado_venta_id_estado(2L);
         when(pagos.findForUpdate(1L)).thenReturn(Optional.of(pago(EstadoPago.COMPLETADO)));
         assertThat(service.procesarReembolso(1L).getEstado()).isEqualTo(EstadoPago.REEMBOLSADO);
-        assertThat(venta.getEstado_venta_id_estado()).isEqualTo(3L);
+        assertThat(venta.getEstado_venta_id_estado()).isEqualTo(4L);
         verify(ventas).save(venta);
     }
 }

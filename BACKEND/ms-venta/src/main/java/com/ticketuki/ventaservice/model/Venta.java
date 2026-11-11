@@ -3,7 +3,6 @@ package com.ticketuki.ventaservice.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,7 +12,6 @@ import jakarta.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "venta")
 public class Venta {
@@ -40,8 +38,9 @@ public class Venta {
     @Column(name = "monto_total", nullable = false)
     private Long monto_total;
 
-    @Column(name = "estado_venta_id_estado")
-    private Long estado_venta_id_estado;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", length = 25)
+    private EstadoVenta estado;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -50,4 +49,23 @@ public class Venta {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updated_at;
+
+    public Venta(Long id_venta, LocalDateTime fecha_venta, String medio_pago, String cod_autorizacion, Long monto_total, Long estado_venta_id_estado, LocalDateTime created_at, LocalDateTime updated_at) {
+        this.id_venta = id_venta;
+        this.fecha_venta = fecha_venta;
+        this.medio_pago = medio_pago;
+        this.cod_autorizacion = cod_autorizacion;
+        this.monto_total = monto_total;
+        setEstado_venta_id_estado(estado_venta_id_estado);
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+    }
+
+    public Long getEstado_venta_id_estado() {
+        return estado == null ? null : estado.getId();
+    }
+
+    public void setEstado_venta_id_estado(Long id) {
+        this.estado = EstadoVenta.fromId(id);
+    }
 }

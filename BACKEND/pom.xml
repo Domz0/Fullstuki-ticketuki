@@ -12,11 +12,9 @@
 
     <modules>
         <module>ms-auth</module>
-        <module>ms-estado</module>
         <module>ms-evento</module>
         <module>ms-gateway</module>
         <module>ms-historial</module>
-        <module>ms-promocion</module>
         <module>ms-recinto</module>
         <module>ms-ticket</module>
         <module>ms-usuario</module>

@@ -19,14 +19,12 @@ export JAVA_HOME="$JAVA21"
 echo "☕ Usando JAVA_HOME=$JAVA_HOME"
 
 # --- Orden de arranque (puerto:servicio) -----------------------------------
-# Respeta dependencias: estado y recinto primero; venta/ticket/pago al final.
+# Respeta dependencias: recinto y usuario primero; venta y ticket al final.
 ORDER=(
   "8011:ms-auth"
-  "8004:ms-estado"
   "8008:ms-recinto"
   "8001:ms-usuario"
   "8003:ms-evento"
-  "8007:ms-promocion"
   "8010:ms-historial"
   "8006:ms-venta"
   "8005:ms-ticket"

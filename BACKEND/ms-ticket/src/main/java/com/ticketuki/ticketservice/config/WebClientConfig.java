@@ -11,9 +11,6 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class WebClientConfig {
 
-    @Value("${ms.estado.url:http://localhost:8004}")
-    private String estadoUrl;
-
     @Value("${ms.evento.url:http://localhost:8003}")
     private String eventoUrl;
 
@@ -29,11 +26,6 @@ public class WebClientConfig {
         HttpClient httpClient = HttpClient.create()
                 .resolver(DefaultAddressResolverGroup.INSTANCE);
         return new ReactorClientHttpConnector(httpClient);
-    }
-
-    @Bean("estadoWebClient")
-    public WebClient estadoWebClient() {
-        return WebClient.builder().baseUrl(estadoUrl).clientConnector(jvmDnsConnector()).build();
     }
 
     @Bean("eventoWebClient")

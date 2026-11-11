@@ -27,24 +27,21 @@ public class PagoService {
     private final com.ticketuki.ventaservice.repository.VentaRepository ventaRepository;
     private final WebClient usuarioWebClient;
     private final WebClient ticketWebClient;
-    private final WebClient estadoWebClient;
 
     public PagoService(PagoRepository pagoRepository,
                        com.ticketuki.ventaservice.repository.VentaRepository ventaRepository,
                        @Qualifier("usuarioWebClient") WebClient usuarioWebClient,
-                       @Qualifier("ticketWebClient") WebClient ticketWebClient,
-                       @Qualifier("estadoWebClient") WebClient estadoWebClient) {
+                       @Qualifier("ticketWebClient") WebClient ticketWebClient) {
         this.pagoRepository = pagoRepository;
         this.ventaRepository = ventaRepository;
         this.usuarioWebClient = usuarioWebClient;
         this.ticketWebClient = ticketWebClient;
-        this.estadoWebClient = estadoWebClient;
     }
 
     // Busca el ID de un estado de ticket por nombre exacto (ej. "CANCELADO")
     private Long obtenerIdEstadoTicket(String fragmento) {
         try {
-            List<EstadoResumenDTO> estados = estadoWebClient.get()
+            List<EstadoResumenDTO> estados = ticketWebClient.get()
                     .uri("/estadosTicket")
                     .retrieve()
                     .bodyToFlux(EstadoResumenDTO.class)
@@ -62,25 +59,8 @@ public class PagoService {
         }
     }
 
-    // Busca el ID de un estado de venta por nombre exacto (ej. "ANULADA")
-    private Long obtenerIdEstadoVenta(String fragmento) {
-        try {
-            List<EstadoResumenDTO> estados = estadoWebClient.get()
-                    .uri("/estadosVenta")
-                    .retrieve()
-                    .bodyToFlux(EstadoResumenDTO.class)
-                    .collectList()
-                    .block();
-            if (estados == null) throw new IllegalStateException("Catalogo no disponible");
-            return estados.stream()
-                    .filter(e -> e.getNombre() != null && e.getNombre().toUpperCase().equals(fragmento.toUpperCase()))
-                    .map(EstadoResumenDTO::getId)
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Estado no disponible: " + fragmento));
-        } catch (Exception e) {
-            log.warn("No se pudo obtener estado de venta '{}': {}", fragmento, e.getMessage());
-            throw new IllegalStateException("No se pudo consultar estados", e);
-        }
+    private Long obtenerIdEstadoVenta(String nombre) {
+        return com.ticketuki.ventaservice.model.EstadoVenta.valueOf(nombre).getId();
     }
 
     private PagoResponseDTO toResponseDTO(Pago p) {

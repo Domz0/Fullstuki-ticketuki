@@ -1,6 +1,7 @@
 package com.ticketuki.ticketservice.service;
 
 import com.ticketuki.ticketservice.dto.EstadoTicketDTO;
+import com.ticketuki.ticketservice.model.EstadoTicket;
 import com.ticketuki.ticketservice.dto.TicketRequestDTO;
 import com.ticketuki.ticketservice.dto.TicketResponseDTO;
 import com.ticketuki.ticketservice.dto.TicketUpdateDTO;
@@ -33,25 +34,20 @@ import java.util.stream.Collectors;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
-    private final WebClient estadoWebClient;
     private final WebClient eventoWebClient;
     private final WebClient recintoWebClient;
     private final WebClient ventaWebClient;
 
     public TicketService(TicketRepository ticketRepository,
-                         @Qualifier("estadoWebClient")  WebClient estadoWebClient,
                          @Qualifier("eventoWebClient")  WebClient eventoWebClient,
                          @Qualifier("recintoWebClient") WebClient recintoWebClient,
                          @Qualifier("ventaWebClient")   WebClient ventaWebClient) {
         this.ticketRepository  = ticketRepository;
-        this.estadoWebClient   = estadoWebClient;
         this.eventoWebClient   = eventoWebClient;
         this.recintoWebClient  = recintoWebClient;
         this.ventaWebClient    = ventaWebClient;
     }
 
-    // Cache en memoria: se recarga si está vacía o nula
-    private volatile List<EstadoTicketDTO> estadosCache = null;
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -77,41 +73,9 @@ public class TicketService {
                 .trim().toUpperCase(Locale.ROOT);
     }
 
-    // ── Caché de estados desde ms-estado ─────────────────────────────────────
-
     private List<EstadoTicketDTO> obtenerEstadosTicket() {
-        if (estadosCache == null || estadosCache.isEmpty()) {
-            try {
-                List<EstadoTicketDTO> estados = estadoWebClient.get()
-                        .uri("/estadosTicket")
-                        .retrieve()
-                        .onStatus(HttpStatusCode::is4xxClientError, response ->
-                                response.createException().map(e ->
-                                        new ResponseStatusException(HttpStatus.BAD_GATEWAY,
-                                                "Error al consultar estados de ticket en ms-estado")))
-                        .onStatus(HttpStatusCode::is5xxServerError, response ->
-                                response.createException().map(e ->
-                                        new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-                                                "ms-estado no disponible")))
-                        .bodyToFlux(EstadoTicketDTO.class)
-                        .collectList()
-                        .block();
-                if (estados != null && !estados.isEmpty()) {
-                    estadosCache = estados;
-                    log.info("Cache de estados de ticket cargada: {} estados", estadosCache.size());
-                } else {
-                    log.warn("ms-estado devolvió lista vacía de estadosTicket, no se cacheará");
-                    throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "No hay estados de ticket disponibles");
-                }
-            } catch (WebClientRequestException e) {
-                log.warn("No se pudo conectar con ms-estado para obtener estados de ticket: {}", e.getMessage());
-                throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "ms-estado no disponible", e);
-            } catch (ResponseStatusException e) {
-                log.warn("ms-estado respondió con error al obtener estados de ticket: {}", e.getMessage());
-                throw e;
-            }
-        }
-        return estadosCache;
+        return java.util.Arrays.stream(EstadoTicket.values())
+                .map(e -> new EstadoTicketDTO(e.getId(), e.name())).toList();
     }
 
     private String obtenerNombreEstado(Long idEstado) {
@@ -174,26 +138,8 @@ public class TicketService {
     // ── Validaciones contra microservicios ────────────────────────────────────
 
     private void validarEstado(Long idEstado) {
-        boolean enCache = obtenerEstadosTicket().stream().anyMatch(e -> e.getId().equals(idEstado));
-        if (enCache) return;
-        try {
-            estadoWebClient.get()
-                    .uri("/estadosTicket/{id}", idEstado)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError, response ->
-                            response.createException().map(e ->
-                                    new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                            "Estado de ticket no encontrado: " + idEstado)))
-                    .onStatus(HttpStatusCode::is5xxServerError, response ->
-                            response.createException().map(e ->
-                                    new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-                                            "ms-estado no disponible")))
-                    .bodyToMono(EstadoTicketDTO.class)
-                    .block();
-            estadosCache = null; // invalida caché para que se recargue con el nuevo estado
-        } catch (WebClientRequestException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-                    "No se pudo conectar con ms-estado para validar el estado: " + idEstado);
+        if (EstadoTicket.fromId(idEstado) == null) {
+            throw new IllegalArgumentException("El estado de ticket es obligatorio");
         }
     }
 
@@ -345,7 +291,7 @@ public class TicketService {
         Long idUsado = obtenerIdPorNombre("USADO");
         if (idUsado == null) {
             throw new TicketOperacionInvalidaException(
-                    "Estado 'USADO' no encontrado en ms-estado");
+                    "Estado 'USADO' no disponible");
         }
         ticket.setEstado_ticket_id_estado(idUsado);
         return new ValidarTicketResponseDTO(true, "Ticket validado correctamente",
@@ -365,7 +311,7 @@ public class TicketService {
         Long idTransferido = obtenerIdPorNombre("TRANSFERIDO");
         if (idTransferido == null) {
             throw new TicketOperacionInvalidaException(
-                    "Estado 'TRANSFERIDO' no encontrado en ms-estado");
+                    "Estado 'TRANSFERIDO' no disponible");
         }
         if (ticket.getRun_titular().equalsIgnoreCase(dto.getRun_titular())) {
             throw new TicketOperacionInvalidaException("El nuevo titular debe tener un RUN distinto");

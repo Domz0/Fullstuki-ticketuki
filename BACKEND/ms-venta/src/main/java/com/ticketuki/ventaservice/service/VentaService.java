@@ -1,10 +1,11 @@
 package com.ticketuki.ventaservice.service;
 
-import com.ticketuki.ventaservice.client.EstadoVentaClient;
+import com.ticketuki.ventaservice.model.EstadoVenta;
+import com.ticketuki.ventaservice.promocion.model.Promocion;
+import com.ticketuki.ventaservice.promocion.repository.PromocionRepository;
 import com.ticketuki.ventaservice.dto.DetalleVentaRequestDTO;
 import com.ticketuki.ventaservice.dto.DetalleVentaResponseDTO;
 import com.ticketuki.ventaservice.dto.EstadoVentaDTO;
-import com.ticketuki.ventaservice.dto.PromocionDTO;
 import com.ticketuki.ventaservice.dto.VentaRequestDTO;
 import com.ticketuki.ventaservice.dto.VentaResponseDTO;
 import com.ticketuki.ventaservice.exception.VentaNotFoundException;
@@ -14,12 +15,8 @@ import com.ticketuki.ventaservice.repository.DetalleVentaRepository;
 import com.ticketuki.ventaservice.repository.VentaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,33 +31,25 @@ public class VentaService {
 
     private final VentaRepository ventaRepository;
     private final DetalleVentaRepository detalleVentaRepository;
-    private final EstadoVentaClient estadoVentaClient;
+    private final PromocionRepository promocionRepository;
 
-    @Autowired
-    @Qualifier("promocionWebClient")
-    private WebClient promocionWebClient;
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    private PromocionDTO obtenerPromocionActiva(Long promocionId) {
-        PromocionDTO promo;
-        try {
-            promo = promocionWebClient.get()
-                    .uri("/promociones/{id}", promocionId)
-                    .retrieve()
-                    .bodyToMono(PromocionDTO.class)
-                    .block();
-        } catch (WebClientResponseException.NotFound e) {
-            throw new IllegalArgumentException("Promoción no encontrada: " + promocionId);
-        } catch (Exception e) {
-            log.warn("No se pudo validar la promoción {}: {}", promocionId, e.getMessage());
-            return null;
-        }
-        if (promo == null) return null;
+    private EstadoVentaDTO obtenerEstado(Long id) {
+        EstadoVenta estado = EstadoVenta.fromId(id);
+        if (estado == null) throw new IllegalArgumentException("El estado de venta es obligatorio");
+        return new EstadoVentaDTO(estado.getId(), estado.name());
+    }
+
+    private Promocion obtenerPromocionActiva(Long promocionId) {
+        Promocion promo = promocionRepository.findForRead(promocionId)
+                .orElseThrow(() -> new IllegalArgumentException("Promoción no encontrada: " + promocionId));
         LocalDate hoy = LocalDate.now();
-        if (hoy.isBefore(promo.getFecha_inicio()) || hoy.isAfter(promo.getFecha_expiracion())) {
+        if (hoy.isBefore(promo.getFecha_inicio()) || hoy.isAfter(promo.getFecha_expiracion()))
             throw new IllegalArgumentException("La promoción " + promocionId + " no está vigente");
-        }
+        if (promo.getDescuento() < 1 || promo.getDescuento() > 100)
+            throw new IllegalArgumentException("Descuento fuera del rango permitido");
         return promo;
     }
 
@@ -70,7 +59,7 @@ public class VentaService {
 
         // Si viene un id de promoción, validar que exista y esté vigente, luego aplicar el descuento
         if (dto.getPromocion_id() != null) {
-            PromocionDTO promo = obtenerPromocionActiva(dto.getPromocion_id());
+            Promocion promo = obtenerPromocionActiva(dto.getPromocion_id());
             if (promo != null) {
                 descuentoMonto = Math.round(dto.getPrecio_neto() * promo.getDescuento() / 100.0);
                 promocionId = promo.getId_promocion();
@@ -99,7 +88,7 @@ public class VentaService {
     }
 
     private VentaResponseDTO toResponseDTO(Venta v, List<DetalleVentaResponseDTO> detalles) {
-        EstadoVentaDTO estado = estadoVentaClient.obtenerEstado(v.getEstado_venta_id_estado());
+        EstadoVentaDTO estado = obtenerEstado(v.getEstado_venta_id_estado());
         return new VentaResponseDTO(v.getId_venta(), v.getFecha_venta(), v.getMedio_pago(),
                 v.getCod_autorizacion(), v.getMonto_total(), estado, detalles);
     }
@@ -110,8 +99,8 @@ public class VentaService {
     public VentaResponseDTO crearVenta(VentaRequestDTO dto) {
         log.info("Creando venta con medio de pago: {}", dto.getMedio_pago());
 
-        // 1. Validar que el estado existe en ms-estado
-        EstadoVentaDTO estado = estadoVentaClient.obtenerEstado(dto.getEstado_venta_id_estado());
+        // 1. Validar el estado de venta
+        EstadoVentaDTO estado = obtenerEstado(dto.getEstado_venta_id_estado());
 
         // 2. Calcular detalles en memoria (descuento, IVA 19%, comisión 10%)
         List<DetalleVenta> detallesCalculados = dto.getDetalles().stream()
@@ -147,7 +136,7 @@ public class VentaService {
     public VentaResponseDTO cambiarEstado(Long id, Long idEstado) {
         Venta venta = ventaRepository.findById(id)
                 .orElseThrow(() -> new VentaNotFoundException("Venta no encontrada: " + id));
-        EstadoVentaDTO estado = estadoVentaClient.obtenerEstado(idEstado);
+        EstadoVentaDTO estado = obtenerEstado(idEstado);
         venta.setEstado_venta_id_estado(idEstado);
         Venta guardada = ventaRepository.save(venta);
         return new VentaResponseDTO(guardada.getId_venta(), guardada.getFecha_venta(),

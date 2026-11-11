@@ -16,27 +16,14 @@ Ticketuki es una plataforma de venta y gestión de tickets para eventos, constru
 ## Arquitectura
 
 ```
-                          ┌──────────────────────────┐
-        Cliente  ───────► │      ms-gateway :8080     │  ◄── única puerta de entrada
-                          │  (enrutamiento + JWT)     │
-                          └────────────┬─────────────┘
-                                       │ enruta según el path
-        ┌──────────────┬──────────────┼──────────────┬──────────────┐
-        ▼              ▼              ▼              ▼              ▼
-┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-│   ms-auth    │  │  ms-usuario  │  │  ms-artista  │  │  ms-evento   │  │  ms-recinto  │
-│   :8011      │  │   :8001      │  │   :8002      │  │   :8003      │  │   :8008      │
-└──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘
-
-┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-│  ms-estado   │  │  ms-ticket   │  │   ms-venta   │  │   ms-pago    │  │ ms-promocion │
-│   :8004      │  │   :8005      │  │   :8006      │  │   :8009      │  │   :8007      │
-└──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘
-
-                              ┌──────────────┐
-                              │ ms-historial │
-                              │   :8010      │
-                              └──────────────┘
+Cliente -> ms-gateway :8080
+           |- ms-auth :8011
+           |- ms-usuario :8001
+           |- ms-evento :8003 (estados de evento)
+           |- ms-ticket :8005 (estados de ticket)
+           |- ms-venta :8006 (ventas, pagos, promociones y estados de venta)
+           |- ms-recinto :8008
+           |- ms-historial :8010
 ```
 
 - **ms-gateway (:8080)** es el *API Gateway*: única puerta de entrada que enruta cada
@@ -55,23 +42,18 @@ Gestión del ciclo de vida de los usuarios de la plataforma.
 - Listar todos los usuarios
 - Crear, consultar, actualizar y eliminar usuarios
 
-### ms-artista — Puerto 8002 · BD: `artista_service`
-Gestión de artistas y su relación con eventos.
-- CRUD completo de artistas
-- Filtro de artistas por género musical
-- Asociar / desasociar un artista a un evento
-- Consultar artistas de un evento específico
-
 ### ms-evento — Puerto 8003 · BD: `evento_service`
 Gestión de eventos culturales y su ciclo de vida.
 - CRUD completo de eventos
 - Filtro de eventos por fecha y por recinto
 - Cambio de estado de un evento (activo, cancelado, finalizado, etc.)
 
-### ms-estado — Puerto 8004 · BD: `estado_service`
-Catálogo centralizado de estados para eventos, ventas y tickets.
-- CRUD completo de estados de evento, venta y ticket
-- Endpoint consolidado para consultar todos los estados disponibles
+### Estados locales
+
+Evento, ticket y venta guardan su estado como enum de texto en su propia base.
+Los catálogos de consulta `/estadosEvento`, `/estadosTicket` y `/estadosVenta`
+son de solo lectura y se atienden en sus respectivos servicios.
+Se conservan los IDs numéricos del catálogo estándar en la API.
 
 ### ms-ticket — Puerto 8005 · BD: `ticket_service`
 Gestión del ciclo de vida de los tickets.
@@ -88,7 +70,7 @@ Orquestación del proceso de compra (integra tickets y usuarios).
 - Filtro de ventas por rango de fechas
 - Consulta de detalle de venta y de detalles por venta
 
-### ms-promocion — Puerto 8007 · BD: `promocion_service`
+### Promociones dentro de ms-venta — Puerto 8006 · BD: `venta_service`
 Gestión de promociones y descuentos aplicables a las ventas.
 - CRUD completo de promociones
 - Consulta de promociones activas
@@ -100,14 +82,16 @@ Gestión de recintos y sus sectores (datos de referencia del sistema).
 - Crear, consultar y actualizar sectores dentro de cada recinto
 - Consulta de sectores por recinto
 
-### ms-pago — Puerto 8009 · BD: `pago_service`
+### Pagos dentro de ms-venta — Puerto 8006 · BD: `venta_service`
 Procesamiento y seguimiento del estado de pagos (integra ventas y usuarios).
 - Iniciar un pago para una venta
 - Consultar pagos por ID, venta, usuario, estado o rango de fechas
 - Completar, reembolsar o cancelar un pago
 
 ### ms-historial — Puerto 8010 · BD: `historial_service`
-Registro de auditoría de operaciones realizadas sobre las entidades del sistema.
+API de auditoría para alimentar la actividad del dashboard de administración.
+La emisión automática de registros desde los otros servicios y su consumo en React siguen pendientes.
+Los indicadores de ventas e ingresos se consultan en ms-venta.
 - Registrar entradas de historial
 - Consultar historial por ID, entidad, usuario y rango de fechas
 
@@ -177,13 +161,13 @@ spring.datasource.password=
 
 ### 3. Levantar los microservicios
 
-#### Opción A — Scripts automáticos (recomendado)
+#### Opción A — Scripts automáticos (macOS)
 
-Desde la raíz del proyecto, levanta los 10 servicios en el orden correcto con un solo comando:
+Desde la raíz del proyecto, levanta los 8 módulos en el orden correcto con un solo comando:
 
 ```bash
-./start.sh    # levanta los 10 microservicios (8001-8010)
-./stop.sh     # detiene los 10 microservicios
+./start.sh    # levanta los 8 módulos activos
+./stop.sh     # detiene los 8 módulos activos
 ```
 
 Para **reiniciar** todo (útil si ves el error `Port 8001 was already in use`):
@@ -195,9 +179,9 @@ Para **reiniciar** todo (útil si ves el error `Port 8001 was already in use`):
 Características de `start.sh`:
 
 - **Fuerza Java 21** automáticamente (vía `/usr/libexec/java_home -v 21`). Esto evita el error de compilación de Lombok (`TypeTag :: UNKNOWN`) que ocurre si tu `JAVA_HOME` apunta a un JDK más nuevo (24+).
-- **Libera los puertos 8001-8010** si quedaron instancias previas corriendo.
+- **Libera los puertos de los módulos activos** si quedaron instancias previas corriendo.
 - **Respeta el orden de dependencias** y espera a que cada servicio quede activo antes de continuar.
-- Guarda la salida de cada servicio en `logs/ms-<nombre>.log`. Para seguir un log en vivo: `tail -f logs/ms-pago.log`.
+- Guarda la salida de cada servicio en `logs/ms-<nombre>.log`. Para seguir un log en vivo: `tail -f logs/ms-venta.log`.
 
 > Requiere tener un **JDK 21** instalado. Si no se encuentra, el script avisa y se detiene.
 
@@ -207,50 +191,28 @@ Abrir una terminal por servicio y ejecutar desde el directorio raíz del proyect
 Se recomienda respetar el orden de inicio para evitar errores de conexión entre servicios:
 
 ```bash
-# 1. ms-estado (levantar primero — es referenciado por ms-ticket, ms-venta y ms-pago)
-cd ms-estado && ./mvnw spring-boot:run
-
-# 2. ms-recinto (referenciado por ms-evento y ms-ticket)
-cd ms-recinto && ./mvnw spring-boot:run
-
-# 3. ms-usuario (referenciado por ms-pago)
-cd ms-usuario && ./mvnw spring-boot:run
-
-# 4. ms-artista
-cd ms-artista && ./mvnw spring-boot:run
-
-# 5. ms-evento (referenciado por ms-ticket)
-cd ms-evento && ./mvnw spring-boot:run
-
-# 6. ms-promocion (referenciada por ms-venta)
-cd ms-promocion && ./mvnw spring-boot:run
-
-# 7. ms-historial
-cd ms-historial && ./mvnw spring-boot:run
-
-# 8. ms-venta (depende de ms-estado y ms-promocion)
-cd ms-venta && ./mvnw spring-boot:run
-
-# 9. ms-ticket (depende de ms-estado, ms-evento, ms-recinto y ms-venta)
-cd ms-ticket && ./mvnw spring-boot:run
-
-# 10. ms-pago (depende de ms-venta, ms-ticket, ms-usuario y ms-estado)
-cd ms-pago && ./mvnw spring-boot:run
+mvn -f ms-auth/pom.xml spring-boot:run
+mvn -f ms-recinto/pom.xml spring-boot:run
+mvn -f ms-usuario/pom.xml spring-boot:run
+mvn -f ms-evento/pom.xml spring-boot:run
+mvn -f ms-historial/pom.xml spring-boot:run
+mvn -f ms-venta/pom.xml spring-boot:run
+mvn -f ms-ticket/pom.xml spring-boot:run
+mvn -f ms-gateway/pom.xml spring-boot:run
 ```
+
 
 ### 4. Verificar que los servicios están activos
 
 | Servicio | URL base |
 |---|---|
 | ms-usuario | http://localhost:8001/usuarios |
-| ms-artista | http://localhost:8002/artistas |
 | ms-evento | http://localhost:8003/eventos |
-| ms-estado | http://localhost:8004/estados |
 | ms-ticket | http://localhost:8005/tickets |
 | ms-venta | http://localhost:8006/ventas |
-| ms-promocion | http://localhost:8007/promociones |
+| Promociones (ms-venta) | http://localhost:8006/promociones |
 | ms-recinto | http://localhost:8008/recintos |
-| ms-pago | http://localhost:8009/pagos |
+| Pagos (ms-venta) | http://localhost:8006/pagos |
 | ms-historial | http://localhost:8010/historial |
 | ms-auth | http://localhost:8011/auth/login |
 | ms-gateway | http://localhost:8080 |
@@ -309,8 +271,8 @@ Todos los servicios incluyen **Spring Boot Actuator** para verificar su estado.
 
 | Endpoint | Dónde | Para qué |
 |---|---|---|
-| `/actuator/health` | gateway y los 11 microservicios | Comprobar que el servicio está vivo (`{"status":"UP"}`) |
-| `/actuator/gateway/routes` | solo el gateway | Listar en runtime las 11 rutas de enrutamiento |
+| `/actuator/health` | gateway y los 7 microservicios | Comprobar que el servicio está vivo (`{"status":"UP"}`) |
+| `/actuator/gateway/routes` | solo el gateway | Listar en runtime las 7 rutas de enrutamiento |
 
 ```bash
 curl http://localhost:8080/actuator/health          # gateway
@@ -354,60 +316,39 @@ mvn test
   `save(...)` para verificar que el service la **construye correctamente** (p. ej. que
   el `monto_total` calculado quedó persistido en la entidad `Venta`).
 
-### Cobertura por microservicio
+### Validación de la reorganización
 
-| Microservicio | N° de pruebas |
-|---|---|
-| ms-usuario | 6 |
-| ms-artista | 6 |
-| ms-evento | 5 |
-| ms-ticket | 6 |
-| ms-venta | 7 |
-| ms-promocion | 5 |
-| ms-recinto | 5 |
-| ms-pago | 5 |
-
-> Los microservicios que se comunican con otros (`ms-venta`, `ms-ticket`, `ms-pago`)
-> mockean el cliente HTTP (`EstadoVentaClient`) o se construyen con los `WebClient` en
-> `null` para probar la lógica sin llamadas de red.
+Las pruebas de evento, ticket y venta incluyen catálogos locales, transiciones,
+descuentos, pagos y migraciones con JDBC simulado. La ejecución real sobre Laragon
+debe verificarse por separado. Los resultados se encuentran en `target/surefire-reports`.
 
 ---
 
 ## Solución de Problemas
 
-### El campo `nombre` de un objeto relacionado llega en `null` (p. ej. `estado_venta`)
+### Migración de estados y promociones
 
-Si al crear/consultar una venta (u otra entidad) ves algo como:
+Antes de iniciar la versión nueva, detener los servicios antiguos y respaldar las bases.
+Conservar `estado_service` y `promocion_service` durante la migración en el mismo servidor.
 
-```json
-"estado_venta": { "id": 1, "nombre": null }
-```
+- Evento V5, ticket V7 y venta V11 agregan la columna `estado` y convierten los IDs
+  por nombre del catálogo anterior. Sin catálogo se utiliza la numeración estándar
+  de las semillas; si se personalizaron IDs, restaurar el catálogo antes de migrar.
+- Los estados desconocidos detienen la migración. Los valores nulos siguen nulos
+  y deben revisarse antes de operar esos registros.
+- Las columnas antiguas de IDs se conservan como respaldo; la aplicación usa
+  la columna de texto y no vuelve a sincronizar las columnas antiguas.
+- Venta V10 crea la tabla de promociones e importa las existentes, conservando sus IDs,
+  desde `promocion_service.promocion`. Sin esa base crea un catálogo vacío.
+  Si existen detalles con promociones sin respaldo, detiene la migración.
+- El usuario de BD necesita permiso de lectura sobre las bases antiguas.
+  Ninguna de ellas se borra automáticamente.
+- Las migraciones usan DDL de MariaDB; si una ejecución falla después de crear una
+  tabla, revisar el estado parcial antes de reparar Flyway y reintentar.
 
-…significa que el microservicio no pudo consultar por HTTP al servicio dueño del
-dato (ms-estado en este caso) y aplicó su fallback defensivo (devuelve el `id`
-con el `nombre` en `null`). En el log del servicio llamador aparece:
-
-```
-No se pudo consultar ms-estado para id 1: Failed to resolve 'localhost' ...
-```
-
-**Causa (macOS):** el cliente HTTP reactivo (`WebClient` sobre Reactor Netty) usa
-por defecto el **resolver DNS nativo de Netty**, que en macOS no respeta
-`/etc/hosts` y por tanto no resuelve `localhost`.
-
-**Solución aplicada:** los `WebClientConfig` configuran el `HttpClient` para usar
-el **resolver DNS de la JVM** (`DefaultAddressResolverGroup`), que sí respeta
-`/etc/hosts`. Así se mantiene `localhost` en las URLs sin tocar la configuración:
-
-```java
-HttpClient httpClient = HttpClient.create()
-        .resolver(io.netty.resolver.DefaultAddressResolverGroup.INSTANCE);
-
-WebClient.builder()
-        .baseUrl(url)
-        .clientConnector(new ReactorClientHttpConnector(httpClient))
-        .build();
-```
+Los catálogos ya no dependen de un servicio HTTP de estados.
+El campo `restriccion` de promociones sigue siendo descriptivo: validar condiciones
+como banco o empresa requiere reglas estructuradas y datos adicionales del comprador.
 
 ### Error de compilación de Lombok (`TypeTag :: UNKNOWN`)
 
@@ -435,12 +376,8 @@ Ya hay una instancia previa corriendo en ese puerto. Reinicia todo con:
 ticketuki/
 ├── ms-gateway/     # API Gateway (:8080) — enrutamiento + validación JWT
 ├── ms-auth/        # Autenticación (:8011) — emite tokens JWT
-├── ms-artista/
-├── ms-estado/
 ├── ms-evento/
 ├── ms-historial/
-├── ms-pago/
-├── ms-promocion/
 ├── ms-recinto/
 ├── ms-ticket/
 ├── ms-usuario/

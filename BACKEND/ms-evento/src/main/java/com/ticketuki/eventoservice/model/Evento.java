@@ -1,14 +1,12 @@
 package com.ticketuki.eventoservice.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "evento")
 public class Evento {
@@ -29,12 +27,32 @@ public class Evento {
     @Column(name = "descripcion", length = 500)
     private String descripcion;
 
-    @Column(name = "estado_evento_id_estado")
-    private Long estado_evento_id_estado;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", length = 25)
+    private EstadoEvento estado;
 
     @Column(name = "recinto_id_recinto")
     private Long recinto_id_recinto;
 
     @Column(name = "participantes", length = 500)
     private String participantes;
+
+    public Evento(Long id_evento, String nombre_evento, Integer aforo_evento, LocalDate fecha_evento, String descripcion, Long estado_evento_id_estado, Long recinto_id_recinto, String participantes) {
+        this.id_evento = id_evento;
+        this.nombre_evento = nombre_evento;
+        this.aforo_evento = aforo_evento;
+        this.fecha_evento = fecha_evento;
+        this.descripcion = descripcion;
+        setEstado_evento_id_estado(estado_evento_id_estado);
+        this.recinto_id_recinto = recinto_id_recinto;
+        this.participantes = participantes;
+    }
+
+    public Long getEstado_evento_id_estado() {
+        return estado == null ? null : estado.getId();
+    }
+
+    public void setEstado_evento_id_estado(Long id) {
+        this.estado = EstadoEvento.fromId(id);
+    }
 }

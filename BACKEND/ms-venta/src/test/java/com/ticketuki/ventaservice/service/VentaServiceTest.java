@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.ticketuki.ventaservice.client.EstadoVentaClient;
+import com.ticketuki.ventaservice.promocion.repository.PromocionRepository;
 import com.ticketuki.ventaservice.dto.DetalleVentaRequestDTO;
 import com.ticketuki.ventaservice.dto.EstadoVentaDTO;
 import com.ticketuki.ventaservice.dto.VentaRequestDTO;
@@ -36,7 +36,7 @@ class VentaServiceTest {
     private DetalleVentaRepository detalleVentaRepository;
 
     @Mock
-    private EstadoVentaClient estadoVentaClient;
+    private PromocionRepository promocionRepository;
 
     @InjectMocks
     private VentaService ventaService;
@@ -48,7 +48,6 @@ class VentaServiceTest {
         DetalleVentaRequestDTO det = new DetalleVentaRequestDTO(2, 10000L, 1L, 1L, null);
         VentaRequestDTO req = new VentaRequestDTO("TARJETA", "AUTH-1", 1L, List.of(det));
 
-        when(estadoVentaClient.obtenerEstado(1L)).thenReturn(new EstadoVentaDTO(1L, "PENDIENTE"));
         when(ventaRepository.save(any(Venta.class))).thenAnswer(inv -> {
             Venta v = inv.getArgument(0);
             v.setId_venta(2L);
@@ -69,7 +68,6 @@ class VentaServiceTest {
     void cambiarEstado_ventaExistente_actualizaEstado() {
         Venta venta = new Venta(5L, LocalDateTime.now(), "TARJETA", "AUTH", 25800L, 1L, null, null);
         when(ventaRepository.findById(5L)).thenReturn(Optional.of(venta));
-        when(estadoVentaClient.obtenerEstado(2L)).thenReturn(new EstadoVentaDTO(2L, "CONFIRMADA"));
         when(ventaRepository.save(any(Venta.class))).thenReturn(venta);
 
         VentaResponseDTO res = ventaService.cambiarEstado(5L, 2L);
@@ -83,7 +81,6 @@ class VentaServiceTest {
         DetalleVentaRequestDTO det = new DetalleVentaRequestDTO(2, 10000L, 1L, 1L, null);
         VentaRequestDTO req = new VentaRequestDTO("TARJETA", "AUTH-1", 1L, List.of(det));
 
-        when(estadoVentaClient.obtenerEstado(1L)).thenReturn(new EstadoVentaDTO(1L, "PENDIENTE"));
         // save devuelve un objeto distinto - el argumento tiene su estado original
         when(ventaRepository.save(any(Venta.class)))
                 .thenReturn(new Venta(2L, LocalDateTime.now(), "TARJETA", "AUTH-1", 25800L, 1L, null, null));
@@ -120,5 +117,53 @@ class VentaServiceTest {
         assertThatThrownBy(() -> ventaService.obtenerDetalle(99L))
                 .isInstanceOf(VentaNotFoundException.class)
                 .hasMessage("Detalle de venta no encontrado: 99");
+    }
+
+    private com.ticketuki.ventaservice.promocion.model.Promocion promocion(java.time.LocalDate inicio, java.time.LocalDate fin) {
+        return com.ticketuki.ventaservice.promocion.model.Promocion.builder()
+                .id_promocion(7L).descuento(20).fecha_inicio(inicio).fecha_expiracion(fin).build();
+    }
+
+    @Test
+    void descuentoLocalSeAplicaAntesDeIvaYComision() {
+        var hoy = java.time.LocalDate.now();
+        when(promocionRepository.findForRead(7L)).thenReturn(Optional.of(promocion(hoy, hoy)));
+        when(ventaRepository.save(any(Venta.class))).thenAnswer(i -> i.getArgument(0));
+        when(detalleVentaRepository.saveAll(any())).thenAnswer(i -> i.getArgument(0));
+        var request = new VentaRequestDTO("CREDITO", "AUTH", 1L,
+                List.of(new DetalleVentaRequestDTO(2, 10000L, 1L, 1L, 7L)));
+        var response = ventaService.crearVenta(request);
+        assertThat(response.getMonto_total()).isEqualTo(20640L);
+        assertThat(response.getDetalles().getFirst().getDescuento_monto()).isEqualTo(2000L);
+        assertThat(response.getDetalles().getFirst().getPromocion_id()).isEqualTo(7L);
+    }
+
+    @Test
+    void promocionVencidaNoGuardaVenta() {
+        var hoy = java.time.LocalDate.now();
+        when(promocionRepository.findForRead(7L)).thenReturn(Optional.of(promocion(hoy.minusDays(2), hoy.minusDays(1))));
+        var request = new VentaRequestDTO("CREDITO", "AUTH", 1L,
+                List.of(new DetalleVentaRequestDTO(1, 10000L, 1L, 1L, 7L)));
+        assertThatThrownBy(() -> ventaService.crearVenta(request)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("vigente");
+        org.mockito.Mockito.verify(ventaRepository, org.mockito.Mockito.never()).save(any());
+    }
+
+    @Test
+    void promocionInexistenteNoSeIgnora() {
+        when(promocionRepository.findForRead(7L)).thenReturn(Optional.empty());
+        var request = new VentaRequestDTO("CREDITO", "AUTH", 1L,
+                List.of(new DetalleVentaRequestDTO(1, 10000L, 1L, 1L, 7L)));
+        assertThatThrownBy(() -> ventaService.crearVenta(request)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("no encontrada");
+        org.mockito.Mockito.verify(ventaRepository, org.mockito.Mockito.never()).save(any());
+    }
+
+    @Test
+    void estadoDesconocidoNoGuardaVenta() {
+        var request = new VentaRequestDTO("CREDITO", "AUTH", 99L,
+                List.of(new DetalleVentaRequestDTO(1, 10000L, 1L, 1L, null)));
+        assertThatThrownBy(() -> ventaService.crearVenta(request)).isInstanceOf(IllegalArgumentException.class);
+        org.mockito.Mockito.verify(ventaRepository, org.mockito.Mockito.never()).save(any());
     }
 }

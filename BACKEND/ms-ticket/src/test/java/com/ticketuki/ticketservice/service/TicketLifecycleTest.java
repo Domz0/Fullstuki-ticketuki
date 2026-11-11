@@ -23,11 +23,6 @@ class TicketLifecycleTest {
     private final TicketRepository repository = mock(TicketRepository.class);
     private TicketService service;
     private Ticket ticket;
-    private static final String ESTADOS = """
-        [{"id":9,"nombre":"INVALIDO"},{"id":1,"nombre":"VALIDO"},
-         {"id":2,"nombre":"USADO"},{"id":3,"nombre":"CANCELADO"},
-         {"id":4,"nombre":"TRANSFERIDO"}]
-        """;
 
     private WebClient client(HttpStatus status, String body) {
         return WebClient.builder().exchangeFunction(request -> Mono.just(ClientResponse.create(status)
@@ -37,7 +32,7 @@ class TicketLifecycleTest {
     @BeforeEach
     void preparar() {
         WebClient referencia = client(HttpStatus.OK, "{}");
-        service = new TicketService(repository, client(HttpStatus.OK, ESTADOS), referencia, referencia, referencia);
+        service = new TicketService(repository, referencia, referencia, referencia);
         ticket = new Ticket(1L, "QRANTIGUO1", 1, "Juan", "12.345.678-9",
                 LocalDate.now(), 1L, 1L, 1L, 1L);
     }
@@ -55,21 +50,21 @@ class TicketLifecycleTest {
     }
 
     @Test
-    void crearNoPersisteCuandoFallaServicioEstados() {
-        WebClient referencia = client(HttpStatus.OK, "{}");
-        service = new TicketService(repository, client(HttpStatus.SERVICE_UNAVAILABLE, "{}"), referencia, referencia, referencia);
-        assertThatThrownBy(() -> service.crearTicket(request()))
-                .isInstanceOfSatisfying(ResponseStatusException.class,
-                        ex -> assertThat(ex.getStatusCode().value()).isEqualTo(503));
-        verify(repository, never()).saveAndFlush(any());
+    void crearNoConsultaCatalogoExternoDeEstados() {
+        WebClient referencias = WebClient.builder().exchangeFunction(request -> {
+            assertThat(request.url().getPath()).doesNotContain("estados");
+            return Mono.just(ClientResponse.create(HttpStatus.OK)
+                    .header("Content-Type", "application/json").body("{}").build());
+        }).build();
+        service = new TicketService(repository, referencias, referencias, referencias);
+        when(repository.saveAndFlush(any())).thenAnswer(i -> i.getArgument(0));
+        assertThat(service.crearTicket(request()).getEstado_ticket_id_estado()).isEqualTo(1L);
     }
 
     @Test
-    void crearNoPersisteSiFaltaValido() {
-        WebClient referencia = client(HttpStatus.OK, "{}");
-        service = new TicketService(repository, client(HttpStatus.OK, "[{\"id\":9,\"nombre\":\"INVALIDO\"}]"), referencia, referencia, referencia);
-        assertThatThrownBy(() -> service.crearTicket(request())).isInstanceOf(ResponseStatusException.class);
-        verify(repository, never()).saveAndFlush(any());
+    void rechazaCambioAEstadoInexistente() {
+        assertThatThrownBy(() -> service.cambiarEstado(1L, 99L)).isInstanceOf(IllegalArgumentException.class);
+        verify(repository, never()).save(any());
     }
 
     @Test
@@ -81,10 +76,9 @@ class TicketLifecycleTest {
 
     @Test
     void invalidoNoSeAceptaComoValido() {
-        ticket.setEstado_ticket_id_estado(9L);
-        when(repository.findByQrForUpdate(ticket.getCod_qr())).thenReturn(Optional.of(ticket));
-        assertThat(service.validarTicket(ticket.getCod_qr()).isValido()).isFalse();
-        verify(repository, never()).save(any());
+        assertThatThrownBy(() -> ticket.setEstado_ticket_id_estado(9L))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(ticket.getEstado().name()).isEqualTo("VALIDO");
     }
 
     @Test

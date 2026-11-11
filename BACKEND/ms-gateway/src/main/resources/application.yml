@@ -22,27 +22,17 @@ spring:
         - id: ms-evento
           uri: ${MS_EVENTO_URL:http://localhost:8003}
           predicates:
-            - Path=/eventos/**
-
-        - id: ms-estado
-          uri: ${MS_ESTADO_URL:http://localhost:8004}
-          predicates:
-            - Path=/estados/**,/estadosEvento/**,/estadosVenta/**,/estadosTicket/**
+            - Path=/eventos/**,/estadosEvento/**
 
         - id: ms-ticket
           uri: ${MS_TICKET_URL:http://localhost:8005}
           predicates:
-            - Path=/tickets/**
+            - Path=/tickets/**,/estadosTicket/**
 
         - id: ms-venta
           uri: ${MS_VENTA_URL:http://localhost:8006}
           predicates:
-            - Path=/ventas/**,/detalles/**,/pagos/**
-
-        - id: ms-promocion
-          uri: ${MS_PROMOCION_URL:http://localhost:8007}
-          predicates:
-            - Path=/promociones/**
+            - Path=/ventas/**,/detalles/**,/pagos/**,/promociones/**,/estadosVenta/**
 
         - id: ms-recinto
           uri: ${MS_RECINTO_URL:http://localhost:8008}
