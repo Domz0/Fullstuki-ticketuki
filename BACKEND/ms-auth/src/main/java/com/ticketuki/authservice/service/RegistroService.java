@@ -30,8 +30,15 @@ public class RegistroService {
         try {
             var reserva = store.reservar(dto, fingerprint);
             if (!reserva.activo()) {
-                Long usuarioId = usuarios.registrar(reserva.clave(), dto.getUsuario());
-                store.activar(reserva.authId(), usuarioId);
+                Long usuarioId;
+                try {
+                    usuarioId = usuarios.registrar(reserva.clave(), dto.getUsuario());
+                } catch (ResponseStatusException ex) {
+                    if (ex.getStatusCode().value() == 400 || ex.getStatusCode().value() == 409)
+                        store.rechazar(reserva.authId(), reserva.clave());
+                    throw ex;
+                }
+                store.activar(reserva.authId(), reserva.clave(), usuarioId);
             }
             return auth.login(new LoginRequestDTO(dto.getUsername(), dto.getPassword()));
         } catch (DataIntegrityViolationException ex) {

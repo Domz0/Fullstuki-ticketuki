@@ -33,4 +33,11 @@ class AccesoClienteTest {
         assertThatThrownBy(() -> acceso("{}", HttpStatus.SERVICE_UNAVAILABLE).permite("/ventas/3", 1L).block())
             .isInstanceOf(WebClientResponseException.class);
     }
+    @Test void compraYTicketsDeVentaSoloParaComprador() {
+        assertThat(acceso("{\"usuario_id\":2}", HttpStatus.OK).permite("/compras/3",1L).block()).isFalse();
+        assertThat(acceso("{\"usuario_id\":1}", HttpStatus.OK).permite("/compras/3",1L).block()).isTrue();
+        assertThat(acceso("{\"detalles\":[{\"usuario_id_usuario\":2}]}", HttpStatus.OK)
+                .permite("/tickets/venta/3",1L).block()).isFalse();
+        assertThat(acceso("{}",HttpStatus.FORBIDDEN).permite("/compras/3",1L).block()).isFalse();
+    }
 }

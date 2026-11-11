@@ -20,12 +20,13 @@ class PagoServiceTest {
     PagoRepository pagos = mock(PagoRepository.class);
     VentaRepository ventas = mock(VentaRepository.class);
     com.ticketuki.ventaservice.repository.DetalleVentaRepository detalles = mock(com.ticketuki.ventaservice.repository.DetalleVentaRepository.class);
+    com.ticketuki.ventaservice.service.PagoTareas tareas = mock(com.ticketuki.ventaservice.service.PagoTareas.class);
     PagoService service;
     Venta venta;
 
     @BeforeEach
     void setup() {
-        service = new PagoService(pagos, ventas, detalles, null, null);
+        service = new PagoService(pagos, ventas, detalles, null, tareas);
         venta = new Venta(5L, LocalDateTime.now(), "CREDITO", "AUTH", 25800L, 1L, null, null);
         when(ventas.findForUpdate(5L)).thenReturn(Optional.of(venta));
         when(pagos.save(any(Pago.class))).thenAnswer(i -> i.getArgument(0));
@@ -44,9 +45,9 @@ class PagoServiceTest {
     }
 
     @Test
-    void noCompletaPagoYaCompletado() {
+    void completarRepetidoDevuelveElMismoPago() {
         when(pagos.findForUpdate(1L)).thenReturn(Optional.of(pago(EstadoPago.COMPLETADO)));
-        assertThatThrownBy(() -> service.completarPago(1L)).isInstanceOf(IllegalStateException.class);
+        assertThat(service.completarPago(1L).getEstado()).isEqualTo(EstadoPago.COMPLETADO);
         verify(pagos, never()).save(any());
     }
 
@@ -64,10 +65,9 @@ class PagoServiceTest {
     }
 
     @Test
-    void rechazaPagoDuplicado() {
+    void pagoRepetidoDevuelveElMismoPago() {
         when(pagos.findByVenta_id(5L)).thenReturn(List.of(pago(EstadoPago.PENDIENTE)));
-        assertThatThrownBy(() -> service.procesarPago(new PagoRequestDTO(25800L, MedioPago.CREDITO, "AUTH", 5L, 3L)))
-            .isInstanceOf(IllegalStateException.class).hasMessageContaining("activo");
+        assertThat(service.procesarPago(new PagoRequestDTO(25800L, MedioPago.CREDITO, "AUTH", 5L, 3L)).getId_pago()).isEqualTo(1L);
         verify(pagos, never()).save(any());
     }
 
@@ -88,7 +88,7 @@ class PagoServiceTest {
         WebClient prohibido = WebClient.builder().exchangeFunction(r -> {
             throw new AssertionError("Completar pago no debe consultar servicios HTTP");
         }).build();
-        service = new PagoService(pagos, ventas, detalles, prohibido, prohibido);
+        service = new PagoService(pagos, ventas, detalles, prohibido, tareas);
         when(pagos.findForUpdate(1L)).thenReturn(Optional.of(pago(EstadoPago.PENDIENTE)));
         assertThat(service.completarPago(1L).getEstado()).isEqualTo(EstadoPago.COMPLETADO);
         verify(ventas).save(venta);
@@ -103,16 +103,42 @@ class PagoServiceTest {
     }
 
     @Test
-    void reembolsoActualizaPagoYVenta() {
+    void reembolsoQuedaPendienteHastaCancelarTickets() {
         WebClient tickets = WebClient.builder().exchangeFunction(r -> Mono.just(
                 ClientResponse.create(HttpStatus.OK).header("Content-Type", "application/json")
                     .body(r.url().getPath().equals("/estadosTicket")
                         ? "[{\"id\":3,\"nombre\":\"CANCELADO\"}]" : "[]").build())).build();
-        service = new PagoService(pagos, ventas, detalles, null, tickets);
+        service = new PagoService(pagos, ventas, detalles, null, tareas);
         venta.setEstado_venta_id_estado(2L);
         when(pagos.findForUpdate(1L)).thenReturn(Optional.of(pago(EstadoPago.COMPLETADO)));
+        assertThat(service.procesarReembolso(1L).getEstado()).isEqualTo(EstadoPago.COMPLETADO);
+        assertThat(venta.getEstado_venta_id_estado()).isEqualTo(2L);
+        verify(tareas).solicitar(1L, "REEMBOLSAR");
+        verify(ventas, never()).save(any());
+    }
+    @Test void completarCompraProgramaEmisionSinLlamarTickets() {
+        when(pagos.findForUpdate(1L)).thenReturn(Optional.of(pago(EstadoPago.PENDIENTE)));
+        when(tareas.esCompra(1L)).thenReturn(true);
+        service.completarPago(1L);
+        verify(tareas).solicitar(1L, "EMITIR");
+    }
+
+    @Test void noCompletaMientrasSeCancela() {
+        when(pagos.findForUpdate(1L)).thenReturn(Optional.of(pago(EstadoPago.PENDIENTE)));
+        when(tareas.cancelacionPendiente(1L)).thenReturn(true);
+        assertThatThrownBy(() -> service.completarPago(1L)).isInstanceOf(IllegalStateException.class);
+        verify(pagos, never()).save(any());
+    }
+
+    @Test void noCambiaMedioDePagoDespuesDeAplicarPromocion() {
+        assertThatThrownBy(() -> service.procesarPago(new PagoRequestDTO(25800L, MedioPago.DEBITO, "AUTH", 5L, 3L)))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("medio de pago");
+        verify(pagos, never()).save(any());
+    }
+
+    @Test void reembolsoFinalizadoEsIdempotente() {
+        when(pagos.findForUpdate(1L)).thenReturn(Optional.of(pago(EstadoPago.REEMBOLSADO)));
         assertThat(service.procesarReembolso(1L).getEstado()).isEqualTo(EstadoPago.REEMBOLSADO);
-        assertThat(venta.getEstado_venta_id_estado()).isEqualTo(4L);
-        verify(ventas).save(venta);
+        verifyNoInteractions(tareas);
     }
 }

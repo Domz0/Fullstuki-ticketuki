@@ -54,7 +54,7 @@ public class VentaService {
         return promo;
     }
 
-    private DetalleVenta calcularDetalle(DetalleVentaRequestDTO dto, Long ventaId) {
+    private DetalleVenta calcularDetalle(DetalleVentaRequestDTO dto, Long ventaId, String medio) {
         long precioNeto = catalogo.precioPara(dto);
         long descuentoMonto = 0;
         Long promocionId = null;
@@ -63,6 +63,7 @@ public class VentaService {
         if (dto.getPromocion_id() != null) {
             Promocion promo = obtenerPromocionActiva(dto.getPromocion_id());
             if (promo != null) {
+                com.ticketuki.ventaservice.promocion.model.ReglaPromocion.desde(promo.getRestriccion()).validar(medio, dto.getCantidad_ticket());
                 descuentoMonto = Math.round(precioNeto * promo.getDescuento() / 100.0);
                 promocionId = promo.getId_promocion();
                 log.info("Promoción {} aplicada: descuento de {} sobre precio neto {}",
@@ -101,6 +102,8 @@ public class VentaService {
     @com.ticketuki.common.audit.Auditar(entidad = "VENTA", accion = "CREAR", id = "id_venta")
     public VentaResponseDTO crearVenta(VentaRequestDTO dto) {
         log.info("Creando venta con medio de pago: {}", dto.getMedio_pago());
+        try { com.ticketuki.ventaservice.pago.model.MedioPago.valueOf(dto.getMedio_pago()); }
+        catch (RuntimeException ex) { throw new IllegalArgumentException("Medio de pago inválido"); }
 
         // 1. Validar el estado de venta
         if (dto.getEstado_venta_id_estado() != null && !EstadoVenta.PENDIENTE.getId().equals(dto.getEstado_venta_id_estado()))
@@ -114,7 +117,7 @@ public class VentaService {
 
         // 2. Calcular detalles en memoria (descuento, IVA 19%, comisión 10%)
         List<DetalleVenta> detallesCalculados = dto.getDetalles().stream()
-                .map(d -> calcularDetalle(d, null))
+                .map(d -> calcularDetalle(d, null, dto.getMedio_pago()))
                 .toList();
 
         // 3. Calcular monto total sumando precio_total de cada detalle

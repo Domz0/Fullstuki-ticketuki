@@ -35,7 +35,7 @@ class PromocionServiceTest {
                 .empresa("Falabella")
                 .descuento(20)
                 .descripcion("Descuento de verano")
-                .restriccion("Solo fines de semana")
+                .restriccion("SIN_RESTRICCION")
                 .fecha_inicio(LocalDate.of(2026, 1, 1))
                 .fecha_expiracion(LocalDate.of(2026, 12, 31))
                 .build();
@@ -45,7 +45,7 @@ class PromocionServiceTest {
     @Test
     void crearPromocion_conFechasValidas_devuelveDTO() {
         PromocionRequestDTO req = new PromocionRequestDTO("Falabella", 20,
-                "Descuento de verano", "Solo fines de semana",
+                "Descuento de verano", "SIN_RESTRICCION",
                 LocalDate.of(2026, 12, 31), LocalDate.of(2026, 1, 1));
         when(promocionRepository.save(any(Promocion.class))).thenReturn(promoEjemplo());
 
@@ -89,5 +89,11 @@ class PromocionServiceTest {
 
         assertThat(res).hasSize(1);
         assertThat(res.get(0).getEmpresa()).isEqualTo("Falabella");
+    }
+    @Test void promocionAntiguaSinReglaVerificableNoSeOfreceComoActiva() {
+        var antigua = promoEjemplo();
+        antigua.setRestriccion("Solo banco X");
+        when(promocionRepository.findPromocionesActivas(any(LocalDate.class))).thenReturn(List.of(antigua));
+        assertThat(promocionService.listarActivas()).isEmpty();
     }
 }

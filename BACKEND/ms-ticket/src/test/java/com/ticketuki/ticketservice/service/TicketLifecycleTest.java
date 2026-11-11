@@ -33,7 +33,9 @@ class TicketLifecycleTest {
 
     @BeforeEach
     void preparar() {
-        service = new TicketService(repository, cupos, referencias);
+        var operaciones = mock(OperacionVentaStore.class);
+        when(operaciones.bloquear(any())).thenReturn(new OperacionVentaStore.Operacion("ABIERTA", null));
+        service = new TicketService(repository, cupos, referencias, operaciones);
         when(cupos.bloquear(1L)).thenReturn(Optional.of(new com.ticketuki.ticketservice.model.CupoEvento()));
         when(referencias.evento(1L)).thenReturn(new com.ticketuki.ticketservice.client.ReferenciasTicketClient.Evento(1L, 100, LocalDate.now().plusDays(1), 2L, 1L));
         when(referencias.sector(1L)).thenReturn(new com.ticketuki.ticketservice.client.ReferenciasTicketClient.Sector(1L, 100, 1L));

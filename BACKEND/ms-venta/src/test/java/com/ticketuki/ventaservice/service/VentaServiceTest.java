@@ -54,7 +54,7 @@ class VentaServiceTest {
     void crearVenta_sinPromocion_calculaMontoTotalConIvaYComision() {
         // 1 detalle 2 tickets a 10.000 cada unoo, sin promocion
         DetalleVentaRequestDTO det = new DetalleVentaRequestDTO(2, 1L, 1L, 1L, null, 1L);
-        VentaRequestDTO req = new VentaRequestDTO("TARJETA", "AUTH-1", 1L, List.of(det));
+        VentaRequestDTO req = new VentaRequestDTO("CREDITO", "AUTH-1", 1L, List.of(det));
 
         when(ventaRepository.save(any(Venta.class))).thenAnswer(inv -> {
             Venta v = inv.getArgument(0);
@@ -74,7 +74,7 @@ class VentaServiceTest {
     // ───────2 cambiar estado exitoso ───────
     @Test
     void cambiarEstado_noPermiteConfirmarSinPago() {
-        Venta venta = new Venta(5L, LocalDateTime.now(), "TARJETA", "AUTH", 25800L, 1L, null, null);
+        Venta venta = new Venta(5L, LocalDateTime.now(), "CREDITO", "AUTH", 25800L, 1L, null, null);
         when(ventaRepository.findById(5L)).thenReturn(Optional.of(venta));
 
 
@@ -87,11 +87,11 @@ class VentaServiceTest {
     @Test
     void crearVenta_guardaVentaConMontoYEstadoCorrectos() {
         DetalleVentaRequestDTO det = new DetalleVentaRequestDTO(2, 10000L, 1L, 1L, null, 1L);
-        VentaRequestDTO req = new VentaRequestDTO("TARJETA", "AUTH-1", 1L, List.of(det));
+        VentaRequestDTO req = new VentaRequestDTO("CREDITO", "AUTH-1", 1L, List.of(det));
 
         // save devuelve un objeto distinto - el argumento tiene su estado original
         when(ventaRepository.save(any(Venta.class)))
-                .thenReturn(new Venta(2L, LocalDateTime.now(), "TARJETA", "AUTH-1", 25800L, 1L, null, null));
+                .thenReturn(new Venta(2L, LocalDateTime.now(), "CREDITO", "AUTH-1", 25800L, 1L, null, null));
         when(detalleVentaRepository.saveAll(any())).thenAnswer(inv -> inv.getArgument(0));
 
         ventaService.crearVenta(req);
@@ -104,7 +104,7 @@ class VentaServiceTest {
         assertThat(enviada.getId_venta()).isNull();   // sin id (se lo pasa la BD)
         assertThat(enviada.getMonto_total()).isEqualTo(25800L);  // el calculo quedo en la entidad
         assertThat(enviada.getEstado_venta_id_estado()).isEqualTo(1L);
-        assertThat(enviada.getMedio_pago()).isEqualTo("TARJETA");
+        assertThat(enviada.getMedio_pago()).isEqualTo("CREDITO");
     }
 
     // ───────3 obtener venta inexistente (error) ───────
@@ -129,7 +129,7 @@ class VentaServiceTest {
 
     private com.ticketuki.ventaservice.promocion.model.Promocion promocion(java.time.LocalDate inicio, java.time.LocalDate fin) {
         return com.ticketuki.ventaservice.promocion.model.Promocion.builder()
-                .id_promocion(7L).descuento(20).fecha_inicio(inicio).fecha_expiracion(fin).build();
+                .id_promocion(7L).restriccion("SIN_RESTRICCION").descuento(20).fecha_inicio(inicio).fecha_expiracion(fin).build();
     }
 
     @Test

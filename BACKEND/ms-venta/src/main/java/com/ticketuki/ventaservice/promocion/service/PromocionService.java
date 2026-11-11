@@ -48,7 +48,7 @@ public class PromocionService {
                 .empresa(dto.getEmpresa())
                 .descuento(dto.getDescuento())
                 .descripcion(dto.getDescripcion())
-                .restriccion(dto.getRestriccion())
+                .restriccion(com.ticketuki.ventaservice.promocion.model.ReglaPromocion.desde(dto.getRestriccion()).name())
                 .fecha_expiracion(dto.getFecha_expiracion())
                 .fecha_inicio(dto.getFecha_inicio())
                 .build();
@@ -65,7 +65,7 @@ public class PromocionService {
         p.setEmpresa(dto.getEmpresa());
         p.setDescuento(dto.getDescuento());
         p.setDescripcion(dto.getDescripcion());
-        p.setRestriccion(dto.getRestriccion());
+        p.setRestriccion(com.ticketuki.ventaservice.promocion.model.ReglaPromocion.desde(dto.getRestriccion()).name());
         p.setFecha_expiracion(dto.getFecha_expiracion());
         p.setFecha_inicio(dto.getFecha_inicio());
         return toResponseDTO(promocionRepository.save(p));
@@ -85,7 +85,9 @@ public class PromocionService {
 
     @Transactional(readOnly = true)
     public List<PromocionResponseDTO> listarActivas() {
-        return promocionRepository.findPromocionesActivas(LocalDate.now()).stream().map(this::toResponseDTO).toList();
+        return promocionRepository.findPromocionesActivas(LocalDate.now()).stream()
+                .filter(p -> com.ticketuki.ventaservice.promocion.model.ReglaPromocion.reconocida(p.getRestriccion()))
+                .map(this::toResponseDTO).toList();
     }
 
     @Transactional(readOnly = true)

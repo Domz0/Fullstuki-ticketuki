@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class PagoRequestDTO {
 
     @NotNull(message = "El monto es requerido")
-    @Positive(message = "El monto debe ser mayor a 0")
+    @jakarta.validation.constraints.PositiveOrZero(message = "El monto no puede ser negativo")
     private Long monto;
 
     @NotNull(message = "El medio de pago es requerido")

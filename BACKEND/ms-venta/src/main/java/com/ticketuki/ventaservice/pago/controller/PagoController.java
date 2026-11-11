@@ -70,12 +70,12 @@ public class PagoController {
     @PutMapping("/{id}/reembolso")
     public ResponseEntity<PagoResponseDTO> procesarReembolso(@PathVariable Long id) {
         log.info("PUT /pagos/{}/reembolso", id);
-        return ResponseEntity.ok(pagoService.procesarReembolso(id));
+        return ResponseEntity.accepted().body(pagoService.procesarReembolso(id));
     }
 
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<PagoResponseDTO> cancelarPago(@PathVariable Long id) {
         log.info("PUT /pagos/{}/cancelar", id);
-        return ResponseEntity.ok(pagoService.cancelarPago(id));
+        return ResponseEntity.accepted().body(pagoService.cancelarPago(id));
     }
 }

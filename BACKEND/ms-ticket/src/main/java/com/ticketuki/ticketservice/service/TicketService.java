@@ -30,12 +30,14 @@ import java.util.stream.Collectors;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final OperacionVentaStore operaciones;
     private final com.ticketuki.ticketservice.repository.CupoEventoRepository cupos;
     private final com.ticketuki.ticketservice.client.ReferenciasTicketClient referencias;
 
     public TicketService(TicketRepository ticketRepository,
                          com.ticketuki.ticketservice.repository.CupoEventoRepository cupos,
-                         com.ticketuki.ticketservice.client.ReferenciasTicketClient referencias) {
+                         com.ticketuki.ticketservice.client.ReferenciasTicketClient referencias, OperacionVentaStore operaciones) {
+        this.operaciones = operaciones;
         this.ticketRepository = ticketRepository;
         this.cupos = cupos;
         this.referencias = referencias;
@@ -191,6 +193,9 @@ public class TicketService {
     public TicketResponseDTO crearTicket(TicketRequestDTO dto) {
         dto.setRun_titular(dto.getRun_titular());
         log.info("Creando ticket para evento: {}", dto.getEvento_id_evento());
+        var operacion = operaciones.bloquear(dto.getVenta_id_venta());
+        if (!"ABIERTA".equals(operacion.estado()))
+            throw new TicketOperacionInvalidaException("La emisión de la venta ya está cerrada");
         validarCapacidadYCompra(dto);
         validarAsientoDisponible(dto.getNum_asiento(), dto.getEvento_id_evento(), dto.getSector_id_sector());
 

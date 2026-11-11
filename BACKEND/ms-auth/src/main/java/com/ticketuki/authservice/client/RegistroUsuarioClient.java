@@ -33,7 +33,7 @@ public class RegistroUsuarioClient {
             return response.id_usuario();
         } catch (RestClientResponseException ex) {
             if (ex.getStatusCode().value() == 409)
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "El RUN o email ya está registrado; la cuenta permanece pendiente", ex);
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "El RUN o email ya está registrado. Corrija el perfil y repita el registro con el mismo username y contraseña", ex);
             if (ex.getStatusCode().value() == 400)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Revisar los datos del perfil", ex);
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "No se pudo completar el perfil. Reintentar con los mismos datos", ex);

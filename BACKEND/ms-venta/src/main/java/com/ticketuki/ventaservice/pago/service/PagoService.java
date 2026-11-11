@@ -1,16 +1,13 @@
 package com.ticketuki.ventaservice.pago.service;
 
-import com.ticketuki.ventaservice.pago.dto.EstadoResumenDTO;
 import com.ticketuki.ventaservice.pago.dto.PagoRequestDTO;
 import com.ticketuki.ventaservice.pago.dto.PagoResponseDTO;
-import com.ticketuki.ventaservice.pago.dto.TicketResumenDTO;
 import com.ticketuki.ventaservice.pago.exception.PagoNotFoundException;
 import com.ticketuki.ventaservice.pago.model.EstadoPago;
 import com.ticketuki.ventaservice.pago.model.Pago;
 import com.ticketuki.ventaservice.pago.repository.PagoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,39 +24,18 @@ public class PagoService {
     private final com.ticketuki.ventaservice.repository.VentaRepository ventaRepository;
     private final com.ticketuki.ventaservice.repository.DetalleVentaRepository detalles;
     private final WebClient usuarioWebClient;
-    private final WebClient ticketWebClient;
+    private final com.ticketuki.ventaservice.service.PagoTareas tareas;
 
     public PagoService(PagoRepository pagoRepository,
                        com.ticketuki.ventaservice.repository.VentaRepository ventaRepository,
                        com.ticketuki.ventaservice.repository.DetalleVentaRepository detalles,
                        @Qualifier("usuarioWebClient") WebClient usuarioWebClient,
-                       @Qualifier("ticketWebClient") WebClient ticketWebClient) {
+                       com.ticketuki.ventaservice.service.PagoTareas tareas) {
         this.pagoRepository = pagoRepository;
         this.ventaRepository = ventaRepository;
         this.detalles = detalles;
         this.usuarioWebClient = usuarioWebClient;
-        this.ticketWebClient = ticketWebClient;
-    }
-
-    // Busca el ID de un estado de ticket por nombre exacto (ej. "CANCELADO")
-    private Long obtenerIdEstadoTicket(String fragmento) {
-        try {
-            List<EstadoResumenDTO> estados = ticketWebClient.get()
-                    .uri("/estadosTicket")
-                    .retrieve()
-                    .bodyToFlux(EstadoResumenDTO.class)
-                    .collectList()
-                    .block();
-            if (estados == null) throw new IllegalStateException("Catalogo no disponible");
-            return estados.stream()
-                    .filter(e -> e.getNombre() != null && e.getNombre().toUpperCase().equals(fragmento.toUpperCase()))
-                    .map(EstadoResumenDTO::getId)
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Estado no disponible: " + fragmento));
-        } catch (Exception e) {
-            log.warn("No se pudo obtener estado de ticket '{}': {}", fragmento, e.getMessage());
-            throw new IllegalStateException("No se pudo consultar estados", e);
-        }
+        this.tareas = tareas;
     }
 
     private Long obtenerIdEstadoVenta(String nombre) {
@@ -85,54 +61,11 @@ public class PagoService {
                     .onStatus(HttpStatusCode::is4xxClientError,
                             response -> Mono.error(new IllegalArgumentException("Usuario no encontrado con id: " + usuarioId)))
                     .bodyToMono(Void.class)
-                    .block();
+                    .block(java.time.Duration.ofSeconds(5));
         } catch (IllegalArgumentException e) {
             throw e;
         } catch (Exception e) {
             throw new IllegalStateException("No se pudo validar el usuario", e);
-        }
-    }
-
-    private void cancelarTicketsDeLaVenta(Long ventaId) {
-        Long idEstadoTicketCancelado = obtenerIdEstadoTicket("CANCELADO");
-        if (idEstadoTicketCancelado == null) {
-            log.warn("No se encontró estado 'CANCELADO' para tickets, se omite la cancelación");
-            return;
-        }
-        try {
-            List<TicketResumenDTO> tickets = ticketWebClient.get()
-                    .uri("/tickets/venta/{ventaId}", ventaId)
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<List<TicketResumenDTO>>() {})
-                    .block();
-
-            if (tickets == null) throw new IllegalStateException("Respuesta de tickets vacia");
-            if (tickets.isEmpty()) {
-                log.warn("No se encontraron tickets para la venta {}", ventaId);
-                return;
-            }
-
-            Long valido = obtenerIdEstadoTicket("VALIDO");
-            Long transferido = obtenerIdEstadoTicket("TRANSFERIDO");
-            if (tickets.stream().anyMatch(t -> !java.util.Objects.equals(t.getEstado_ticket_id_estado(), valido)
-                    && !java.util.Objects.equals(t.getEstado_ticket_id_estado(), transferido)
-                    && !java.util.Objects.equals(t.getEstado_ticket_id_estado(), idEstadoTicketCancelado)))
-                throw new IllegalStateException("La venta contiene tickets que no se pueden cancelar");
-            for (TicketResumenDTO ticket : tickets) {
-                if (java.util.Objects.equals(ticket.getEstado_ticket_id_estado(), idEstadoTicketCancelado)) continue;
-                try {
-                    ticketWebClient.put()
-                            .uri("/tickets/{id}/estado/{idEstado}", ticket.getId_ticket(), idEstadoTicketCancelado)
-                            .retrieve()
-                            .bodyToMono(Void.class)
-                            .block();
-                    log.info("Ticket {} cancelado", ticket.getId_ticket());
-                } catch (Exception e) {
-                    throw new IllegalStateException("No se pudo cancelar el ticket " + ticket.getId_ticket(), e);
-                }
-            }
-        } catch (Exception e) {
-            throw new IllegalStateException("No se pudieron cancelar los tickets de la venta", e);
         }
     }
 
@@ -152,11 +85,19 @@ public class PagoService {
         var venta = obtenerVenta(dto.getVenta_id());
         if (!java.util.Objects.equals(venta.getMonto_total(), dto.getMonto()))
             throw new IllegalArgumentException("El monto debe coincidir con el total de la venta");
+        if (!java.util.Objects.equals(venta.getMedio_pago(), dto.getMedio_pago().name()))
+            throw new IllegalArgumentException("El medio de pago debe coincidir con el usado para calcular la venta");
+        var existentes = pagoRepository.findByVenta_id(dto.getVenta_id());
+        for (var existente : existentes) {
+            if (java.util.Objects.equals(existente.getUsuario_id(), dto.getUsuario_id())
+                    && java.util.Objects.equals(existente.getMonto(), dto.getMonto())
+                    && existente.getMedio_pago() == dto.getMedio_pago()
+                    && java.util.Objects.equals(existente.getCod_autorizacion(), dto.getCod_autorizacion()))
+                return toResponseDTO(existente);
+        }
         if (!java.util.Objects.equals(venta.getEstado_venta_id_estado(), obtenerIdEstadoVenta("PENDIENTE")))
             throw new IllegalStateException("La venta debe estar PENDIENTE");
-        if (pagoRepository.findByVenta_id(dto.getVenta_id()).stream()
-                .anyMatch(p -> p.getEstado() == EstadoPago.PENDIENTE || p.getEstado() == EstadoPago.COMPLETADO))
-            throw new IllegalStateException("La venta ya tiene un pago activo");
+        if (!existentes.isEmpty()) throw new IllegalStateException("La venta ya tiene un pago con otros datos");
         var lineas = detalles.findByVenta_id_venta(dto.getVenta_id());
         if (lineas.isEmpty() || lineas.stream().anyMatch(d -> !java.util.Objects.equals(d.getUsuario_id_usuario(), dto.getUsuario_id())))
             throw new IllegalArgumentException("El pago debe pertenecer al comprador de la venta");
@@ -183,36 +124,28 @@ public class PagoService {
     public PagoResponseDTO completarPago(Long id) {
         Pago p = pagoRepository.findForUpdate(id)
                 .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));
+        if (p.getEstado() == EstadoPago.COMPLETADO) return toResponseDTO(p);
+        if (tareas.cancelacionPendiente(id)) throw new IllegalStateException("La cancelación está en proceso");
         if (p.getEstado() != EstadoPago.PENDIENTE) {
             throw new IllegalStateException(
                     "Solo se puede completar un pago en estado PENDIENTE. Estado actual: " + p.getEstado());
         }
         actualizarVenta(p.getVenta_id(), "CONFIRMADA");
         p.setEstado(EstadoPago.COMPLETADO);
+        if (tareas.esCompra(id)) tareas.solicitar(id, "EMITIR");
         return toResponseDTO(pagoRepository.save(p));
-    }
-
-    @Transactional
-    protected Pago marcarPagoReembolsado(Long id) {
-        Pago p = pagoRepository.findForUpdate(id)
-                .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));
-        if (p.getEstado() != EstadoPago.COMPLETADO) {
-            throw new IllegalStateException(
-                    "Solo se puede reembolsar un pago en estado COMPLETADO. Estado actual: " + p.getEstado());
-        }
-        p.setEstado(EstadoPago.REEMBOLSADO);
-        return pagoRepository.save(p);
     }
 
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "ACTUALIZAR", id = "id_pago")
     public PagoResponseDTO procesarReembolso(Long id) {
-        Pago saved = marcarPagoReembolsado(id);
-        log.info("Reembolso aprobado para pago {}. Coordinando cancelación de tickets y venta {}",
-                id, saved.getVenta_id());
-        cancelarTicketsDeLaVenta(saved.getVenta_id());
-        actualizarVenta(saved.getVenta_id(), "REEMBOLSADA");
-        return toResponseDTO(saved);
+        Pago p = pagoRepository.findForUpdate(id)
+                .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));
+        if (p.getEstado() == EstadoPago.REEMBOLSADO) return toResponseDTO(p);
+        if (p.getEstado() != EstadoPago.COMPLETADO)
+            throw new IllegalStateException("Solo se puede reembolsar un pago COMPLETADO");
+        tareas.solicitar(id, "REEMBOLSAR");
+        return toResponseDTO(p);
     }
 
     @Transactional
@@ -220,13 +153,23 @@ public class PagoService {
     public PagoResponseDTO cancelarPago(Long id) {
         Pago p = pagoRepository.findForUpdate(id)
                 .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));
-        if (p.getEstado() != EstadoPago.PENDIENTE) {
-            throw new IllegalStateException(
-                    "Solo se puede cancelar un pago en estado PENDIENTE. Estado actual: " + p.getEstado());
-        }
-        cancelarTicketsDeLaVenta(p.getVenta_id());
-        actualizarVenta(p.getVenta_id(), "CANCELADA");
-        p.setEstado(EstadoPago.CANCELADO);
+        if (p.getEstado() == EstadoPago.CANCELADO) return toResponseDTO(p);
+        if (p.getEstado() != EstadoPago.PENDIENTE)
+            throw new IllegalStateException("Solo se puede cancelar un pago PENDIENTE");
+        tareas.solicitar(id, "CANCELAR");
+        return toResponseDTO(p);
+    }
+
+    @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "ACTUALIZAR", id = "id_pago")
+    public PagoResponseDTO finalizarCancelacion(Long id, boolean reembolso) {
+        Pago p = pagoRepository.findForUpdate(id).orElseThrow();
+        EstadoPago destino = reembolso ? EstadoPago.REEMBOLSADO : EstadoPago.CANCELADO;
+        if (p.getEstado() == destino) return toResponseDTO(p);
+        if (p.getEstado() != (reembolso ? EstadoPago.COMPLETADO : EstadoPago.PENDIENTE))
+            throw new IllegalStateException("Estado de pago incompatible");
+        actualizarVenta(p.getVenta_id(), reembolso ? "REEMBOLSADA" : "CANCELADA");
+        p.setEstado(destino);
         return toResponseDTO(pagoRepository.save(p));
     }
 

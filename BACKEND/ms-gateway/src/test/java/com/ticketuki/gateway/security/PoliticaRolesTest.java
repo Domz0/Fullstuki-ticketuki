@@ -39,4 +39,11 @@ class PoliticaRolesTest {
         assertThat(PoliticaRoles.permite("ADMIN", "/historial", HttpMethod.POST)).isFalse();
         assertThat(PoliticaRoles.permite("ADMIN", "/historial", HttpMethod.GET)).isTrue();
     }
+    @org.junit.jupiter.api.Test void compraNoAutorizaConfirmarPagoNiOperacionesInternas() {
+        org.assertj.core.api.Assertions.assertThat(PoliticaRoles.permite("CLIENTE","/compras",org.springframework.http.HttpMethod.POST)).isTrue();
+        org.assertj.core.api.Assertions.assertThat(PoliticaRoles.permite("CLIENTE","/compras/1",org.springframework.http.HttpMethod.GET)).isTrue();
+        org.assertj.core.api.Assertions.assertThat(PoliticaRoles.permite("CLIENTE","/pagos/1/completar",org.springframework.http.HttpMethod.PUT)).isFalse();
+        org.assertj.core.api.Assertions.assertThat(PoliticaRoles.permite("CLIENTE","/pagos/1/reintentar",org.springframework.http.HttpMethod.POST)).isFalse();
+        org.assertj.core.api.Assertions.assertThat(PoliticaRoles.permite("ADMIN","/interno/ventas/1/tickets",org.springframework.http.HttpMethod.POST)).isFalse();
+    }
 }

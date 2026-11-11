@@ -46,6 +46,14 @@ public class AccesoCliente {
         if (path.matches("/tickets/disponibilidad/[0-9]+/[0-9]+")) return Mono.just(true);
         String[] partes = path.split("/");
         if (path.startsWith("/usuarios/")) return Mono.just(path.equals("/usuarios/" + usuarioId));
+        if (path.matches("/compras/[0-9]+"))
+            return ventas.get().uri(path).header("X-Rol", "CLIENTE").header("X-Usuario-Id", usuarioId.toString())
+                    .retrieve().bodyToMono(JsonNode.class).timeout(Duration.ofSeconds(5))
+                    .map(c -> mismoUsuario(c, "usuario_id", usuarioId))
+                    .onErrorResume(WebClientResponseException.NotFound.class, ex -> Mono.just(false))
+                    .onErrorResume(WebClientResponseException.Forbidden.class, ex -> Mono.just(false))
+                    .defaultIfEmpty(false);
+        if (path.matches("/tickets/venta/[0-9]+")) return ventaPropia(partes[3], usuarioId);
         if (path.matches("/ventas/[0-9]+")) return ventaPropia(partes[2], usuarioId);
         if (path.startsWith("/detalleVenta/venta/") || path.startsWith("/pagos/venta/"))
             return ventaPropia(partes[3], usuarioId);
@@ -53,7 +61,7 @@ public class AccesoCliente {
             return get(ventas, path).map(d -> mismoUsuario(d, "usuario_id_usuario", usuarioId)).defaultIfEmpty(false);
         if (path.startsWith("/pagos/usuario/"))
             return Mono.just(path.equals("/pagos/usuario/" + usuarioId));
-        if (path.matches("/pagos/[0-9]+(/cancelar)?"))
+        if (path.matches("/pagos/[0-9]+(/cancelar|/operacion)?"))
             return get(ventas, "/pagos/" + partes[2]).map(p -> mismoUsuario(p, "usuario_id", usuarioId)).defaultIfEmpty(false);
         if (path.startsWith("/tickets/")) {
             return get(usuarios, "/usuarios/" + usuarioId).flatMap(u -> {

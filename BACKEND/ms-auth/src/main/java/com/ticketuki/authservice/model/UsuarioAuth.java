@@ -45,6 +45,9 @@ public class UsuarioAuth {
     @Column(name = "token_version", nullable = false)
     private long tokenVersion;
 
+    @Column(name = "registro_rechazado", nullable = false)
+    private boolean registroRechazado;
+
     @Column(name = "registro_id", unique = true, length = 36)
     private String registroId;
 

@@ -12,6 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT t FROM Ticket t WHERE t.venta_id_venta = :venta ORDER BY t.id_ticket")
+    List<Ticket> bloquearPorVenta(@Param("venta") Long venta);
+
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT t FROM Ticket t WHERE t.id_ticket = :id")

@@ -50,6 +50,11 @@ public class PromocionController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/restricciones")
+    public com.ticketuki.ventaservice.promocion.model.ReglaPromocion[] restricciones() {
+        return com.ticketuki.ventaservice.promocion.model.ReglaPromocion.values();
+    }
+
     @GetMapping("/activas")
     public ResponseEntity<List<PromocionResponseDTO>> listarActivas() {
         log.info("GET /promociones/activas - Listando promociones activas");

@@ -29,7 +29,7 @@ class RegistroServiceTest {
         var orden = inOrder(usuarios, store, auth);
         orden.verify(store).reservar(eq(dto), anyString());
         orden.verify(usuarios).registrar("clave", dto.getUsuario());
-        orden.verify(store).activar(1L, 3L);
+        orden.verify(store).activar(1L, "clave", 3L);
         orden.verify(auth).login(any());
     }
     @Test void falloRemotoNoActivaCuentaNiEmiteToken() {
@@ -37,8 +37,9 @@ class RegistroServiceTest {
         when(store.reservar(eq(dto), anyString())).thenReturn(new RegistroStore.Reserva(1L, "clave", false));
         when(usuarios.registrar("clave", dto.getUsuario())).thenThrow(new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE));
         assertThatThrownBy(() -> service.registrar(dto)).isInstanceOf(ResponseStatusException.class);
-        verify(store, never()).activar(any(), any());
+        verify(store, never()).activar(any(), any(), any());
         verifyNoInteractions(auth);
+        verify(store, never()).rechazar(any(), any());
     }
     @Test void reintentoCompletadoNoVuelveACrearPerfil() {
         var dto = request();
@@ -46,5 +47,13 @@ class RegistroServiceTest {
         service.registrar(dto);
         verifyNoInteractions(usuarios);
         verify(auth).login(any());
+    }
+    @Test void conflictoDePerfilPermiteCorregirElRegistro() {
+        var dto = request();
+        when(store.reservar(eq(dto), anyString())).thenReturn(new RegistroStore.Reserva(1L, "clave", false));
+        when(usuarios.registrar("clave", dto.getUsuario())).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
+        assertThatThrownBy(() -> service.registrar(dto)).isInstanceOf(ResponseStatusException.class);
+        verify(store).rechazar(1L, "clave");
+        verifyNoInteractions(auth);
     }
 }
