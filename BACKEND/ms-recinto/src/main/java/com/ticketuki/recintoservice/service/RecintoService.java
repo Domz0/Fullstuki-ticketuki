@@ -64,7 +64,8 @@ public class RecintoService {
         recinto.setNombre_recinto(dto.getNombre_recinto());
         recinto.setCapacidad_total(dto.getCapacidad_total());
 
-        if (dto.getDireccion() != null && recinto.getDireccion() != null) {
+        if (recinto.getDireccion() == null) recinto.setDireccion(direccionFromDTO(dto.getDireccion()));
+        if (dto.getDireccion() != null) {
             recinto.getDireccion().setCalle(dto.getDireccion().getCalle());
             recinto.getDireccion().setRegion(dto.getDireccion().getRegion());
             recinto.getDireccion().setComuna(dto.getDireccion().getComuna());

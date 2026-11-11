@@ -13,4 +13,7 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 
     @Query("SELECT v FROM Venta v WHERE v.fecha_venta BETWEEN :inicio AND :fin")
     List<Venta> findByFecha_ventaBetween(@Param("inicio") LocalDateTime inicio, @Param("fin") LocalDateTime fin);
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT v FROM Venta v WHERE v.id_venta = :id")
+    java.util.Optional<Venta> findForUpdate(@Param("id") Long id);
 }

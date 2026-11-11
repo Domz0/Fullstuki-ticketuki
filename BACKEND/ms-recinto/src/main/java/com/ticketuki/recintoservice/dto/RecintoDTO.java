@@ -14,9 +14,11 @@ public class RecintoDTO {
     private Long id_recinto;
 
     @NotBlank(message = "El nombre del recinto no puede estar vacío")
+    @jakarta.validation.constraints.Size(max = 50)
     private String nombre_recinto;
 
     @NotNull(message = "La capacidad total es obligatoria")
+    @jakarta.validation.constraints.Positive
     private Integer capacidad_total;
 
     @Valid

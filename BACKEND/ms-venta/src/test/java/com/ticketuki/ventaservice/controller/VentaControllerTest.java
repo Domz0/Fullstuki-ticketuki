@@ -55,7 +55,7 @@ class VentaControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bodyInvalido))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Validacion fallida...."))
+                .andExpect(jsonPath("$.message").value("Validación fallida"))
                 .andExpect(jsonPath("$.status").value(400));
     }
 }

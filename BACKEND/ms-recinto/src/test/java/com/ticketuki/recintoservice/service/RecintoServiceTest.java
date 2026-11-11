@@ -55,4 +55,13 @@ class RecintoServiceTest {
                 .isInstanceOf(RecintoNotFoundException.class)
                 .hasMessage("Recinto no encontrado: 99");
     }
+    @Test
+    void actualizarRecintoCreaDireccionFaltante() {
+        Recinto recinto = new Recinto(1L, "Recinto", 100, null);
+        when(recintoRepository.findById(1L)).thenReturn(Optional.of(recinto));
+        when(recintoRepository.save(any(Recinto.class))).thenAnswer(i -> i.getArgument(0));
+        DireccionRecintoDTO direccion = new DireccionRecintoDTO(null, "Calle", "RM", "Santiago", 10, null);
+        var respuesta = recintoService.actualizarRecinto(1L, new RecintoDTO(1L, "Nuevo", 100, direccion));
+        assertThat(respuesta.getDireccion().getCalle()).isEqualTo("Calle");
+    }
 }

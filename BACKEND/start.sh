@@ -30,7 +30,6 @@ ORDER=(
   "8010:ms-historial"
   "8006:ms-venta"
   "8005:ms-ticket"
-  "8009:ms-pago"
   "8080:ms-gateway"
 )
 

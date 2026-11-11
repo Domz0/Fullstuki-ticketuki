@@ -13,16 +13,21 @@ public class DireccionRecintoDTO {
     private Long id_direccion_recinto;
 
     @NotBlank(message = "La calle es obligatoria")
+    @jakarta.validation.constraints.Size(max = 50)
     private String calle;
 
     @NotBlank(message = "La región es obligatoria")
+    @jakarta.validation.constraints.Size(max = 50)
     private String region;
 
     @NotBlank(message = "La comuna es obligatoria")
+    @jakarta.validation.constraints.Size(max = 50)
     private String comuna;
 
     @NotNull(message = "El número de calle es obligatorio")
+    @jakarta.validation.constraints.Positive
     private Integer num_calle;
 
+    @jakarta.validation.constraints.Size(max = 100)
     private String referencia_acceso;
 }

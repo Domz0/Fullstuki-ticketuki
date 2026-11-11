@@ -25,7 +25,7 @@ public class WebClientConfig {
         return new ReactorClientHttpConnector(httpClient);
     }
 
-    @Bean
+    @Bean({"webClient", "estadoWebClient"})
     public WebClient webClient() {
         return WebClient.builder()
                 .baseUrl(estadoBaseUrl)
@@ -39,5 +39,14 @@ public class WebClientConfig {
                 .baseUrl(promocionBaseUrl)
                 .clientConnector(jvmDnsConnector())
                 .build();
+    }
+    @Bean("usuarioWebClient")
+    public WebClient usuarioWebClient(@Value("${ms.usuario.url:http://localhost:8001}") String url) {
+        return WebClient.builder().baseUrl(url).clientConnector(jvmDnsConnector()).build();
+    }
+
+    @Bean("ticketWebClient")
+    public WebClient ticketWebClient(@Value("${ms.ticket.url:http://localhost:8005}") String url) {
+        return WebClient.builder().baseUrl(url).clientConnector(jvmDnsConnector()).build();
     }
 }

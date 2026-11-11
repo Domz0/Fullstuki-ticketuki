@@ -37,7 +37,7 @@ spring:
         - id: ms-venta
           uri: ${MS_VENTA_URL:http://localhost:8006}
           predicates:
-            - Path=/ventas/**,/detalles/**
+            - Path=/ventas/**,/detalles/**,/pagos/**
 
         - id: ms-promocion
           uri: ${MS_PROMOCION_URL:http://localhost:8007}
@@ -48,11 +48,6 @@ spring:
           uri: ${MS_RECINTO_URL:http://localhost:8008}
           predicates:
             - Path=/recintos/**,/sectores/**
-
-        - id: ms-pago
-          uri: ${MS_PAGO_URL:http://localhost:8009}
-          predicates:
-            - Path=/pagos/**
 
         - id: ms-historial
           uri: ${MS_HISTORIAL_URL:http://localhost:8010}

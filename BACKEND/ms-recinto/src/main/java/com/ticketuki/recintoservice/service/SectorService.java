@@ -43,6 +43,8 @@ public class SectorService {
                     log.warn("Sector no encontrado para actualizar: {}", id);
                     return new SectorNotFoundException("Sector no encontrado: " + id);
                 });
+        if (!java.util.Objects.equals(sector.getRecinto_id_recinto(), dto.getRecinto_id_recinto()))
+            throw new IllegalArgumentException("No se puede cambiar el recinto de un sector existente");
         sector.setNombre_sector(dto.getNombre_sector());
         sector.setCapacidad_sector(dto.getCapacidad_sector());
         sector.setPrecio_sector(dto.getPrecio_sector());

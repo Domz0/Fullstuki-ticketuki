@@ -48,4 +48,12 @@ class SectorServiceTest {
                 .isInstanceOf(SectorNotFoundException.class)
                 .hasMessage("Sector no encontrado: 99");
     }
+    @Test
+    void actualizarSectorNoPermiteCambiarRecinto() {
+        var sector = new com.ticketuki.recintoservice.model.Sector(1L, "Platea", 100, 5000, 7L);
+        when(sectorRepository.findById(1L)).thenReturn(Optional.of(sector));
+        assertThatThrownBy(() -> sectorService.actualizarSector(1L, new SectorDTO(1L, "Platea", 100, 5000, 8L)))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("recinto");
+        org.mockito.Mockito.verify(sectorRepository, org.mockito.Mockito.never()).save(org.mockito.ArgumentMatchers.any());
+    }
 }

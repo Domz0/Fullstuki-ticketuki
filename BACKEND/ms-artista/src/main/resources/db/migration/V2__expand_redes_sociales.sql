@@ -1,1 +1,0 @@
-ALTER TABLE artista MODIFY COLUMN redes_sociales VARCHAR(255) NOT NULL;
