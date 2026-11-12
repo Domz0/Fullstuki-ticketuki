@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -50,8 +49,8 @@ public class TicketsCompraClient {
 
     public Reserva consultarReserva(Long venta) {
         comprobarClave();
-        return comprobar(client.get().uri("/interno/ventas/" + venta + "/reserva").header("X-Internal-Key", clave)
-                .retrieve().bodyToMono(Reserva.class).block(Duration.ofSeconds(5)));
+        return comprobar(com.ticketuki.common.http.HttpServicios.ejecutar(client.get().uri("/interno/ventas/" + venta + "/reserva").header("X-Internal-Key", clave)
+                .retrieve().bodyToMono(Reserva.class), Reserva.class));
     }
 
     public void cancelar(Long venta) { enviar("/interno/ventas/" + venta + "/cancelar", Map.of(), Void.class); }
@@ -69,7 +68,7 @@ public class TicketsCompraClient {
 
     private <T> T enviar(String ruta, Object body, Class<T> tipo) {
         comprobarClave();
-        return client.post().uri(ruta).header("X-Internal-Key", clave).bodyValue(body)
-                .retrieve().bodyToMono(tipo).block(Duration.ofSeconds(5));
+        return com.ticketuki.common.http.HttpServicios.ejecutar(client.post().uri(ruta).header("X-Internal-Key", clave).bodyValue(body)
+                .retrieve().bodyToMono(tipo), tipo);
     }
 }

@@ -28,9 +28,17 @@ public abstract class ApiExceptionHandler {
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class,
-        MissingServletRequestParameterException.class, MissingRequestHeaderException.class, ConstraintViolationException.class})
+        MissingServletRequestParameterException.class, MissingRequestHeaderException.class})
     public ResponseEntity<ApiError> solicitudInvalida(Exception ex, HttpServletRequest request) {
         return respuesta(400, "El cuerpo o los parámetros de la solicitud no son válidos", request);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiError> validacionServicio(ConstraintViolationException ex, HttpServletRequest request) {
+        Map<String, String> errores = new LinkedHashMap<>();
+        ex.getConstraintViolations().forEach(error ->
+            errores.put(error.getPropertyPath().toString(), error.getMessage()));
+        return ResponseEntity.badRequest().body(ApiError.of(400, "Validacion fallida", request.getRequestURI(), errores));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

@@ -16,6 +16,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RecintoService {
+    private final com.ticketuki.common.validation.ValidacionDatos validacion;
+    private final com.ticketuki.common.security.AccesoServicio acceso;
 
     private final RecintoRepository recintoRepository;
 
@@ -47,6 +49,8 @@ public class RecintoService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "RECINTO", accion = "CREAR", id = "id_recinto")
     public RecintoDTO crearRecinto(RecintoDTO dto) {
+        validacion.validar(dto);
+        acceso.administrador();
         log.info("Creando recinto: {}", dto.getNombre_recinto());
         DireccionRecinto dir = direccionFromDTO(dto.getDireccion());
         Recinto recinto = new Recinto(null, dto.getNombre_recinto(), dto.getCapacidad_total(), dir);
@@ -56,6 +60,8 @@ public class RecintoService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "RECINTO", accion = "ACTUALIZAR", id = "id_recinto")
     public RecintoDTO actualizarRecinto(Long id, RecintoDTO dto) {
+        validacion.validar(dto);
+        acceso.administrador();
         log.info("Actualizando recinto con ID: {}", id);
         Recinto recinto = recintoRepository.findForUpdate(id)
                 .orElseThrow(() -> {
@@ -100,6 +106,7 @@ public class RecintoService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "RECINTO", accion = "ELIMINAR")
     public void eliminarRecinto(Long id) {
+        acceso.administrador();
         log.info("Eliminando recinto con ID: {}", id);
         Recinto recinto = recintoRepository.findById(id)
                 .orElseThrow(() -> {

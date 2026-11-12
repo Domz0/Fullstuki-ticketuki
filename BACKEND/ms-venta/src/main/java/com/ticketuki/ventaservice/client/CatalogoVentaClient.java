@@ -8,12 +8,12 @@ import org.springframework.web.reactive.function.client.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.*;
 import java.util.Objects;
-import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
 public class CatalogoVentaClient {
     public record Sector(Long id_sector, Integer precio_sector, Integer capacidad_sector, Long recinto_id_recinto) {}
     public record Evento(Long id_evento, Integer aforo_evento, LocalDate fecha_evento, Long estado_evento_id_estado, Long recinto_id_recinto) {}
+    public record Disponibilidad(Long emitidos_evento, Long emitidos_sector, Long reservados_evento, Long reservados_sector) {}
     private final WebClient recintos;
     private final WebClient eventos;
     private final WebClient usuarios;
@@ -30,22 +30,12 @@ public class CatalogoVentaClient {
     }
 
     private <T> T consultar(WebClient client, String path, Class<T> type) {
-        try {
-            T resultado = client.get().uri(path).retrieve().bodyToMono(type).block(Duration.ofSeconds(5));
-            if (resultado == null) throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Referencia sin datos");
-            return resultado;
-        } catch (WebClientResponseException.NotFound ex) {
-            throw new IllegalArgumentException("Referencia no encontrada: " + path);
-        } catch (ResponseStatusException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "No se pudo comprobar el catálogo", ex);
-        }
+        return com.ticketuki.common.http.HttpServicios.consultar(client, path, type);
     }
 
     public void validarUsuario(Long id) {
-        var usuario = consultar(usuarios, "/usuarios/" + id, JsonNode.class);
-        if (usuario.path("id_usuario").asLong(-1) != id)
+        var usuario = consultar(usuarios, "/usuarios/" + id, com.ticketuki.common.http.UsuarioReferencia.class);
+        if (id == null || !Objects.equals(usuario.id_usuario(), id))
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Usuario de referencia inválido");
     }
 
@@ -72,7 +62,11 @@ public class CatalogoVentaClient {
         record Grupo(Long evento, Long sector) {}
         var cantidades = new java.util.HashMap<Grupo, Long>();
         var porEvento = new java.util.HashMap<Long, Long>();
+        if (detalles == null || detalles.isEmpty()) throw new IllegalArgumentException("Debe indicar detalles");
         for (var detalle : detalles) {
+            if (detalle == null || detalle.getCantidad_ticket() == null || detalle.getCantidad_ticket() <= 0
+                    || detalle.getEvento_id_evento() == null || detalle.getSector_id_sector() == null)
+                throw new IllegalArgumentException("Detalle de compra invalido");
             cantidades.merge(new Grupo(detalle.getEvento_id_evento(), detalle.getSector_id_sector()), detalle.getCantidad_ticket().longValue(), Math::addExact);
             porEvento.merge(detalle.getEvento_id_evento(), detalle.getCantidad_ticket().longValue(), Math::addExact);
         }
@@ -80,12 +74,19 @@ public class CatalogoVentaClient {
             var grupo = entry.getKey();
             var evento = consultar(eventos, "/eventos/" + grupo.evento(), Evento.class);
             var sector = consultar(recintos, "/sectores/" + grupo.sector(), Sector.class);
-            var usados = consultar(tickets, "/tickets/disponibilidad/" + grupo.evento() + "/" + grupo.sector(), JsonNode.class);
+            if (!Objects.equals(evento.id_evento(), grupo.evento()) || !Objects.equals(sector.id_sector(), grupo.sector()))
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Catalogo de disponibilidad invalido");
+            if (evento.recinto_id_recinto() == null || !Objects.equals(evento.recinto_id_recinto(), sector.recinto_id_recinto()))
+                throw new IllegalArgumentException("El sector no pertenece al recinto del evento");
+            var usados = consultar(tickets, "/tickets/disponibilidad/" + grupo.evento() + "/" + grupo.sector(), Disponibilidad.class);
             if (evento.aforo_evento() == null || sector.capacidad_sector() == null
-                    || !usados.hasNonNull("emitidos_evento") || !usados.hasNonNull("emitidos_sector"))
+                    || usados.emitidos_evento() == null || usados.emitidos_sector() == null
+                    || usados.reservados_evento() == null || usados.reservados_sector() == null
+                    || usados.emitidos_evento() < 0 || usados.emitidos_sector() < 0
+                    || usados.reservados_evento() < 0 || usados.reservados_sector() < 0)
                 throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Disponibilidad sin datos");
-            if (usados.path("emitidos_evento").asLong() + usados.path("reservados_evento").asLong() + porEvento.get(grupo.evento()) > evento.aforo_evento()
-                    || usados.path("emitidos_sector").asLong() + usados.path("reservados_sector").asLong() + entry.getValue() > sector.capacidad_sector())
+            if (usados.emitidos_evento() + usados.reservados_evento() + porEvento.get(grupo.evento()) > evento.aforo_evento()
+                    || usados.emitidos_sector() + usados.reservados_sector() + entry.getValue() > sector.capacidad_sector())
                 throw new IllegalArgumentException("La compra supera los cupos disponibles");
         }
     }

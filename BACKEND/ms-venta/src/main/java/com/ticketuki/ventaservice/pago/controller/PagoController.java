@@ -24,7 +24,6 @@ public class PagoController {
 
     @PostMapping
     public ResponseEntity<PagoResponseDTO> procesarPago(@Valid @RequestBody PagoRequestDTO dto, jakarta.servlet.http.HttpServletRequest request) {
-        com.ticketuki.ventaservice.security.CompradorRequest.validar(request, dto.getUsuario_id());
         log.info("POST /pagos - venta: {}, usuario: {}", dto.getVenta_id(), dto.getUsuario_id());
         return ResponseEntity.status(HttpStatus.CREATED).body(pagoService.procesarPago(dto));
     }

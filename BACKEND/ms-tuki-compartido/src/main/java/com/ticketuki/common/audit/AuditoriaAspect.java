@@ -24,9 +24,9 @@ public class AuditoriaAspect {
     private Long identidad(String header) {
         var attrs = RequestContextHolder.getRequestAttributes();
         if (!(attrs instanceof ServletRequestAttributes servlet)) return null;
-        String value = servlet.getRequest().getHeader(header);
-        try { return value == null ? null : Long.valueOf(value); }
-        catch (NumberFormatException ex) { return null; }
+        Object value = servlet.getRequest().getAttribute(com.ticketuki.common.security.AccesoServicio.class.getName());
+        if (!(value instanceof com.ticketuki.common.security.AccesoServicio.Actor actor)) return null;
+        return "X-Auth-Id".equals(header) ? actor.authId() : actor.usuarioId();
     }
     private JsonNode campo(Object resultado, String path) {
         JsonNode node = mapper.valueToTree(resultado);

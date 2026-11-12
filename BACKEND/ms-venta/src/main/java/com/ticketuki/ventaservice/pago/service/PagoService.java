@@ -8,17 +8,17 @@ import com.ticketuki.ventaservice.pago.model.Pago;
 import com.ticketuki.ventaservice.pago.repository.PagoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 @Slf4j
 @Service
 public class PagoService {
+    private final com.ticketuki.common.validation.ValidacionDatos validacion;
+    private final com.ticketuki.common.security.AccesoServicio acceso;
 
     private final PagoRepository pagoRepository;
     private final com.ticketuki.ventaservice.repository.VentaRepository ventaRepository;
@@ -30,7 +30,11 @@ public class PagoService {
                        com.ticketuki.ventaservice.repository.VentaRepository ventaRepository,
                        com.ticketuki.ventaservice.repository.DetalleVentaRepository detalles,
                        @Qualifier("usuarioWebClient") WebClient usuarioWebClient,
-                       com.ticketuki.ventaservice.service.PagoTareas tareas) {
+                       com.ticketuki.ventaservice.service.PagoTareas tareas,
+                       com.ticketuki.common.security.AccesoServicio acceso,
+                         com.ticketuki.common.validation.ValidacionDatos validacion) {
+        this.validacion = validacion;
+        this.acceso = acceso;
         this.pagoRepository = pagoRepository;
         this.ventaRepository = ventaRepository;
         this.detalles = detalles;
@@ -54,19 +58,11 @@ public class PagoService {
     }
 
     private void validarUsuarioExiste(Long usuarioId) {
-        try {
-            usuarioWebClient.get()
-                    .uri("/usuarios/{id}", usuarioId)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError,
-                            response -> Mono.error(new IllegalArgumentException("Usuario no encontrado con id: " + usuarioId)))
-                    .bodyToMono(Void.class)
-                    .block(java.time.Duration.ofSeconds(5));
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new IllegalStateException("No se pudo validar el usuario", e);
-        }
+        var usuario = com.ticketuki.common.http.HttpServicios.consultar(usuarioWebClient,
+                "/usuarios/" + usuarioId, com.ticketuki.common.http.UsuarioReferencia.class);
+        if (!java.util.Objects.equals(usuario.id_usuario(), usuarioId))
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_GATEWAY, "Usuario de referencia invalido");
     }
 
     private void actualizarVenta(Long ventaId, String estado) {
@@ -81,6 +77,8 @@ public class PagoService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "CREAR", id = "id_pago")
     public PagoResponseDTO procesarPago(PagoRequestDTO dto) {
+        validacion.validar(dto);
+        acceso.propietario(dto.getUsuario_id());
         log.info("Procesando pago para venta: {}", dto.getVenta_id());
         var venta = obtenerVenta(dto.getVenta_id());
         if (!java.util.Objects.equals(venta.getMonto_total(), dto.getMonto()))
@@ -110,18 +108,21 @@ public class PagoService {
     @Transactional(readOnly = true)
     public PagoResponseDTO obtenerPago(Long id) {
         return pagoRepository.findById(id)
-                .map(this::toResponseDTO)
+                .map(p -> { acceso.propietario(p.getUsuario_id()); return toResponseDTO(p); })
                 .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));
     }
 
     @Transactional(readOnly = true)
     public List<PagoResponseDTO> listarPorVenta(Long idVenta) {
+        acceso.propietarios(detalles.findByVenta_id_venta(idVenta).stream()
+                .map(com.ticketuki.ventaservice.model.DetalleVenta::getUsuario_id_usuario).toList());
         return pagoRepository.findByVenta_id(idVenta).stream().map(this::toResponseDTO).toList();
     }
 
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "ACTUALIZAR", id = "id_pago")
     public PagoResponseDTO completarPago(Long id) {
+        acceso.administrador();
         Pago p = pagoRepository.findForUpdate(id)
                 .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));
         if (p.getEstado() == EstadoPago.COMPLETADO) return toResponseDTO(p);
@@ -157,6 +158,7 @@ public class PagoService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "ACTUALIZAR", id = "id_pago")
     public PagoResponseDTO procesarReembolso(Long id) {
+        acceso.administrador();
         Pago p = pagoRepository.findForUpdate(id)
                 .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));
         if (p.getEstado() == EstadoPago.REEMBOLSADO) return toResponseDTO(p);
@@ -171,6 +173,7 @@ public class PagoService {
     public PagoResponseDTO cancelarPago(Long id) {
         Pago p = pagoRepository.findForUpdate(id)
                 .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));
+        acceso.propietario(p.getUsuario_id());
         if (p.getEstado() == EstadoPago.CANCELADO) return toResponseDTO(p);
         if (p.getEstado() != EstadoPago.PENDIENTE)
             throw new IllegalStateException("Solo se puede cancelar un pago PENDIENTE");
@@ -193,16 +196,19 @@ public class PagoService {
 
     @Transactional(readOnly = true)
     public List<PagoResponseDTO> listarPorUsuario(Long idUsuario) {
+        acceso.propietario(idUsuario);
         return pagoRepository.findByUsuario_id(idUsuario).stream().map(this::toResponseDTO).toList();
     }
 
     @Transactional(readOnly = true)
     public List<PagoResponseDTO> listarPorEstado(EstadoPago estado) {
+        acceso.administrador();
         return pagoRepository.findByEstado(estado).stream().map(this::toResponseDTO).toList();
     }
 
     @Transactional(readOnly = true)
     public List<PagoResponseDTO> listarPorPeriodo(LocalDate desde, LocalDate hasta) {
+        acceso.administrador();
         if (desde.isAfter(hasta)) {
             throw new IllegalArgumentException("La fecha 'desde' no puede ser posterior a 'hasta'");
         }

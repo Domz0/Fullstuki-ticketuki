@@ -16,6 +16,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SectorService {
+    private final com.ticketuki.common.validation.ValidacionDatos validacion;
+    private final com.ticketuki.common.security.AccesoServicio acceso;
 
     private final SectorRepository sectorRepository;
     private final RecintoRepository recintoRepository;
@@ -27,6 +29,8 @@ public class SectorService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "SECTOR", accion = "CREAR", id = "id_sector")
     public SectorDTO crearSector(SectorDTO dto) {
+        validacion.validar(dto);
+        acceso.administrador();
         log.info("Creando sector: {}", dto.getNombre_sector());
         validarCapacidad(dto, null);
         Sector sector = new Sector(null, dto.getNombre_sector(), dto.getCapacidad_sector(), dto.getPrecio_sector(), dto.getRecinto_id_recinto());
@@ -36,6 +40,8 @@ public class SectorService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "SECTOR", accion = "ACTUALIZAR", id = "id_sector")
     public SectorDTO actualizarSector(Long id, SectorDTO dto) {
+        validacion.validar(dto);
+        acceso.administrador();
         log.info("Actualizando sector con ID: {}", id);
         Sector sector = sectorRepository.findById(id)
                 .orElseThrow(() -> {
@@ -69,6 +75,7 @@ public class SectorService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "SECTOR", accion = "ELIMINAR")
     public void eliminarSector(Long id) {
+        acceso.administrador();
         log.info("Eliminando sector con ID: {}", id);
         Sector sector = sectorRepository.findById(id)
                 .orElseThrow(() -> {

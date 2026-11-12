@@ -15,17 +15,9 @@ public class RecintoEventoClient {
 
     public void validar(Long id, Integer aforo) {
         if (id == null || aforo == null || aforo <= 0) throw new IllegalArgumentException("Recinto y aforo son obligatorios");
-        try {
-            var recinto = client.get().uri("/recintos/{id}", id).retrieve().bodyToMono(Recinto.class).block(Duration.ofSeconds(5));
-            if (recinto == null || !id.equals(recinto.id_recinto()) || recinto.capacidad_total() == null)
-                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Recinto sin datos de capacidad");
-            if (aforo > recinto.capacidad_total()) throw new IllegalArgumentException("El aforo supera la capacidad del recinto");
-        } catch (WebClientResponseException.NotFound ex) {
-            throw new IllegalArgumentException("Recinto no encontrado: " + id);
-        } catch (IllegalArgumentException | ResponseStatusException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "No se pudo comprobar el recinto", ex);
-        }
+        var recinto = com.ticketuki.common.http.HttpServicios.consultar(client, "/recintos/" + id, Recinto.class);
+        if (!id.equals(recinto.id_recinto()) || recinto.capacidad_total() == null || recinto.capacidad_total() <= 0)
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Recinto sin datos de capacidad");
+        if (aforo > recinto.capacidad_total()) throw new IllegalArgumentException("El aforo supera la capacidad del recinto");
     }
 }

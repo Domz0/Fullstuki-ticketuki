@@ -16,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class EventoService {
+    private final com.ticketuki.common.validation.ValidacionDatos validacion;
+    private final com.ticketuki.common.security.AccesoServicio acceso;
     private final EventoRepository eventoRepository;
     private final com.ticketuki.eventoservice.client.RecintoEventoClient recintos;
 
@@ -51,6 +53,8 @@ public class EventoService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "EVENTO", accion = "CREAR", id = "id_evento")
     public EventoResponseDTO crear(EventoRequestDTO eventoDTO) {
+        validacion.validar(eventoDTO);
+        acceso.administrador();
         log.info("Creando evento: {}", eventoDTO.getNombre_evento());
         recintos.validar(eventoDTO.getRecinto_id_recinto(), eventoDTO.getAforo_evento());
         Evento evento = new Evento(null,
@@ -67,6 +71,8 @@ public class EventoService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "EVENTO", accion = "ACTUALIZAR", id = "id_evento")
     public EventoResponseDTO actualizar(Long id, EventoRequestDTO eventoDTO) {
+        validacion.validar(eventoDTO);
+        acceso.administrador();
         log.info("Actualizando evento: {}", id);
         Evento evento = eventoRepository.findForUpdate(id)
                 .orElseThrow(() -> {
@@ -91,6 +97,7 @@ public class EventoService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "EVENTO", accion = "ELIMINAR")
     public void eliminar(Long id) {
+        acceso.administrador();
         log.info("Eliminando evento: {}", id);
         if (!eventoRepository.existsById(id)) {
             log.warn("Evento no encontrado para eliminar: {}", id);
@@ -120,6 +127,7 @@ public class EventoService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "EVENTO", accion = "ACTUALIZAR", id = "id_evento")
     public EventoResponseDTO cambiarEstado(Long id, Long idEstado) {
+        acceso.administrador();
         log.info("Cambiando estado del evento {} a {}", id, idEstado);
         Evento evento = eventoRepository.findForUpdate(id)
                 .orElseThrow(() -> {

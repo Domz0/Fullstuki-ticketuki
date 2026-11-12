@@ -16,6 +16,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PromocionService {
+    private final com.ticketuki.common.validation.ValidacionDatos validacion;
+    private final com.ticketuki.common.security.AccesoServicio acceso;
 
     private final PromocionRepository promocionRepository;
 
@@ -42,6 +44,8 @@ public class PromocionService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "PROMOCION", accion = "CREAR", id = "id_promocion")
     public PromocionResponseDTO crearPromocion(PromocionRequestDTO dto) {
+        validacion.validar(dto);
+        acceso.administrador();
         log.info("Creando promoción de empresa: {}", dto.getEmpresa());
         validarFechas(dto.getFecha_inicio(), dto.getFecha_expiracion());
         Promocion p = Promocion.builder()
@@ -58,6 +62,8 @@ public class PromocionService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "PROMOCION", accion = "ACTUALIZAR", id = "id_promocion")
     public PromocionResponseDTO actualizarPromocion(Long id, PromocionRequestDTO dto) {
+        validacion.validar(dto);
+        acceso.administrador();
         log.info("Actualizando promoción con id: {}", id);
         validarFechas(dto.getFecha_inicio(), dto.getFecha_expiracion());
         Promocion p = promocionRepository.findById(id)
@@ -98,6 +104,7 @@ public class PromocionService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "PROMOCION", accion = "ELIMINAR")
     public void eliminarPromocion(Long id) {
+        acceso.administrador();
         if (!promocionRepository.existsById(id)) {
             throw new PromocionNotFoundException("Promoción no encontrada: " + id);
         }

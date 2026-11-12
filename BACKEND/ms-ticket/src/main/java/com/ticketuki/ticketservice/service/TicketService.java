@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class TicketService {
+    private final com.ticketuki.common.validation.ValidacionDatos validacion;
+    private final com.ticketuki.common.security.AccesoServicio acceso;
 
     private final TicketRepository ticketRepository;
     private final OperacionVentaStore operaciones;
@@ -36,7 +38,11 @@ public class TicketService {
 
     public TicketService(TicketRepository ticketRepository,
                          com.ticketuki.ticketservice.repository.CupoEventoRepository cupos,
-                         com.ticketuki.ticketservice.client.ReferenciasTicketClient referencias, OperacionVentaStore operaciones) {
+                         com.ticketuki.ticketservice.client.ReferenciasTicketClient referencias, OperacionVentaStore operaciones,
+                         com.ticketuki.common.security.AccesoServicio acceso,
+                         com.ticketuki.common.validation.ValidacionDatos validacion) {
+        this.validacion = validacion;
+        this.acceso = acceso;
         this.operaciones = operaciones;
         this.ticketRepository = ticketRepository;
         this.cupos = cupos;
@@ -131,6 +137,18 @@ public class TicketService {
 
     // ── Validaciones contra microservicios ────────────────────────────────────
 
+    private void validarReferenciasExistentes(Ticket ticket) {
+        referencias.validarRelacion(ticket.getEvento_id_evento(), ticket.getSector_id_sector());
+        var venta = referencias.venta(ticket.getVenta_id_venta());
+        if (!java.util.Objects.equals(venta.id_venta(), ticket.getVenta_id_venta())
+                || venta.estado_venta() == null || !"CONFIRMADA".equals(venta.estado_venta().nombre())
+                || venta.detalles() == null || venta.detalles().stream().noneMatch(d ->
+                    java.util.Objects.equals(d.evento_id_evento(), ticket.getEvento_id_evento())
+                    && java.util.Objects.equals(d.sector_id_sector(), ticket.getSector_id_sector())
+                    && d.cantidad_ticket() != null && d.cantidad_ticket() > 0))
+            throw new TicketOperacionInvalidaException("El ticket debe corresponder a una venta confirmada del evento y sector");
+    }
+
     private void validarEstado(Long idEstado) {
         if (EstadoTicket.fromId(idEstado) == null) {
             throw new IllegalArgumentException("El estado de ticket es obligatorio");
@@ -175,6 +193,7 @@ public class TicketService {
 
     @Transactional(readOnly = true)
     public Disponibilidad disponibilidad(Long evento, Long sector) {
+        referencias.validarRelacion(evento, sector);
         return new Disponibilidad(ticketRepository.contarEvento(evento), ticketRepository.contarSector(evento, sector),
                 operaciones.reservadosEvento(evento), operaciones.reservadosSector(evento, sector));
     }
@@ -192,6 +211,8 @@ public class TicketService {
     @Transactional(isolation = org.springframework.transaction.annotation.Isolation.READ_COMMITTED)
     @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "CREAR", id = "id_ticket")
     public TicketResponseDTO crearTicket(TicketRequestDTO dto) {
+        validacion.validar(dto);
+        acceso.administrador();
         dto.setRun_titular(dto.getRun_titular());
         log.info("Creando ticket para evento: {}", dto.getEvento_id_evento());
         var operacion = operaciones.bloquear(dto.getVenta_id_venta());
@@ -218,10 +239,13 @@ public class TicketService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ACTUALIZAR", id = "id_ticket")
     public TicketResponseDTO actualizarTicket(Long id, TicketUpdateDTO dto) {
+        validacion.validar(dto);
         dto.setRun_titular(dto.getRun_titular());
         Ticket ticket = ticketRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
+        acceso.titular(ticket.getRun_titular());
         verificarModificable(ticket);
+        validarReferenciasExistentes(ticket);
         if (!ticket.getRun_titular().equalsIgnoreCase(dto.getRun_titular())) {
             throw new TicketOperacionInvalidaException("Use la transferencia para cambiar el RUN del titular");
         }
@@ -233,6 +257,7 @@ public class TicketService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ACTUALIZAR", id = "id_ticket")
     public TicketResponseDTO cambiarEstado(Long id, Long idEstado) {
+        acceso.administrador();
         validarEstado(idEstado);
         Ticket ticket = ticketRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
@@ -248,6 +273,7 @@ public class TicketService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ELIMINAR")
     public void eliminarTicket(Long id) {
+        acceso.administrador();
         Ticket ticket = ticketRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
         verificarEliminable(ticket);
@@ -257,6 +283,7 @@ public class TicketService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ACTUALIZAR", id = "ticket.id_ticket", condicion = "valido")
     public ValidarTicketResponseDTO validarTicket(String codQR) {
+        acceso.administrador();
         Ticket ticket = ticketRepository.findByQrForUpdate(codQR)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado para QR: " + codQR));
         String nombreEstado = obtenerNombreEstado(ticket.getEstado_ticket_id_estado());
@@ -278,14 +305,17 @@ public class TicketService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ACTUALIZAR", id = "id_ticket")
     public TicketResponseDTO transferirTicket(Long id, TransferirTicketDTO dto) {
+        validacion.validar(dto);
         dto.setRun_titular(dto.getRun_titular());
         Ticket ticket = ticketRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
+        acceso.titular(ticket.getRun_titular());
         String nombreEstado = obtenerNombreEstado(ticket.getEstado_ticket_id_estado());
         if (!List.of("VALIDO", "TRANSFERIDO").contains(normalizar(nombreEstado))) {
             throw new TicketOperacionInvalidaException(
                     "Solo se pueden transferir tickets VALIDOS o TRANSFERIDOS. Estado actual: " + nombreEstado);
         }
+        validarReferenciasExistentes(ticket);
         Long idTransferido = obtenerIdPorNombre("TRANSFERIDO");
         if (idTransferido == null) {
             throw new TicketOperacionInvalidaException(
@@ -306,17 +336,19 @@ public class TicketService {
     @Transactional(readOnly = true)
     public TicketResponseDTO obtenerTicket(Long id) {
         return ticketRepository.findById(id)
-                .map(this::toResponseDTO)
+                .map(t -> { acceso.titular(t.getRun_titular()); return toResponseDTO(t); })
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
     }
 
     @Transactional(readOnly = true)
     public Optional<TicketResponseDTO> obtenerPorQR(String codQR) {
+        acceso.administrador();
         return ticketRepository.findByCod_qr(codQR).map(this::toResponseDTO);
     }
 
     @Transactional(readOnly = true)
     public List<TicketResponseDTO> listarTickets() {
+        acceso.administrador();
         return ticketRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -324,24 +356,35 @@ public class TicketService {
 
     @Transactional(readOnly = true)
     public List<TicketResponseDTO> listarPorEvento(Long eventoId) {
+        acceso.administrador();
         return ticketRepository.findByEvento_id_evento(eventoId).stream()
                 .map(this::toResponseDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<TicketResponseDTO> listarPorVenta(Long ventaId) {
+        if (!acceso.privilegiado()) {
+            var venta = referencias.venta(ventaId);
+            if (!java.util.Objects.equals(venta.id_venta(), ventaId) || venta.detalles() == null)
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Venta de referencia invalida");
+            acceso.propietarios(venta.detalles().stream().map(
+                    com.ticketuki.ticketservice.client.ReferenciasTicketClient.Detalle::usuario_id_usuario).toList());
+        }
         return ticketRepository.findByVenta_id_venta(ventaId).stream()
+                .filter(t -> acceso.esTitular(t.getRun_titular()))
                 .map(this::toResponseDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<TicketResponseDTO> listarPorSector(Long sectorId) {
+        acceso.administrador();
         return ticketRepository.findBySector_id_sector(sectorId).stream()
                 .map(this::toResponseDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<TicketResponseDTO> listarPorRun(String run) {
+        acceso.titular(run);
         return ticketRepository.findByRun_titular(RunUtil.normalizar(run)).stream()
                 .map(this::toResponseDTO).collect(Collectors.toList());
     }

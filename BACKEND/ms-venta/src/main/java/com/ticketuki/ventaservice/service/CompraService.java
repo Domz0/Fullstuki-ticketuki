@@ -16,6 +16,8 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class CompraService {
+    private final com.ticketuki.common.validation.ValidacionDatos validacion;
+    private final com.ticketuki.common.security.AccesoServicio acceso;
     private final JdbcTemplate jdbc;
     private final VentaService ventas;
     private final PagoService pagos;
@@ -26,6 +28,8 @@ public class CompraService {
 
     @Transactional
     public Compra crear(CompraRequestDTO dto) {
+        validacion.validar(dto);
+        acceso.propietarios(dto.venta().getDetalles().stream().map(DetalleVentaRequestDTO::getUsuario_id_usuario).toList());
         validarTitulares(dto);
         long usuario = dto.venta().getDetalles().getFirst().getUsuario_id_usuario();
         String solicitud;
@@ -89,6 +93,7 @@ public class CompraService {
                     rs.getTimestamp("reserva_hasta") == null ? null : rs.getTimestamp("reserva_hasta").toLocalDateTime());
         }, id);
         if (filas.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Compra no encontrada");
+        acceso.propietario(filas.getFirst().usuario_id());
         return filas.getFirst();
     }
 }

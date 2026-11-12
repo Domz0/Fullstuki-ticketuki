@@ -25,6 +25,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class VentaService {
+    private final com.ticketuki.common.validation.ValidacionDatos validacion;
+    private final com.ticketuki.common.security.AccesoServicio acceso;
 
     private static final double PORCENTAJE_IVA      = 0.19;
     private static final double PORCENTAJE_COMISION = 0.10;
@@ -36,6 +38,11 @@ public class VentaService {
 
 
     // ── Helpers ──────────────────────────────────────────────────────────────
+
+    private void validarPropietario(Long ventaId) {
+        acceso.propietarios(detalleVentaRepository.findByVenta_id_venta(ventaId).stream()
+                .map(DetalleVenta::getUsuario_id_usuario).toList());
+    }
 
     private EstadoVentaDTO obtenerEstado(Long id) {
         EstadoVenta estado = EstadoVenta.fromId(id);
@@ -101,6 +108,10 @@ public class VentaService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "VENTA", accion = "CREAR", id = "id_venta")
     public VentaResponseDTO crearVenta(VentaRequestDTO dto) {
+        validacion.validar(dto);
+        if (dto == null || dto.getDetalles() == null || dto.getDetalles().isEmpty())
+            throw new IllegalArgumentException("Debe indicar detalles de venta");
+        acceso.propietarios(dto.getDetalles().stream().map(DetalleVentaRequestDTO::getUsuario_id_usuario).toList());
         log.info("Creando venta con medio de pago: {}", dto.getMedio_pago());
         try { com.ticketuki.ventaservice.pago.model.MedioPago.valueOf(dto.getMedio_pago()); }
         catch (RuntimeException ex) { throw new IllegalArgumentException("Medio de pago inválido"); }
@@ -147,6 +158,7 @@ public class VentaService {
 
     @Transactional
     public VentaResponseDTO cambiarEstado(Long id, Long idEstado) {
+        acceso.administrador();
         Venta venta = ventaRepository.findById(id)
                 .orElseThrow(() -> new VentaNotFoundException("Venta no encontrada: " + id));
         obtenerEstado(idEstado);
@@ -159,6 +171,7 @@ public class VentaService {
 
     @Transactional(readOnly = true)
     public VentaResponseDTO obtenerVenta(Long id) {
+        validarPropietario(id);
         Venta v = ventaRepository.findById(id)
                 .orElseThrow(() -> new VentaNotFoundException("Venta no encontrada: " + id));
         List<DetalleVentaResponseDTO> detalles = detalleVentaRepository
@@ -170,6 +183,7 @@ public class VentaService {
 
     @Transactional(readOnly = true)
     public List<VentaResponseDTO> listarVentas() {
+        acceso.administrador();
         return ventaRepository.findAll().stream()
                 .map(v -> {
                     List<DetalleVentaResponseDTO> detalles = detalleVentaRepository
@@ -183,6 +197,7 @@ public class VentaService {
 
     @Transactional(readOnly = true)
     public List<VentaResponseDTO> listarPorPeriodo(LocalDateTime inicio, LocalDateTime fin) {
+        acceso.administrador();
         return ventaRepository.findByFecha_ventaBetween(inicio, fin).stream()
                 .map(v -> {
                     List<DetalleVentaResponseDTO> detalles = detalleVentaRepository
@@ -199,12 +214,13 @@ public class VentaService {
     @Transactional(readOnly = true)
     public DetalleVentaResponseDTO obtenerDetalle(Long id) {
         return detalleVentaRepository.findById(id)
-                .map(this::mapDetalleToDTO)
+                .map(d -> { acceso.propietario(d.getUsuario_id_usuario()); return mapDetalleToDTO(d); })
                 .orElseThrow(() -> new VentaNotFoundException("Detalle de venta no encontrado: " + id));
     }
 
     @Transactional(readOnly = true)
     public List<DetalleVentaResponseDTO> listarDetallesPorVenta(Long ventaId) {
+        validarPropietario(ventaId);
         return detalleVentaRepository.findByVenta_id_venta(ventaId).stream()
                 .map(this::mapDetalleToDTO)
                 .toList();

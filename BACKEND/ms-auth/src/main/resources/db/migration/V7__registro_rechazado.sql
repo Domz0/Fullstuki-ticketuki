@@ -1,1 +1,0 @@
-ALTER TABLE usuario_auth ADD COLUMN registro_rechazado BOOLEAN NOT NULL DEFAULT FALSE;

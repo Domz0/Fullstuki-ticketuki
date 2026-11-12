@@ -47,7 +47,7 @@ public class AccesoCliente {
         String[] partes = path.split("/");
         if (path.startsWith("/usuarios/")) return Mono.just(path.equals("/usuarios/" + usuarioId));
         if (path.matches("/compras/[0-9]+"))
-            return ventas.get().uri(path).header("X-Rol", "CLIENTE").header("X-Usuario-Id", usuarioId.toString())
+            return ventas.get().uri(path)
                     .retrieve().bodyToMono(JsonNode.class).timeout(Duration.ofSeconds(5))
                     .map(c -> mismoUsuario(c, "usuario_id", usuarioId))
                     .onErrorResume(WebClientResponseException.NotFound.class, ex -> Mono.just(false))

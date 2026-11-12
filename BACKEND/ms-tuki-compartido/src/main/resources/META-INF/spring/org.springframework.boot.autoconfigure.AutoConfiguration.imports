@@ -1,1 +1,3 @@
 com.ticketuki.common.audit.AuditoriaConfig
+com.ticketuki.common.security.AccesoServicioConfig
+com.ticketuki.common.http.HttpServiciosConfig

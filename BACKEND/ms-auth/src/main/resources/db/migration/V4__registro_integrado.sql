@@ -1,4 +1,0 @@
-ALTER TABLE usuario_auth
-    ADD COLUMN activo BOOLEAN NOT NULL DEFAULT TRUE,
-    ADD COLUMN registro_id VARCHAR(36) NULL UNIQUE,
-    ADD COLUMN registro_fingerprint VARCHAR(64) NULL;

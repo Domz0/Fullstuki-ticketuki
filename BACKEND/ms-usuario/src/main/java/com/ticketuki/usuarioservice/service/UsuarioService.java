@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UsuarioService {
+    private final com.ticketuki.common.validation.ValidacionDatos validacion;
+    private final com.ticketuki.common.security.AccesoServicio acceso;
     private final UsuarioRepository usuarioRepository;
     private final DireccionUsuarioRepository direccionRepository;
 
@@ -59,6 +61,7 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarUsuarios() {
+        acceso.administrador();
         log.info("Mostrando todos los usuarios");
         return usuarioRepository.findAll()
             .stream()
@@ -68,6 +71,7 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public UsuarioResponseDTO obtenerUsuarioPorId(Long id) {
+        acceso.propietario(id);
         log.info("Buscando usuario por id: {}", id);
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> {
@@ -80,6 +84,8 @@ public class UsuarioService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "USUARIO", accion = "CREAR", id = "id_usuario")
     public UsuarioResponseDTO crearUsuario(UsuarioRequestDTO usuarioDTO) {
+        validacion.validar(usuarioDTO);
+        acceso.administrador();
         log.info("Creando nuevo usuario con run: {}", usuarioDTO.getRun());
         validarDuplicados(usuarioDTO, null);
 
@@ -112,6 +118,8 @@ public class UsuarioService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "USUARIO", accion = "ACTUALIZAR", id = "id_usuario")
     public UsuarioResponseDTO actualizarUsuario(Long id, UsuarioRequestDTO usuarioDTO) {
+        validacion.validar(usuarioDTO);
+        acceso.propietario(id);
         log.info("Actualizando usuario con id: {}", id);
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> {
@@ -148,6 +156,7 @@ public class UsuarioService {
     @Transactional
     @com.ticketuki.common.audit.Auditar(entidad = "USUARIO", accion = "ELIMINAR")
     public void eliminarUsuario(Long id) {
+        acceso.administrador();
         log.info("Eliminando usuario con ID: {}", id);
 
         if (!usuarioRepository.existsById(id)) {

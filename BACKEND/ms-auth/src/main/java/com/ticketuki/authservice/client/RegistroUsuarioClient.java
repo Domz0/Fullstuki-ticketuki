@@ -3,7 +3,6 @@ package com.ticketuki.authservice.client;
 import com.ticketuki.authservice.dto.PerfilRegistroDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -17,10 +16,7 @@ public class RegistroUsuarioClient {
     public RegistroUsuarioClient(@Value("${ms.usuario.url:http://localhost:8001}") String url,
                                  @Value("${internal.service-key:}") String key) {
         this.key = key;
-        var factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(3000);
-        factory.setReadTimeout(5000);
-        client = RestClient.builder().baseUrl(url).requestFactory(factory).build();
+        client = com.ticketuki.common.http.RestServicios.crear(url);
     }
 
     public Long registrar(String registroId, PerfilRegistroDTO perfil) {
@@ -39,6 +35,8 @@ public class RegistroUsuarioClient {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "No se pudo completar el perfil. Reintentar con los mismos datos", ex);
         } catch (ResourceAccessException ex) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Registro pendiente. Reintentar con los mismos datos", ex);
+        } catch (RestClientException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Respuesta de registro invalida", ex);
         }
     }
 }

@@ -1,1 +1,0 @@
-ALTER TABLE evento MODIFY COLUMN descripcion VARCHAR(500) NULL;
