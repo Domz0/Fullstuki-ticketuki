@@ -13,7 +13,7 @@ public class SectorDTO {
     private Long id_sector;
 
     @NotBlank(message = "El nombre del sector no puede estar vacío")
-    @jakarta.validation.constraints.Size(max = 25)
+    @jakarta.validation.constraints.Size(max = 50)
     private String nombre_sector;
 
     @NotNull(message = "La capacidad del sector es obligatoria")

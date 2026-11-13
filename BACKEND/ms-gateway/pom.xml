@@ -6,43 +6,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version>
-        <relativePath/>
+        <groupId>com.ticketuki</groupId>
+        <artifactId>ticketuki</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-
-    <groupId>com.ticketuki</groupId>
     <artifactId>ms-gateway</artifactId>
-    <version>1.0.0</version>
-    <name>Module Service</name>
-
-    <properties>
-        <java.version>21</java.version>
-        <lombok.version>1.18.36</lombok.version>
-        <jjwt.version>0.12.6</jjwt.version>
-        <!-- Spring Cloud 2023.0.x es compatible con Spring Boot 3.3.x -->
-        <spring-cloud.version>2023.0.3</spring-cloud.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <name>ms-gateway</name>
 
     <dependencies>
-        <dependency><groupId>com.ticketuki</groupId><artifactId>ms-tuki-compartido</artifactId><version>1.0.0</version></dependency>
+        <dependency><groupId>com.ticketuki</groupId><artifactId>ms-tuki-compartido</artifactId></dependency>
         <!-- API Gateway reactivo (trae spring-boot-starter-webflux) -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
         </dependency>
 
         <!-- Actuator: health checks y endpoint /actuator/gateway -->
@@ -81,20 +58,11 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
     </build>

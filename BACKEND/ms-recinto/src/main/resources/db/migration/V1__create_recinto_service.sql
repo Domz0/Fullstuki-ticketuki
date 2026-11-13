@@ -1,9 +1,9 @@
 CREATE TABLE direccion_recinto (
     id_direccion_recinto BIGINT AUTO_INCREMENT PRIMARY KEY,
-    calle VARCHAR(50),
-    region VARCHAR(50),
-    comuna VARCHAR(50),
-    num_calle INTEGER,
+    calle VARCHAR(50) NOT NULL,
+    region VARCHAR(50) NOT NULL,
+    comuna VARCHAR(50) NOT NULL,
+    num_calle INTEGER NOT NULL,
     referencia_acceso VARCHAR(100)
 );
 

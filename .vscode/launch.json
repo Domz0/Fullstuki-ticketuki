@@ -1,0 +1,109 @@
+{
+    "version":  "0.2.0",
+    "configurations":  [
+                           {
+                               "type":  "java",
+                               "name":  "Spring Boot-AuthServiceApplication\u003cms-auth\u003e",
+                               "request":  "launch",
+                               "cwd":  "${workspaceFolder}/BACKEND",
+                               "mainClass":  "com.ticketuki.authservice.AuthServiceApplication",
+                               "projectName":  "ms-auth",
+                               "console":  "integratedTerminal",
+                               "env":  {
+                                           "INTERNAL_SERVICE_KEY":  "ticketuki-desarrollo-local-cambiar"
+                                       },
+                               "envFile":  "${workspaceFolder}/BACKEND/.env"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Spring Boot-EventoServiceApplication\u003cms-evento\u003e",
+                               "request":  "launch",
+                               "cwd":  "${workspaceFolder}/BACKEND",
+                               "mainClass":  "com.ticketuki.eventoservice.EventoServiceApplication",
+                               "projectName":  "ms-evento",
+                               "console":  "integratedTerminal",
+                               "env":  {
+                                           "INTERNAL_SERVICE_KEY":  "ticketuki-desarrollo-local-cambiar"
+                                       },
+                               "envFile":  "${workspaceFolder}/BACKEND/.env"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Spring Boot-GatewayApplication\u003cms-gateway\u003e",
+                               "request":  "launch",
+                               "cwd":  "${workspaceFolder}/BACKEND",
+                               "mainClass":  "com.ticketuki.gateway.GatewayApplication",
+                               "projectName":  "ms-gateway",
+                               "console":  "integratedTerminal",
+                               "env":  {
+                                           "INTERNAL_SERVICE_KEY":  "ticketuki-desarrollo-local-cambiar"
+                                       },
+                               "envFile":  "${workspaceFolder}/BACKEND/.env"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Spring Boot-HistorialServiceApplication\u003cms-historial\u003e",
+                               "request":  "launch",
+                               "cwd":  "${workspaceFolder}/BACKEND",
+                               "mainClass":  "com.ticketuki.historialservice.HistorialServiceApplication",
+                               "projectName":  "ms-historial",
+                               "console":  "integratedTerminal",
+                               "env":  {
+                                           "INTERNAL_SERVICE_KEY":  "ticketuki-desarrollo-local-cambiar"
+                                       },
+                               "envFile":  "${workspaceFolder}/BACKEND/.env"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Spring Boot-RecintoServiceApplication\u003cms-recinto\u003e",
+                               "request":  "launch",
+                               "cwd":  "${workspaceFolder}/BACKEND",
+                               "mainClass":  "com.ticketuki.recintoservice.RecintoServiceApplication",
+                               "projectName":  "ms-recinto",
+                               "console":  "integratedTerminal",
+                               "env":  {
+                                           "INTERNAL_SERVICE_KEY":  "ticketuki-desarrollo-local-cambiar"
+                                       },
+                               "envFile":  "${workspaceFolder}/BACKEND/.env"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Spring Boot-TicketServiceApplication\u003cms-ticket\u003e",
+                               "request":  "launch",
+                               "cwd":  "${workspaceFolder}/BACKEND",
+                               "mainClass":  "com.ticketuki.ticketservice.TicketServiceApplication",
+                               "projectName":  "ms-ticket",
+                               "console":  "integratedTerminal",
+                               "env":  {
+                                           "INTERNAL_SERVICE_KEY":  "ticketuki-desarrollo-local-cambiar"
+                                       },
+                               "envFile":  "${workspaceFolder}/BACKEND/.env"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Spring Boot-UsuarioServiceApplication\u003cms-usuario\u003e",
+                               "request":  "launch",
+                               "cwd":  "${workspaceFolder}/BACKEND",
+                               "mainClass":  "com.ticketuki.usuarioservice.UsuarioServiceApplication",
+                               "projectName":  "ms-usuario",
+                               "console":  "integratedTerminal",
+                               "env":  {
+                                           "INTERNAL_SERVICE_KEY":  "ticketuki-desarrollo-local-cambiar"
+                                       },
+                               "envFile":  "${workspaceFolder}/BACKEND/.env"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Spring Boot-VentaServiceApplication\u003cms-venta\u003e",
+                               "request":  "launch",
+                               "cwd":  "${workspaceFolder}/BACKEND",
+                               "mainClass":  "com.ticketuki.ventaservice.VentaServiceApplication",
+                               "projectName":  "ms-venta",
+                               "console":  "integratedTerminal",
+                               "env":  {
+                                           "INTERNAL_SERVICE_KEY":  "ticketuki-desarrollo-local-cambiar"
+                                       },
+                               "envFile":  "${workspaceFolder}/BACKEND/.env"
+                           }
+                       ]
+}

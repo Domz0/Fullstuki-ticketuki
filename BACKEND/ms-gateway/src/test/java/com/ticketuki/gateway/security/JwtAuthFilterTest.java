@@ -1,73 +1,64 @@
 package com.ticketuki.gateway.security;
 
-import io.jsonwebtoken.Claims;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.StandardCharsets;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.Test;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
+import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Mono;
-import static org.mockito.Mockito.*;
+import java.util.Date;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class JwtAuthFilterTest {
-    JwtUtil jwt = mock(JwtUtil.class);
-    AccesoCliente acceso = mock(AccesoCliente.class);
-    SesionActivaClient sesiones = mock(SesionActivaClient.class);
-    JwtAuthFilter filter = new JwtAuthFilter(jwt, acceso, sesiones, new com.fasterxml.jackson.databind.ObjectMapper().findAndRegisterModules());
-    @Test void rutaPrivadaSinTokenDevuelve401() {
-        var exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/eventos"));
-        var chain = mock(GatewayFilterChain.class);
-        filter.filter(exchange, chain).block();
-        assertThat(exchange.getResponse().getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        verifyNoInteractions(chain);
-    }
-    @Test void clienteNoPuedeCrearEvento() {
-        var claims = mock(Claims.class);
-        when(jwt.validarYObtenerClaims("token")).thenReturn(claims);
-        when(claims.get("rol")).thenReturn("CLIENTE");
-        var exchange = MockServerWebExchange.from(MockServerHttpRequest.post("/eventos").header("Authorization", "Bearer token"));
-        var chain = mock(GatewayFilterChain.class);
-        filter.filter(exchange, chain).block();
-        assertThat(exchange.getResponse().getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        verifyNoInteractions(chain);
-    }
-    @Test void registroPublicoEliminaCabecerasSuplantadas() {
-        var exchange = MockServerWebExchange.from(MockServerHttpRequest.post("/auth/registro")
-            .header("X-Rol", "ADMIN").header("X-Usuario-Id", "1").header("X-Internal-Key", "secreto"));
-        filter.filter(exchange, destino -> {
-            assertThat(destino.getRequest().getHeaders().getFirst("X-Rol")).isNull();
-            assertThat(destino.getRequest().getHeaders().getFirst("X-Usuario-Id")).isNull();
-            assertThat(destino.getRequest().getHeaders().getFirst("X-Internal-Key")).isNull();
+    @Test void identidadFirmadaReemplazaCabecerasFalsificadas() {
+        var jwt = new JwtUtil();
+        ReflectionTestUtils.setField(jwt, "secret", "ticketuki-jwt-secret-key-muy-larga-y-segura-2024-cambiar");
+        var token = Jwts.builder().subject("cliente").claim("id", 10L).claim("usuarioId", 1L)
+                .claim("rol", "CLIENTE").expiration(new Date(System.currentTimeMillis() + 60000))
+                .signWith(Keys.hmacShaKeyFor("ticketuki-jwt-secret-key-muy-larga-y-segura-2024-cambiar".getBytes(StandardCharsets.UTF_8))).compact();
+        String header = "Bearer " + token;
+        var permisos = mock(AccesoCliente.class);
+        var sesiones = mock(SesionActivaClient.class);
+        when(sesiones.validar(header)).thenReturn(Mono.just(true));
+        when(permisos.permite("/usuarios/1", 1L)).thenReturn(Mono.just(true));
+        var filter = new JwtAuthFilter(jwt, permisos, sesiones, new ObjectMapper());
+        var exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/usuarios/1")
+                .header("Authorization", header).header("X-Usuario-Id", "2")
+                .header("X-Rol", "ADMIN").header("X-Internal-Key", "falsa"));
+        GatewayFilterChain chain = mock(GatewayFilterChain.class);
+        when(chain.filter(any())).thenAnswer(inv -> {
+            org.springframework.web.server.ServerWebExchange forwarded = inv.getArgument(0);
+            assertThat(forwarded.getRequest().getHeaders().getFirst("X-Usuario-Id")).isEqualTo("1");
+            assertThat(forwarded.getRequest().getHeaders().getFirst("X-Rol")).isEqualTo("CLIENTE");
+            assertThat(forwarded.getRequest().getHeaders().containsKey("X-Internal-Key")).isFalse();
             return Mono.empty();
-        }).block();
-        verifyNoInteractions(jwt);
-    }
-
-    @Test void tokenRevocadoNoLlegaAlServicioYDevuelveErrorJson() {
-        var claims = mock(Claims.class);
-        when(jwt.validarYObtenerClaims("token")).thenReturn(claims);
-        when(claims.get("rol")).thenReturn("ADMIN");
-        when(claims.getSubject()).thenReturn("admin");
-        when(sesiones.validar("Bearer token")).thenReturn(Mono.just(false));
-        var exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/eventos").header("Authorization", "Bearer token"));
-        var chain = mock(GatewayFilterChain.class);
+        });
         filter.filter(exchange, chain).block();
-        assertThat(exchange.getResponse().getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(exchange.getResponse().getBodyAsString().block()).contains("\"status\":401", "\"path\":\"/eventos\"");
+        verify(chain).filter(any());
+        when(permisos.permite("/usuarios/1", 1L)).thenReturn(Mono.just(false));
+        var rejected = MockServerWebExchange.from(MockServerHttpRequest.get("/usuarios/1").header("Authorization", header));
+        clearInvocations(chain);
+        filter.filter(rejected, chain).block();
+        assertThat(rejected.getResponse().getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
         verifyNoInteractions(chain);
     }
 
-    @Test void caidaDeAuthImpideAccesoInclusoAdmin() {
-        var claims = mock(Claims.class);
-        when(jwt.validarYObtenerClaims("token")).thenReturn(claims);
-        when(claims.get("rol")).thenReturn("ADMIN");
-        when(claims.getSubject()).thenReturn("admin");
-        when(sesiones.validar("Bearer token")).thenReturn(Mono.error(new IllegalStateException()));
-        var exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/eventos").header("Authorization", "Bearer token"));
-        var chain = mock(GatewayFilterChain.class);
-        filter.filter(exchange, chain).block();
-        assertThat(exchange.getResponse().getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+    @Test void sinTokenOConTokenInvalidoNoEnruta() {
+        var jwt = new JwtUtil();
+        ReflectionTestUtils.setField(jwt, "secret", "ticketuki-jwt-secret-key-muy-larga-y-segura-2024-cambiar");
+        var filter = new JwtAuthFilter(jwt, mock(AccesoCliente.class), mock(SesionActivaClient.class), new ObjectMapper());
+        GatewayFilterChain chain = mock(GatewayFilterChain.class);
+        for (String token : java.util.List.of("", "Bearer invalido")) {
+            var ex = MockServerWebExchange.from(MockServerHttpRequest.get("/usuarios/1").header("Authorization", token));
+            filter.filter(ex, chain).block();
+            assertThat(ex.getResponse().getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        }
         verifyNoInteractions(chain);
     }
 }

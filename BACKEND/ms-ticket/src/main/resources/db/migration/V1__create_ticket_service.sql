@@ -6,7 +6,6 @@ CREATE TABLE ticket (
     run_titular VARCHAR(12) NOT NULL,
     fecha_emision DATE NOT NULL,
     venta_id_venta BIGINT,
-    estado_ticket_id_estado BIGINT,
     evento_id_evento BIGINT,
     sector_id_sector BIGINT,
     estado VARCHAR(25) NULL,

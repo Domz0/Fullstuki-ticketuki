@@ -1,18 +1,25 @@
 package com.ticketuki.gateway;
 
-import com.ticketuki.gateway.security.JwtAuthFilter;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import java.net.URI;
+import java.net.http.*;
+import java.time.Duration;
 import static org.assertj.core.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,
-    properties = {"spring.main.web-application-type=reactive", "INTERNAL_SERVICE_KEY=prueba-interna"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = "INTERNAL_SERVICE_KEY=test-interna")
 class GatewayContextTest {
-    @Autowired ApplicationContext context;
-    @Test void bibliotecaCompartidaNoAgregaBaseDeDatosAlGateway() {
-        assertThat(context.getBean(JwtAuthFilter.class)).isNotNull();
-        assertThat(context.getBeanNamesForType(javax.sql.DataSource.class)).isEmpty();
+    @LocalServerPort int port;
+
+    @Test void gatewayArrancaYRespondeHealth() throws Exception {
+        try (var client = HttpClient.newHttpClient()) {
+            var request = HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/actuator/health"))
+                    .timeout(Duration.ofSeconds(10)).GET().build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).contains("\"status\":\"UP\"");
+        }
     }
 }

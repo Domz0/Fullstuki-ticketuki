@@ -1,6 +1,6 @@
 CREATE TABLE direccion_usuario (
     id_direccion_usuario BIGINT AUTO_INCREMENT PRIMARY KEY,
-    calle VARCHAR(100) NOT NULL,
+    calle VARCHAR(50) NOT NULL,
     region VARCHAR(50) NOT NULL,
     comuna VARCHAR(50) NOT NULL,
     num_calle INTEGER NOT NULL

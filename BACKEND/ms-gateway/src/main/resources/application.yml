@@ -6,43 +6,45 @@ spring:
     name: ms-gateway
   cloud:
     gateway:
-      # Enrutamiento centralizado: cada predicate Path decide a qué microservicio
-      # se reenvía la petición. El cliente solo conoce el gateway (puerto 8080).
-      routes:
-        - id: ms-auth
-          uri: ${MS_AUTH_URL:http://localhost:8011}
-          predicates:
-            - Path=/auth/**
+      server:
+        webflux:
+          # Enrutamiento centralizado: cada predicate Path decide a qué microservicio
+          # se reenvía la petición. El cliente solo conoce el gateway (puerto 8080).
+          routes:
+            - id: ms-auth
+              uri: ${MS_AUTH_URL:http://localhost:8011}
+              predicates:
+                - Path=/auth/**
 
-        - id: ms-usuario
-          uri: ${MS_USUARIO_URL:http://localhost:8001}
-          predicates:
-            - Path=/usuarios/**
+            - id: ms-usuario
+              uri: ${MS_USUARIO_URL:http://localhost:8001}
+              predicates:
+                - Path=/usuarios/**
 
-        - id: ms-evento
-          uri: ${MS_EVENTO_URL:http://localhost:8003}
-          predicates:
-            - Path=/eventos/**,/estadosEvento/**
+            - id: ms-evento
+              uri: ${MS_EVENTO_URL:http://localhost:8003}
+              predicates:
+                - Path=/eventos/**,/estadosEvento/**
 
-        - id: ms-ticket
-          uri: ${MS_TICKET_URL:http://localhost:8005}
-          predicates:
-            - Path=/tickets/**,/estadosTicket/**
+            - id: ms-ticket
+              uri: ${MS_TICKET_URL:http://localhost:8005}
+              predicates:
+                - Path=/tickets/**,/estadosTicket/**
 
-        - id: ms-venta
-          uri: ${MS_VENTA_URL:http://localhost:8006}
-          predicates:
-            - Path=/compras/**,/ventas/**,/detalleVenta/**,/pagos/**,/promociones/**,/estadosVenta/**
+            - id: ms-venta
+              uri: ${MS_VENTA_URL:http://localhost:8006}
+              predicates:
+                - Path=/compras/**,/ventas/**,/detalleVenta/**,/pagos/**,/promociones/**,/estadosVenta/**
 
-        - id: ms-recinto
-          uri: ${MS_RECINTO_URL:http://localhost:8008}
-          predicates:
-            - Path=/recintos/**,/sectores/**
+            - id: ms-recinto
+              uri: ${MS_RECINTO_URL:http://localhost:8008}
+              predicates:
+                - Path=/recintos/**,/sectores/**
 
-        - id: ms-historial
-          uri: ${MS_HISTORIAL_URL:http://localhost:8010}
-          predicates:
-            - Path=/historial/**
+            - id: ms-historial
+              uri: ${MS_HISTORIAL_URL:http://localhost:8010}
+              predicates:
+                - Path=/historial/**
 
 # Clave secreta JWT: DEBE coincidir con la del ms-auth (quien firma los tokens).
 jwt:
@@ -53,7 +55,7 @@ jwt:
 management:
   endpoint:
     gateway:
-      enabled: true          # habilita el endpoint /actuator/gateway
+      access: read-only      # permite consultar las rutas en /actuator/gateway
   endpoints:
     web:
       exposure:
@@ -62,5 +64,5 @@ management:
 logging:
   level:
     root: INFO
-    com.ticketuki.gateway: DEBUG
+    com.ticketuki.gateway: INFO
     org.springframework.cloud.gateway: INFO

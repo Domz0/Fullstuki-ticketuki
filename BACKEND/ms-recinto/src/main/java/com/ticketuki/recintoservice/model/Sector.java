@@ -17,7 +17,7 @@ public class Sector {
     private Long id_sector;
 
     @NotBlank(message = "El nombre del sector es requerido")
-    @Column(name = "nombre_sector", nullable = false, length = 25)
+    @Column(name = "nombre_sector", nullable = false, length = 50)
     private String nombre_sector;
 
     @Column(name = "capacidad_sector", nullable = false)
