@@ -14,11 +14,11 @@ CREATE TABLE usuario_auth (
     CONSTRAINT ck_auth_usuario_id CHECK (usuario_id IS NULL OR usuario_id > 0)
 );
 
--- Usuario de autenticación inicial.
--- username: hodor
--- password: holdthedoor1234 (almacenada en texto plano)
 INSERT INTO usuario_auth (username, password) VALUES
 ('hodor', 'holdthedoor1234');
+
+INSERT INTO usuario_auth (username, password, rol, activo) VALUES
+('admin@duoc.cl', 'admin123', 'ADMIN', TRUE);
 
 CREATE TABLE auditoria_pendiente (
     id VARCHAR(36) PRIMARY KEY,

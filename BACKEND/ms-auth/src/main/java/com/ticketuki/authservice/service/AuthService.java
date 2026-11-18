@@ -18,13 +18,19 @@ public class AuthService {
 
     private final UsuarioAuthRepository usuarioAuthRepository;
     private final JwtUtil jwtUtil;
+    private final com.ticketuki.authservice.client.LoginUsuarioClient perfiles;
 
     @Transactional(readOnly = true)
     public LoginResponseDTO login(LoginRequestDTO dto) {
         log.info("Intento de login para usuario: {}", dto.getUsername());
 
         // 1. Buscar el usuario por username
-        UsuarioAuth usuario = usuarioAuthRepository.findByUsername(dto.getUsername())
+        String identificador = dto.getUsername().trim().toLowerCase(java.util.Locale.ROOT);
+        var cuenta = usuarioAuthRepository.findByUsername(identificador);
+        if (cuenta.isEmpty() && identificador.contains("@")) {
+            cuenta = perfiles.buscarPorCorreo(identificador).flatMap(usuarioAuthRepository::findByUsuarioId);
+        }
+        UsuarioAuth usuario = cuenta
                 .orElseThrow(() -> new CredencialesInvalidasException("Usuario o contraseña incorrectos"));
 
         // 2. Comparación directa de credenciales

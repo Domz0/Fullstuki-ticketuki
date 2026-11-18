@@ -1,19 +1,13 @@
-// Una cuenta local por navegador, igual que en el proyecto original.
+import { peticionApi } from "../services/api";
+
 export function obtenerUsuario() {
-  if (localStorage.getItem("sesionIniciada") !== "true") return null;
-  if (localStorage.getItem("rol") === "admin") {
-    return { nombre: "Administrador", apellido: "", correo: "admin@duoc.cl", rol: "admin", rut: "" };
+  try {
+    const sesion = JSON.parse(localStorage.getItem("sesionBackend"));
+    if (!sesion?.token || !sesion.usuario || sesion.expiraEn <= Date.now()) return null;
+    return sesion.usuario;
+  } catch {
+    return null;
   }
-  const correo = localStorage.getItem("correo");
-  if (!correo) return null;
-  return {
-    nombre: localStorage.getItem("nombre") || "",
-    apellido: localStorage.getItem("apellido") || "",
-    rut: localStorage.getItem("rut") || "",
-    correo,
-    rol: "cliente",
-    miembroDesde: localStorage.getItem("miembroDesde") || new Date().getFullYear(),
-  };
 }
 
 export function registrarUsuario(datos) {
@@ -27,28 +21,34 @@ export function registrarUsuario(datos) {
   localStorage.removeItem("rol");
 }
 
-export function iniciarSesion(datos) {
-  if (datos.correo.trim().toLowerCase() === "admin@duoc.cl") {
-    if (datos.password !== "1234") return null;
-    localStorage.setItem("sesionIniciada", "true");
-    localStorage.setItem("rol", "admin");
-    return obtenerUsuario();
+export async function iniciarSesion(datos) {
+  const respuesta = await peticionApi("/auth/login", {
+    method: "POST",
+    body: { username: datos.username.trim().toLowerCase(), password: datos.password },
+  });
+  if (!respuesta?.token || !respuesta.username || !(respuesta.expiraEnMs > 0)) {
+    throw new Error("El servidor devolvió una sesión inválida.");
   }
-  const correo = localStorage.getItem("correo");
-  const password = localStorage.getItem("password");
-  if (
-    !correo ||
-    datos.correo.trim().toLowerCase() !== correo.toLowerCase() ||
-    datos.password !== password
-  ) return null;
-
-  localStorage.setItem("sesionIniciada", "true");
-  localStorage.setItem("rol", "cliente");
-  return obtenerUsuario();
+  const usuario = {
+    username: respuesta.username,
+    nombre: respuesta.username,
+    apellido: "",
+    correo: "",
+    rut: "",
+    rol: respuesta.rol === "ADMIN" ? "admin" : "cliente",
+    authId: respuesta.authId,
+    usuarioId: respuesta.usuarioId,
+  };
+  localStorage.setItem("sesionBackend", JSON.stringify({
+    token: respuesta.token, usuario, expiraEn: Date.now() + respuesta.expiraEnMs,
+  }));
+  localStorage.removeItem("password");
+  return usuario;
 }
 
 export function cerrarSesion() {
-  localStorage.setItem("sesionIniciada", "false");
+  localStorage.removeItem("sesionBackend");
+  localStorage.removeItem("sesionIniciada");
   localStorage.removeItem("rol");
 }
 

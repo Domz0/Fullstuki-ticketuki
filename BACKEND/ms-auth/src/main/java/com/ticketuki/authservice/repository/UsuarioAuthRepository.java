@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface UsuarioAuthRepository extends JpaRepository<UsuarioAuth, Long> {
 
     Optional<UsuarioAuth> findByUsername(String username);
+    Optional<UsuarioAuth> findByUsuarioId(Long usuarioId);
 
     @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
     @org.springframework.data.jpa.repository.Query("SELECT u FROM UsuarioAuth u WHERE u.username = :username")

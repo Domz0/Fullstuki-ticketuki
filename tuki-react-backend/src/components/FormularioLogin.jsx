@@ -4,8 +4,9 @@ import { validarLogin } from "../utils/validarLogin";
 import "./FormularioLogin.css";
 
 function FormularioLogin({ onValidado, registroExitoso = false }) {
-  const [datos, setDatos] = useState({ correo: "", password: "" });
+  const [datos, setDatos] = useState({ username: "", password: "" });
   const [errores, setErrores] = useState({});
+  const [enviando, setEnviando] = useState(false);
   const [mensaje, setMensaje] = useState("");
 
   function cambiarCampo(event) {
@@ -15,8 +16,9 @@ function FormularioLogin({ onValidado, registroExitoso = false }) {
     setMensaje("");
   }
 
-  function comprobarLogin(event) {
+  async function comprobarLogin(event) {
     event.preventDefault();
+    if (enviando) return;
     const nuevosErrores = validarLogin(datos);
     setErrores(nuevosErrores);
     const primerError = Object.keys(nuevosErrores)[0];
@@ -24,10 +26,15 @@ function FormularioLogin({ onValidado, registroExitoso = false }) {
       setMensaje("Revisa los campos marcados.");
       event.currentTarget.elements.namedItem(primerError).focus();
     } else {
-      const resultado = onValidado(datos);
-      if (resultado?.error) {
-        setErrores({ password: resultado.error });
-        setMensaje(resultado.error);
+      setEnviando(true);
+      try {
+        const resultado = await onValidado(datos);
+        if (resultado?.error) {
+          setErrores({ password: resultado.error });
+          setMensaje(resultado.error);
+        }
+      } finally {
+        setEnviando(false);
       }
     }
   }
@@ -47,25 +54,25 @@ function FormularioLogin({ onValidado, registroExitoso = false }) {
           <h2 id="titulo_login">Ingresar a tu cuenta</h2>
           {registroExitoso && <p className="txt_exito" role="status">Cuenta creada. Ya puedes iniciar sesión.</p>}
           <div className="login_campo">
-            <label htmlFor="login_correo">Correo electrónico</label>
+            <label htmlFor="login_username">Nombre de usuario o correo</label>
             <input
-              id="login_correo"
-              name="correo"
-              type="email"
-              placeholder="tu@ejemplo.com"
+              id="login_username"
+              name="username"
+              type="text"
+              placeholder="Tu usuario o correo"
               maxLength={100}
-              value={datos.correo}
+              value={datos.username}
               onChange={cambiarCampo}
               required
-              className={errores.correo ? "input_error" : ""}
-              aria-invalid={Boolean(errores.correo)}
+              className={errores.username ? "input_error" : ""}
+              aria-invalid={Boolean(errores.username)}
               aria-describedby={
-                errores.correo ? "login_error_correo" : undefined
+                errores.username ? "login_error_username" : undefined
               }
             />
-            {errores.correo && (
-              <p id="login_error_correo" className="txt_error">
-                {errores.correo}
+            {errores.username && (
+              <p id="login_error_username" className="txt_error">
+                {errores.username}
               </p>
             )}
           </div>
@@ -76,7 +83,7 @@ function FormularioLogin({ onValidado, registroExitoso = false }) {
               name="password"
               type="password"
               placeholder="Contraseña"
-              maxLength={10}
+              maxLength={100}
               value={datos.password}
               onChange={cambiarCampo}
               required
@@ -92,7 +99,7 @@ function FormularioLogin({ onValidado, registroExitoso = false }) {
               </p>
             )}
           </div>
-          <button type="submit">Iniciar sesión</button>
+          <button type="submit" disabled={enviando}>{enviando ? "Ingresando..." : "Iniciar sesión"}</button>
           <p
             role="status"
             className={
