@@ -3,7 +3,7 @@ import { useState } from "react";
 import { validarLogin } from "../utils/validarLogin";
 import "./FormularioLogin.css";
 
-function FormularioLogin({ onValidado, registroExitoso = false }) {
+function FormularioLogin({ onValidado, registroExitoso = false, contrasenaActualizada = false }) {
   const [datos, setDatos] = useState({ username: "", password: "" });
   const [errores, setErrores] = useState({});
   const [enviando, setEnviando] = useState(false);
@@ -52,6 +52,7 @@ function FormularioLogin({ onValidado, registroExitoso = false }) {
           autoComplete="off"
         >
           <h2 id="titulo_login">Ingresar a tu cuenta</h2>
+          {contrasenaActualizada && <p className="txt_exito" role="status">Contraseña actualizada. Inicia sesión con tu nueva contraseña.</p>}
           {registroExitoso && <p className="txt_exito" role="status">Cuenta creada. Ya puedes iniciar sesión.</p>}
           <div className="login_campo">
             <label htmlFor="login_username">Nombre de usuario o correo</label>

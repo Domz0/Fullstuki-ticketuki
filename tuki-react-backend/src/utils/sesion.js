@@ -52,9 +52,34 @@ export function cerrarSesion() {
   localStorage.removeItem("rol");
 }
 
-export function actualizarDatosAcceso(datos) {
-  if (obtenerUsuario()?.rol !== "cliente") return null;
-  localStorage.setItem("correo", datos.correo.trim().toLowerCase());
-  localStorage.setItem("password", datos.password);
-  return obtenerUsuario();
+function leerSesion() {
+  const sesion = JSON.parse(localStorage.getItem("sesionBackend") || "null");
+  if (!obtenerUsuario()) throw new Error("Tu sesión terminó. Vuelve a iniciar sesión.");
+  return sesion;
+}
+
+export async function cargarPerfil() {
+  const sesion = leerSesion();
+  const perfil = await peticionApi(`/usuarios/${sesion.usuario.usuarioId}`, { token: sesion.token });
+  const unir = (...partes) => partes.map(parte => parte?.trim()).filter(Boolean).join(" ");
+  const usuario = {
+    ...sesion.usuario,
+    nombre: unir(perfil.p_nombre, perfil.s_nombre),
+    apellido: unir(perfil.a_paterno, perfil.a_materno),
+    rut: perfil.run || "",
+    correo: perfil.email || "",
+  };
+  if (JSON.parse(localStorage.getItem("sesionBackend") || "null")?.token !== sesion.token)
+    throw new Error("La sesión cambió. Vuelve a cargar tu perfil.");
+  localStorage.setItem("sesionBackend", JSON.stringify({ ...sesion, usuario }));
+  return usuario;
+}
+
+export async function cambiarContrasena(datos) {
+  const sesion = leerSesion();
+  await peticionApi("/auth/contrasena", {
+    method: "PATCH", token: sesion.token,
+    body: { actual: datos.actual, nueva: datos.nueva },
+  });
+  cerrarSesion();
 }

@@ -19,6 +19,7 @@
 }
 .campo_cuenta_valor {
   margin: 0;
+  min-height: 52px;
   padding: 0.8rem;
   border: solid var(--color-linea) 1px;
   border-radius: 0.5rem;

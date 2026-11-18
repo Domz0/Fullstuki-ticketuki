@@ -8,9 +8,7 @@ function Cuenta({ usuario, entradas, seccion = "datos", onCerrarSesion, onActual
     /*parte en los datos y cambia segun el botons*/
   }
 
-  const iniciales = (
-    usuario.nombre.charAt(0) + usuario.apellido.charAt(0)
-  ).toUpperCase();
+  const iniciales = usuario.username.slice(0, 2).toUpperCase();
 
   return (
     <section className="cuenta" aria-label="Mi cuenta">
@@ -20,10 +18,10 @@ function Cuenta({ usuario, entradas, seccion = "datos", onCerrarSesion, onActual
         </span>
         <div>
           <h2 className="cuenta_nombre">
-            {usuario.nombre} {usuario.apellido}
+            {usuario.username}
           </h2>
           <p className="cuenta_datos">
-            {usuario.correo} · Miembro desde {usuario.miembroDesde}
+            {usuario.correo || usuario.username}
           </p>
         </div>
       </header>

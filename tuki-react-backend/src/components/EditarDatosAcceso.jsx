@@ -1,12 +1,13 @@
-﻿import { actualizarDatosAcceso } from "../utils/sesion";
+import { cambiarContrasena } from "../utils/sesion";
+import { navegar } from "../utils/navegacion";
 import { useState } from "react";
-import { validarLogin as validarDatosAcceso } from "../utils/validarLogin";
 import "./EditarDatosAcceso.css";
 
-function EditarDatosAcceso({ usuario, onCancelar, onActualizarUsuario }) {
-  const [datos, setDatos] = useState({ correo: usuario.correo, password: "" });
+function EditarDatosAcceso({ onCancelar, onActualizarUsuario }) {
+  const [datos, setDatos] = useState({ actual: "", nueva: "", confirmacion: "" });
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   function cambiarCampo(event) {
     const { name, value } = event.target;
@@ -15,102 +16,62 @@ function EditarDatosAcceso({ usuario, onCancelar, onActualizarUsuario }) {
     setMensaje("");
   }
 
-  function comprobarDatos(event) {
+  async function guardar(event) {
     event.preventDefault();
-    const nuevosErrores = validarDatosAcceso(datos);
-    setErrores(nuevosErrores);
-    const primerError = Object.keys(nuevosErrores)[0];
+    if (enviando) return;
+    const errores = {};
+    if (!datos.actual.trim()) errores.actual = "Ingresa tu contraseña actual";
+    if (!datos.nueva.trim() || datos.nueva.length < 8 || datos.nueva.length > 100)
+      errores.nueva = "Usa entre 8 y 100 caracteres";
+    else if (datos.nueva === datos.actual) errores.nueva = "La nueva contraseña debe ser distinta";
+    if (datos.confirmacion !== datos.nueva || !datos.confirmacion)
+      errores.confirmacion = "Las contraseñas no coinciden";
+    setErrores(errores);
+    const primerError = Object.keys(errores)[0];
     if (primerError) {
-      setMensaje("Revisa los campos marcados.");
       event.currentTarget.elements.namedItem(primerError).focus();
-    } else {
-      try {
-        const actualizado = actualizarDatosAcceso(datos);
-        if (!actualizado) {
-          setErrores({ correo: "Debes iniciar sesión para guardar cambios." });
-          return;
-        }
-        onActualizarUsuario(actualizado);
-        setDatos({ correo: actualizado.correo, password: "" });
-        setMensaje("Datos de acceso guardados.");
-      } catch {
-        setErrores({ correo: "No se pudieron guardar los cambios." });
-      }
+      return;
+    }
+    setMensaje("");
+    setEnviando(true);
+    try {
+      await cambiarContrasena(datos);
+      onActualizarUsuario(null);
+      navegar("/login?contrasena=ok");
+    } catch (error) {
+      setMensaje(error.message || "No se pudo cambiar la contraseña. Inténtalo nuevamente.");
+    } finally {
+      setEnviando(false);
     }
   }
 
   return (
-    <form
-      className="editar_acceso"
-      onSubmit={comprobarDatos}
-      noValidate
-      autoComplete="off"
-      aria-label="Editar datos de acceso"
-    >
-      <div className="editar_acceso_campo">
-        <label htmlFor="perfil_nuevo_correo">Nuevo correo</label>
-        <input
-          id="perfil_nuevo_correo"
-          name="correo"
-          type="email"
-          maxLength={100}
-          value={datos.correo}
-          onChange={cambiarCampo}
-          required
-          className={errores.correo ? "input_error" : ""}
-          aria-invalid={Boolean(errores.correo)}
-          aria-describedby={errores.correo ? "perfil_error_correo" : undefined}
-        />
-        {errores.correo && (
-          <p id="perfil_error_correo" className="txt_error">
-            {errores.correo}
-          </p>
-        )}
-      </div>
-      <div className="editar_acceso_campo">
-        <label htmlFor="perfil_nueva_password">Nueva contraseña</label>
-        <input
-          id="perfil_nueva_password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          placeholder="Entre 4 y 10 caracteres"
-          maxLength={10}
-          value={datos.password}
-          onChange={cambiarCampo}
-          required
-          className={errores.password ? "input_error" : ""}
-          aria-invalid={Boolean(errores.password)}
-          aria-describedby={
-            errores.password ? "perfil_error_password" : undefined
-          }
-        />
-        {errores.password && (
-          <p id="perfil_error_password" className="txt_error">
-            {errores.password}
-          </p>
-        )}
-      </div>
+    <form className="editar_acceso" onSubmit={guardar} noValidate aria-label="Cambiar contraseña">
+      <h3 className="cuenta_titulo">Cambiar contraseña</h3>
+      <p>Al guardar, vuelve a iniciar sesión con tu nueva contraseña.</p>
+      {[
+        ["actual", "Contraseña actual", "current-password"],
+        ["nueva", "Nueva contraseña", "new-password"],
+        ["confirmacion", "Confirmar nueva contraseña", "new-password"],
+      ].map(([campo, etiqueta, autocomplete]) => (
+        <div className="editar_acceso_campo" key={campo}>
+          <label htmlFor={`clave_${campo}`}>{etiqueta}</label>
+          <input id={`clave_${campo}`} name={campo} type="password" autoComplete={autocomplete}
+            maxLength={100} value={datos[campo]} onChange={cambiarCampo} required disabled={enviando}
+            placeholder={campo === "nueva" ? "Entre 8 y 100 caracteres" : undefined}
+            aria-invalid={Boolean(errores[campo])}
+            aria-describedby={errores[campo] ? `error_${campo}` : undefined}
+            className={errores[campo] ? "input_error" : ""} />
+          {errores[campo] && <p id={`error_${campo}`} className="txt_error">{errores[campo]}</p>}
+        </div>
+      ))}
       <div className="editar_acceso_botones">
-        <button type="submit" className="editar_acceso_validar">
-          Guardar cambios
+        <button type="submit" className="editar_acceso_validar" disabled={enviando}>
+          {enviando ? "Guardando…" : "Guardar contraseña"}
         </button>
-        <button
-          type="button"
-          className="editar_acceso_cancelar"
-          onClick={onCancelar}
-        >
-          Cancelar
-        </button>
+        <button type="button" className="editar_acceso_cancelar" onClick={onCancelar} disabled={enviando}>Cancelar</button>
       </div>
-      <p
-        role="status"
-        className={
-          Object.values(errores).some(Boolean) ? "txt_error" : "txt_exito"
-        }
-      >
-        {mensaje}
-      </p>
+      {mensaje && <p role="alert" className="txt_error">{mensaje}</p>}
     </form>
   );
 }

@@ -13,20 +13,20 @@ function Perfil({ usuario, onActualizarUsuario }) {
         <div className="flex_H cuenta_fila">
           <div className="campo_cuenta">
             <span className="campo_cuenta_rotulo">Nombre</span>
-            <p className="campo_cuenta_valor">{usuario.nombre}</p>
+            <p className="campo_cuenta_valor">{usuario.nombre || "No informado"}</p>
           </div>
           <div className="campo_cuenta">
             <span className="campo_cuenta_rotulo">Apellido</span>
-            <p className="campo_cuenta_valor">{usuario.apellido}</p>
+            <p className="campo_cuenta_valor">{usuario.apellido || "No informado"}</p>
           </div>
         </div>
         <div className="campo_cuenta">
-          <span className="campo_cuenta_rotulo">Run</span>
-          <p className="campo_cuenta_valor">{usuario.rut}</p>
+          <span className="campo_cuenta_rotulo">RUT</span>
+          <p className="campo_cuenta_valor">{usuario.rut || "No informado"}</p>
         </div>
         <div className="campo_cuenta">
           <span className="campo_cuenta_rotulo">Correo electrónico</span>
-          <p className="campo_cuenta_valor">{usuario.correo}</p>
+          <p className="campo_cuenta_valor">{usuario.correo || "No informado"}</p>
         </div>
         {editando ? (
           <EditarDatosAcceso usuario={usuario} onActualizarUsuario={onActualizarUsuario} onCancelar={() => setEditando(false)} />
@@ -36,7 +36,7 @@ function Perfil({ usuario, onActualizarUsuario }) {
             className="perfil_editar"
             onClick={() => setEditando(true)}
           >
-            Editar datos de acceso
+            Cambiar contraseña
           </button>
         )}
       </div>

@@ -74,7 +74,7 @@ function App() {
       />
     );
   else if (pantalla === "registro") contenido = <PaginaRegistro />;
-  else if (pantalla === "login") contenido = <PaginaLogin onIniciarSesion={setUsuario} registroExitoso={parametros.get("registro") === "ok"} />;
+  else if (pantalla === "login") contenido = <PaginaLogin onIniciarSesion={setUsuario} registroExitoso={parametros.get("registro") === "ok"} contrasenaActualizada={parametros.get("contrasena") === "ok"} />;
   else if (pantalla === "cuenta" && usuario)
     contenido = (
       <PaginaCuenta usuario={usuario} onCerrarSesion={salir} onActualizarUsuario={setUsuario} seccion={id === "entradas" ? "entradas" : "datos"} />

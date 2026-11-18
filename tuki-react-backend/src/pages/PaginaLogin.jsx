@@ -2,7 +2,7 @@ import FormularioLogin from "../components/FormularioLogin";
 import { iniciarSesion } from "../utils/sesion";
 import { navegar } from "../utils/navegacion";
 
-function PaginaLogin({ onIniciarSesion, registroExitoso = false }) {
+function PaginaLogin({ onIniciarSesion, registroExitoso = false, contrasenaActualizada = false }) {
   async function ingresar(datos) {
     try {
       const usuario = await iniciarSesion(datos);
@@ -13,6 +13,6 @@ function PaginaLogin({ onIniciarSesion, registroExitoso = false }) {
       return { error: error.message || "No se pudo iniciar sesión. Inténtalo nuevamente." };
     }
   }
-  return <FormularioLogin onValidado={ingresar} registroExitoso={registroExitoso} />;
+  return <FormularioLogin onValidado={ingresar} registroExitoso={registroExitoso} contrasenaActualizada={contrasenaActualizada} />;
 }
 export default PaginaLogin;
