@@ -1,7 +1,7 @@
 ﻿import "./CantidadEntradas.css";
 
-function CantidadEntradas({ cantidad, onCambiar }) {
-  const maximo = 6;
+function CantidadEntradas({ cantidad, onCambiar, disponibles = 6 }) {
+  const maximo = Math.min(6, disponibles);
 
   function cambiarCantidad(paso) {
     onCambiar(Math.max(1, Math.min(maximo, cantidad + paso)));
@@ -35,7 +35,7 @@ function CantidadEntradas({ cantidad, onCambiar }) {
           className="cantidad_boton"
           type="button"
           aria-label="Agregar una entrada"
-          disabled={cantidad === maximo}
+          disabled={cantidad >= maximo}
           onClick={() => cambiarCantidad(1)}
         >
           +

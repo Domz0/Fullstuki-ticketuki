@@ -19,6 +19,7 @@ function Evento({ evento }) {
         <h3 className="tarjeta_nombre">{evento.nombre}</h3>
         <p className="tarjeta_dato">{evento.recinto}</p>
         <p className="tarjeta_dato">{evento.fecha}</p>
+        {evento.yaPaso && <p className="tarjeta_dato">Este evento ya pasó</p>}
         <div className="tarjeta_pie">
           <strong className="tarjeta_precio">
             ${evento.precio.toLocaleString("es-CL")}

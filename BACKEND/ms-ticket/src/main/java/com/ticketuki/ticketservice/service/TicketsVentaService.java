@@ -83,10 +83,11 @@ public class TicketsVentaService {
             cantidadesSector.merge(t.getEvento_id_evento() + ":" + t.getSector_id_sector(), 1L, Long::sum);
         });
         Map<Long, ReferenciasTicketClient.Evento> eventos = new HashMap<>();
-        Map<Long, ReferenciasTicketClient.Sector> sectores = new HashMap<>();
+        Map<String, ReferenciasTicketClient.Sector> sectores = new HashMap<>();
         for (var t : solicitud) {
             var evento = eventos.computeIfAbsent(t.getEvento_id_evento(), referencias::evento);
-            var sector = sectores.computeIfAbsent(t.getSector_id_sector(), referencias::sector);
+            var sector = sectores.computeIfAbsent(t.getEvento_id_evento() + ":" + t.getSector_id_sector(),
+                    clave -> referencias.sector(t.getEvento_id_evento(), t.getSector_id_sector()));
             if (!Objects.equals(evento.id_evento(), t.getEvento_id_evento())
                     || !Objects.equals(sector.id_sector(), t.getSector_id_sector())
                     || evento.recinto_id_recinto() == null

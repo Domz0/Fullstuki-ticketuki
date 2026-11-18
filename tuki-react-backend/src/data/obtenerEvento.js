@@ -1,9 +1,10 @@
 ﻿import { obtenerCatalogo } from "../utils/eventos";
 import { detalleEvento } from "./detalleEvento";
+import { leerEventoCatalogo } from "../services/eventos";
 
 export function obtenerEvento(id = "destacado") {
   if (id === "destacado") return { ...detalleEvento, id };
-  const evento = obtenerCatalogo().find((item) => String(item.id) === id);
+  const evento = leerEventoCatalogo(id) || obtenerCatalogo().find((item) => String(item.id) === id);
   if (!evento) return null;
   const fecha = evento.detalle.split(" · ").slice(1).join(" · ");
   const partes = fecha.split(" ");

@@ -19,6 +19,10 @@
       return !filtros.plazo || evento.plazo <= Number(filtros.plazo);
     })
     .sort((a, b) =>
-      orden === "precio" ? a.precio - b.precio : a.plazo - b.plazo,
+      orden === "precio"
+        ? (a.precio ?? Infinity) - (b.precio ?? Infinity)
+        : a.fechaInicio && b.fechaInicio
+          ? new Date(a.fechaInicio) - new Date(b.fechaInicio)
+          : a.plazo - b.plazo,
     );
 }

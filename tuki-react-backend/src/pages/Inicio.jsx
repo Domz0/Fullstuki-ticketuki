@@ -1,8 +1,18 @@
 ﻿import Portada from "../components/Portada";
 import Evento from "../components/Evento";
-import { catalogo } from "../data/catalogo";
+import { useEffect, useState } from "react";
+import { cargarCatalogo } from "../services/eventos";
 
 function Inicio() {
+  const [catalogo, setCatalogo] = useState([]);
+  const [estado, setEstado] = useState("Cargando eventos…");
+  useEffect(() => {
+    let vigente = true;
+    cargarCatalogo().then(eventos => {
+      if (vigente) { setCatalogo(eventos); setEstado(""); }
+    }).catch(error => { if (vigente) setEstado(error.message); });
+    return () => { vigente = false; };
+  }, []);
   const nombres = [
     "Festival de rock en vivo",
     "Concierto de música electrónica",
@@ -22,14 +32,18 @@ function Inicio() {
   const eventos = nombres
     .map((nombre) => catalogo.find((item) => item.nombre === nombre))
     .filter(Boolean);
+  const destacado = catalogo
+    .filter(evento => evento.categoria === "musica" && evento.ventaHabilitada)
+    .sort((a, b) => (a.fechaInicio || "").localeCompare(b.fechaInicio || ""))[0];
   return (
     <>
-      <Portada />
+      {destacado && <Portada evento={destacado} />}
       <section
         className="inicio_eventos"
         aria-labelledby="inicio_eventos_titulo"
       >
         <h2 id="inicio_eventos_titulo">Próximos eventos</h2>
+        {estado && <p role="status">{estado}</p>}
         <div className="eventos_contenedor">
           {eventos.map((evento) => (
             <Evento

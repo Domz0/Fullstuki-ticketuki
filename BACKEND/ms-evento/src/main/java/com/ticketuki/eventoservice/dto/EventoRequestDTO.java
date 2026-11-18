@@ -18,7 +18,6 @@ public class EventoRequestDTO {
     @Size(max = 100)
     private String nombre_evento;
 
-    @NotNull(message = "El aforo es requerido")
     @Positive(message = "El aforo debe ser positivo")
     private Integer aforo_evento;
 
@@ -37,4 +36,6 @@ public class EventoRequestDTO {
 
     @Size(max = 500, message = "Los participantes no pueden exceder 500 caracteres")
     private String participantes;
+    @jakarta.validation.Valid
+    private java.util.List<com.ticketuki.eventoservice.service.SectoresEventoService.Configuracion> sectores;
 }

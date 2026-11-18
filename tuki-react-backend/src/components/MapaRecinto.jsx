@@ -12,10 +12,11 @@ function MapaRecinto({ sectores, plano, seleccionId, onElegir, vista = false, fe
       <span className="mapa_acceso" style={{ gridColumn: plano.accesoCol, gridRow: "1" }}>
         {plano.acceso}
       </span>
-      {sectores.map((sector) => {
-        const posicion = plano.posiciones[sector.id];
+      {sectores.map((sector, indice) => {
+        const posicion = plano.posiciones[sector.planoId || sector.id]
+          || { col: "1 / -1", fila: String(indice + 2), corto: sector.nombre };
         const agotada = sector.estado === "agotada" || fechaAgotada;
-        const clicable = !vista && !agotada;
+        const clicable = !vista && !agotada && !sector.bloqueado;
         const Caja = clicable ? "button" : "div";
         const propiedades = clicable
           ? {
@@ -34,7 +35,7 @@ function MapaRecinto({ sectores, plano, seleccionId, onElegir, vista = false, fe
           >
             <span className="mapa_nombre">{sector.nombre}</span>
             <span className="mapa_nombre mapa_nombre_corto">{posicion.corto}</span>
-            <span className="mapa_precio">{agotada ? "Agotada" : pesos(sector.precio)}</span>
+            <span className="mapa_precio">{sector.capacidad === 0 ? "Cerrado" : agotada ? "Agotada" : sector.bloqueado ? "No disponible" : pesos(sector.precio)}</span>
           </Caja>
         );
       })}

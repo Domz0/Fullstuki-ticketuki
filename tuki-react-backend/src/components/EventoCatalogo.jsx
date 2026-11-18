@@ -7,6 +7,9 @@
       <div className="resultado_cuerpo">
         <h3 className="resultado_nombre">{evento.nombre}</h3>
         <p className="resultado_dato">{evento.detalle}</p>
+        {evento.disponibles != null && <p className="resultado_dato">
+          {evento.disponibles} disponibles · Capacidad: {evento.capacidadTotal}
+        </p>}
         <div className="resultado_etiquetas">
           <span className="resultado_etiqueta">{evento.subcategoria}</span>
           <span
@@ -19,7 +22,7 @@
       <div className="resultado_compra">
         <span className="resultado_desde">Desde</span>
         <strong className="resultado_precio">
-          ${evento.precio.toLocaleString("es-CL")}
+          {evento.precio == null ? "Por confirmar" : `$${evento.precio.toLocaleString("es-CL")}`}
         </strong>
         <a className="resultado_ver" href={`#/evento/${evento.id}`}>
           Ver entradas <span aria-hidden="true">→</span>

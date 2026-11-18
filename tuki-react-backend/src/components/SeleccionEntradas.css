@@ -104,3 +104,14 @@
   line-height: 1.5;
   text-align: center;
 }
+.seleccion_disponibilidad {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--color-texto);
+}
+.seleccion_disponibilidad span {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-texto-apagado);
+  font-size: 12px;
+}

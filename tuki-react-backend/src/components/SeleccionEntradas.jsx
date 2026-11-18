@@ -29,8 +29,12 @@ function SeleccionEntradas({ seleccion, cantidad, onCambiarCantidad, onContinuar
         <p className="seleccion_unidad">
           {pesos(seleccion.precio)} por entrada
         </p>
+        {seleccion.disponibles != null && <p className="seleccion_disponibilidad" role="status">
+          {seleccion.disponibles} {seleccion.disponibles === 1 ? "entrada disponible" : "entradas disponibles"}
+          {seleccion.capacidad != null && <span> · Capacidad del sector: {seleccion.capacidad}</span>}
+        </p>}
       </div>
-      <CantidadEntradas cantidad={cantidad} onCambiar={onCambiarCantidad} />
+      <CantidadEntradas cantidad={cantidad} onCambiar={onCambiarCantidad} disponibles={seleccion.disponibles} />
       <dl className="totales" aria-live="polite">
         <div className="totales_fila">
           <dt>{cantidad} × entrada</dt>
@@ -49,6 +53,7 @@ function SeleccionEntradas({ seleccion, cantidad, onCambiarCantidad, onContinuar
         type="button"
         className="boton seleccion_continuar"
         onClick={onContinuar}
+        disabled={seleccion.disponibles != null && cantidad > seleccion.disponibles}
       >
         Continuar al pago
       </button>

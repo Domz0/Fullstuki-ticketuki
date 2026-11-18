@@ -159,7 +159,7 @@ public class TicketService {
         cupos.asegurar(dto.getEvento_id_evento());
         cupos.bloquear(dto.getEvento_id_evento()).orElseThrow();
         var evento = referencias.evento(dto.getEvento_id_evento());
-        var sector = referencias.sector(dto.getSector_id_sector());
+        var sector = referencias.sector(dto.getEvento_id_evento(), dto.getSector_id_sector());
         if (!java.util.Objects.equals(evento.id_evento(), dto.getEvento_id_evento())
                 || !java.util.Objects.equals(sector.id_sector(), dto.getSector_id_sector()))
             throw new IllegalArgumentException("Evento o sector de referencia inválido");

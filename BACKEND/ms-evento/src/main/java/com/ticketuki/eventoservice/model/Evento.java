@@ -55,4 +55,13 @@ public class Evento {
     public void setEstado_evento_id_estado(Long id) {
         this.estado = EstadoEvento.fromId(id);
     }
+    private String categoria;
+    private String subcategoria;
+    private String ciudad;
+    private String recinto_catalogo;
+    private Integer precio_desde;
+    private String horario;
+    private String fecha_visible;
+    private String disponibilidad;
+    private Integer plazo;
 }

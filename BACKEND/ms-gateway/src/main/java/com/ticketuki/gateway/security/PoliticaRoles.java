@@ -7,6 +7,8 @@ public final class PoliticaRoles {
     private PoliticaRoles() {}
 
     public static boolean publica(String path, HttpMethod method) {
+        if (method == HttpMethod.GET && (path.matches("/eventos(/[0-9]+(/sectores(/[0-9]+)?)?)?")
+                || path.matches("/tickets/disponibilidad/evento/[0-9]+"))) return true;
         return method == HttpMethod.POST && Set.of("/auth/login", "/auth/registro").contains(path);
     }
 

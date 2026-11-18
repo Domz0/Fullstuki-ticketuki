@@ -82,11 +82,11 @@ function App() {
   else if (pantalla === "cuenta") contenido = null;
   else if (pantalla === "transferir")
     contenido = usuario ? <PaginaTransferir usuario={usuario} codigo={id} /> : null;
-  else if (evento && pantalla === "evento")
-    contenido = <PaginaEvento evento={evento} />;
-  else if (evento && pantalla === "entradas")
+  else if (pantalla === "evento")
+    contenido = <PaginaEvento eventoId={id} />;
+  else if (pantalla === "entradas")
     contenido = (
-      <PaginaEntradas evento={evento} fecha={fecha} />
+      <PaginaEntradas eventoId={id} />
     );
   else if (evento && pantalla === "pago")
     contenido = (

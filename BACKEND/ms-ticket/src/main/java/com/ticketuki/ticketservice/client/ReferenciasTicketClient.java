@@ -31,7 +31,7 @@ public class ReferenciasTicketClient {
 
     public void validarRelacion(Long eventoId, Long sectorId) {
         var evento = evento(eventoId);
-        var sector = sector(sectorId);
+        var sector = sector(eventoId, sectorId);
         if (!java.util.Objects.equals(evento.id_evento(), eventoId)
                 || !java.util.Objects.equals(sector.id_sector(), sectorId))
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Referencia de evento o sector invalida");
@@ -40,6 +40,8 @@ public class ReferenciasTicketClient {
     }
 
     public Evento evento(Long id) { return get(eventos, "/eventos/" + id, Evento.class); }
-    public Sector sector(Long id) { return get(recintos, "/sectores/" + id, Sector.class); }
+    public Sector sector(Long evento, Long id) { return get(eventos, "/eventos/" + evento + "/sectores/" + id, Sector.class); }
+    public SectorDetalle[] sectores(Long evento) { return get(eventos, "/eventos/" + evento + "/sectores", SectorDetalle[].class); }
+    public record SectorDetalle(Long id_sector, String nombre_sector, int capacidad_sector, int precio_sector, Long recinto_id_recinto, String plano_id) {}
     public Venta venta(Long id) { return get(ventas, "/ventas/" + id, Venta.class); }
 }

@@ -40,7 +40,7 @@ public class CatalogoVentaClient {
     }
 
     public long precioPara(DetalleVentaRequestDTO dto) {
-        var sector = consultar(recintos, "/sectores/" + dto.getSector_id_sector(), Sector.class);
+        var sector = consultar(eventos, "/eventos/" + dto.getEvento_id_evento() + "/sectores/" + dto.getSector_id_sector(), Sector.class);
         var evento = consultar(eventos, "/eventos/" + dto.getEvento_id_evento(), Evento.class);
         if (!Objects.equals(sector.id_sector(), dto.getSector_id_sector())
                 || !Objects.equals(evento.id_evento(), dto.getEvento_id_evento()))
@@ -73,7 +73,7 @@ public class CatalogoVentaClient {
         for (var entry : cantidades.entrySet()) {
             var grupo = entry.getKey();
             var evento = consultar(eventos, "/eventos/" + grupo.evento(), Evento.class);
-            var sector = consultar(recintos, "/sectores/" + grupo.sector(), Sector.class);
+            var sector = consultar(eventos, "/eventos/" + grupo.evento() + "/sectores/" + grupo.sector(), Sector.class);
             if (!Objects.equals(evento.id_evento(), grupo.evento()) || !Objects.equals(sector.id_sector(), grupo.sector()))
                 throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Catalogo de disponibilidad invalido");
             if (evento.recinto_id_recinto() == null || !Objects.equals(evento.recinto_id_recinto(), sector.recinto_id_recinto()))

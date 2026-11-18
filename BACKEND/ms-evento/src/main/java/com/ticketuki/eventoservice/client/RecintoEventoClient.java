@@ -10,6 +10,10 @@ import java.time.Duration;
 @Component
 public class RecintoEventoClient {
     public record Recinto(Long id_recinto, Integer capacidad_total) {}
+    public record Sector(Long id_sector, String nombre_sector, Integer capacidad_sector, Long recinto_id_recinto) {}
+    public Sector sector(Long id) {
+        return com.ticketuki.common.http.HttpServicios.consultar(client, "/sectores/" + id, Sector.class);
+    }
     private final WebClient client;
     public RecintoEventoClient(@Qualifier("recintoWebClient") WebClient client) { this.client = client; }
 

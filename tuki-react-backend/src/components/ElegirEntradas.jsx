@@ -11,6 +11,8 @@ function ElegirEntradas({ evento, seleccion, fechaElegida, sectores, onElegir, o
       <PasosCompra etapa="entradas" />
       <header className="cabeza">
         <h2 id="elegir_entradas_titulo" className="cabeza_titulo">{evento.nombre}</h2>
+        <p role="status">Capacidad total: {evento.capacidadTotal} · Entradas disponibles: {evento.disponibles}</p>
+        {!evento.ventaHabilitada && <p>{evento.estado}</p>}
         <p className="cabeza_detalle">{fecha.dia} {fecha.mes}{fecha.horario && ` · ${fecha.horario}`} · {evento.recinto}</p>
       </header>
       <div className="entradas_columnas">
@@ -34,11 +36,11 @@ function ElegirEntradas({ evento, seleccion, fechaElegida, sectores, onElegir, o
           <div className="seleccion_sectores">
             {sectores.map((sector) => (
               <button key={sector.id} className="seleccion_sector" type="button"
-                disabled={sector.estado === "agotada" || fecha.estado === "Agotado"}
+                disabled={sector.bloqueado || sector.estado === "agotada" || fecha.estado === "Agotado"}
                 aria-pressed={seleccion?.sectorId === sector.id}
                 onClick={() => onElegir(sector.id)}>
-                <span>{sector.nombre}</span>
-                <strong>{sector.estado === "agotada" || fecha.estado === "Agotado" ? "Agotado" : "$" + sector.precio.toLocaleString("es-CL")}</strong>
+                <span>{sector.nombre}<small> · {sector.disponibles} disponibles de {sector.capacidad}</small></span>
+                <strong>{sector.capacidad === 0 ? "Cerrado" : sector.estado === "agotada" ? "Agotado" : sector.bloqueado ? "No disponible" : "$" + sector.precio.toLocaleString("es-CL")}</strong>
               </button>
             ))}
           </div>

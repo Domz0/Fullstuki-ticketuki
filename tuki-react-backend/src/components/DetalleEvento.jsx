@@ -1,12 +1,13 @@
 import { navegar } from "../utils/navegacion";
 import MapaRecinto from "./MapaRecinto";
-import { obtenerPlano, obtenerSectores } from "../data/sectores";
+import { obtenerPlano } from "../data/sectores";
 import "./DetalleEvento.css";
 
 function DetalleEvento({ evento }) {
-  const sectores = obtenerSectores(evento);
-  const disponibles = sectores.filter((sector) => sector.estado !== "agotada").length;
+  const sectores = evento.sectores || [];
+  const disponibles = sectores.filter((sector) => !sector.bloqueado && sector.estado !== "agotada").length;
   function pesos(valor) {
+    if (valor == null) return "Por confirmar";
     return "$" + valor.toLocaleString("es-CL");
   }
 
@@ -44,6 +45,7 @@ function DetalleEvento({ evento }) {
             {evento.nombre}
           </h2>
           <p className="evento_bajada">{evento.descripcion}</p>
+          <p role="status">Capacidad total: {evento.capacidadTotal} · Entradas disponibles: {evento.disponibles}</p>
           <dl className="fichas">
             <div className="ficha">
               <dt className="ficha_rotulo">Recinto</dt>
@@ -80,10 +82,10 @@ function DetalleEvento({ evento }) {
                     onClick={() =>
                       navegar(`/entradas/${evento.id}?fecha=${fecha.id}`)
                     }
-                    disabled={fecha.estado === "Agotado"}
+                    disabled={!evento.ventaHabilitada}
                     className={`boton fecha_accion ${fecha.estado === "Agotado" ? "fecha_accion_inactiva" : "boton_morado"}`}
                   >
-                    {fecha.estado === "Agotado" ? "Agotado" : "Elegir área"}
+                    {evento.ventaHabilitada ? "Elegir área" : evento.estado}
                   </button>
                 </li>
               ))}
@@ -113,16 +115,24 @@ function DetalleEvento({ evento }) {
               type="button"
               onClick={() => navegar(`/entradas/${evento.id}`)}
               className="boton boton_morado reserva_comprar"
+              disabled={!evento.ventaHabilitada}
             >
-              Elegir entradas
+              {evento.ventaHabilitada ? "Elegir entradas" : evento.estado}
             </button>
           </div>
-          <ul className="reserva_lista">
-            {evento.condiciones.map((condicion) => (
-              <li key={condicion}>{condicion}</li>
-            ))}
-          </ul>
-          <p className="reserva_convenios">{evento.convenios}</p>
+          {!evento.ventaHabilitada && (
+            <p role="status">{evento.yaPaso
+              ? "Este evento ya pasó. La venta de entradas está cerrada."
+              : "La venta no está habilitada para este evento, aunque pueda mostrar cupos restantes."}</p>
+          )}
+          {evento.condiciones?.length > 0 && (
+            <ul className="reserva_lista">
+              {evento.condiciones.map((condicion) => (
+                <li key={condicion}>{condicion}</li>
+              ))}
+            </ul>
+          )}
+          {evento.convenios && <p className="reserva_convenios">{evento.convenios}</p>}
         </aside>
       </div>
       <div className="compra">
@@ -134,8 +144,9 @@ function DetalleEvento({ evento }) {
           type="button"
           onClick={() => navegar(`/entradas/${evento.id}`)}
           className="boton boton_morado compra_accion"
+          disabled={!evento.ventaHabilitada}
         >
-          Elegir entradas
+          {evento.ventaHabilitada ? "Elegir entradas" : evento.estado}
         </button>
       </div>
     </section>
