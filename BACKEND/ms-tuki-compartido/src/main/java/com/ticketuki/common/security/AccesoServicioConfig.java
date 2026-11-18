@@ -15,7 +15,7 @@ public class AccesoServicioConfig {
 
     @Bean
     public AccesoServicio accesoServicio(
-            @Value("${ms.auth.url:${MS_AUTH_URL:http://localhost:8011}}") String auth,
+            @Value("${ms.auth.url:${MS_AUTH_URL:http://localhost:8002}}") String auth,
             @Value("${ms.usuario.url:${MS_USUARIO_URL:http://localhost:8001}}") String usuarios,
             @Value("${internal.service-key:${INTERNAL_SERVICE_KEY:}}") String clave) {
         return new AccesoServicio(auth, usuarios, clave);

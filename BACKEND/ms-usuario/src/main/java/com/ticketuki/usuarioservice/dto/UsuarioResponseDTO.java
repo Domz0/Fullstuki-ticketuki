@@ -15,5 +15,4 @@ public class UsuarioResponseDTO {
     private String a_materno;
     private String a_paterno;
     private String email;
-    private DireccionDTO direccion;
 }

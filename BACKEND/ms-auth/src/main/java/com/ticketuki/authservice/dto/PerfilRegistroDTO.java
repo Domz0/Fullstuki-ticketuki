@@ -1,6 +1,5 @@
 package com.ticketuki.authservice.dto;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +23,6 @@ public class PerfilRegistroDTO {
     @Size(max = 25, message = "Segundo nombre no puede exceder 25 caracteres")
     private String s_nombre;
 
-    @NotBlank(message = "Apellido materno es obligatorio")
     @Size(max = 25, message = "Apellido materno no puede exceder 25 caracteres")
     private String a_materno;
 
@@ -36,10 +34,6 @@ public class PerfilRegistroDTO {
     @Email(message = "El email debe ser válido")
     @Size(max = 100, message = "El email no puede exceder 100 caracteres")
     private String email;
-
-    @Valid
-    @NotNull(message = "Dirección es obligatoria")
-    private DireccionRegistroDTO direccion;
 
     public void setRun(String run) {
         if (run == null) {

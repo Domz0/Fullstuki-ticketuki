@@ -16,20 +16,19 @@ class UsuarioPermisosTest {
         var acceso = spy(new AccesoServicio("http://localhost", "http://localhost", "test"));
         doReturn(new AccesoServicio.Actor(10L, "cliente", "CLIENTE", 1L, true)).when(acceso).actor();
         var usuarios = mock(UsuarioRepository.class);
-        var direcciones = mock(DireccionUsuarioRepository.class);
-        var service = new UsuarioService(mock(ValidacionDatos.class), acceso, usuarios, direcciones);
+        var service = new UsuarioService(mock(ValidacionDatos.class), acceso, usuarios);
         assertThatThrownBy(() -> service.obtenerUsuarioPorId(2L)).isInstanceOfSatisfying(ResponseStatusException.class,
                 ex -> assertThat(ex.getStatusCode().value()).isEqualTo(403));
         assertThatThrownBy(() -> service.actualizarUsuario(2L, new UsuarioRequestDTO()))
                 .isInstanceOfSatisfying(ResponseStatusException.class, ex -> assertThat(ex.getStatusCode().value()).isEqualTo(403));
-        verifyNoInteractions(usuarios, direcciones);
+        verifyNoInteractions(usuarios);
     }
 
     @Test void clienteLeePerfilPropioYAdministradorPuedeLeerOtro() {
         var acceso = spy(new AccesoServicio("http://localhost", "http://localhost", "test"));
         doReturn(new AccesoServicio.Actor(10L, "cliente", "CLIENTE", 1L, true)).when(acceso).actor();
         var usuarios = mock(UsuarioRepository.class);
-        var service = new UsuarioService(mock(ValidacionDatos.class), acceso, usuarios, mock(DireccionUsuarioRepository.class));
+        var service = new UsuarioService(mock(ValidacionDatos.class), acceso, usuarios);
         var usuario = new Usuario();
         usuario.setId_usuario(1L);
         when(usuarios.findById(1L)).thenReturn(Optional.of(usuario));

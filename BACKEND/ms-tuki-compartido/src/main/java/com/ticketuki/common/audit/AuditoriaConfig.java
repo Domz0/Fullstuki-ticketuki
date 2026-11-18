@@ -24,7 +24,7 @@ public class AuditoriaConfig {
     }
     @Bean
     AuditoriaPublisher auditoriaPublisher(JdbcTemplate jdbc,
-            @Value("${ms.historial.url:http://localhost:8010}") String url,
+            @Value("${ms.historial.url:http://localhost:8007}") String url,
             @Value("${internal.service-key:${INTERNAL_SERVICE_KEY:}}") String key) {
         var factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(2000);

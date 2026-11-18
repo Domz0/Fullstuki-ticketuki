@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8009
 
 spring:
   application:
@@ -9,10 +9,10 @@ spring:
       server:
         webflux:
           # Enrutamiento centralizado: cada predicate Path decide a qué microservicio
-          # se reenvía la petición. El cliente solo conoce el gateway (puerto 8080).
+          # se reenvía la petición. El cliente solo conoce el gateway (puerto 8009).
           routes:
             - id: ms-auth
-              uri: ${MS_AUTH_URL:http://localhost:8011}
+              uri: ${MS_AUTH_URL:http://localhost:8002}
               predicates:
                 - Path=/auth/**
 
@@ -42,7 +42,7 @@ spring:
                 - Path=/recintos/**,/sectores/**
 
             - id: ms-historial
-              uri: ${MS_HISTORIAL_URL:http://localhost:8010}
+              uri: ${MS_HISTORIAL_URL:http://localhost:8007}
               predicates:
                 - Path=/historial/**
 

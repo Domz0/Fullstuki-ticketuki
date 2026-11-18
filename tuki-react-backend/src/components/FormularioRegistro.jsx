@@ -6,14 +6,18 @@ import "./FormularioRegistro.css";
 function FormularioRegistro({ onValidado }) {
   const [datos, setDatos] = useState({
     nombre: "",
+    segundoNombre: "",
     apellido: "",
+    apellidoMaterno: "",
+    username: "",
     rut: "",
     correo: "",
     password: "",
-    terminos: false,
+    confirmacionPassword: "",
   });
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   function cambiarCampo(event) {
     const { name, type, checked, value } = event.target;
@@ -22,8 +26,10 @@ function FormularioRegistro({ onValidado }) {
     setMensaje("");
   }
 
-  function comprobarRegistro(event) {
+  async function comprobarRegistro(event) {
     event.preventDefault();
+    if (enviando) return;
+    setMensaje("");
     const nuevosErrores = validarRegistro(datos);
     setErrores(nuevosErrores);
     const primerError = Object.keys(nuevosErrores)[0];
@@ -31,10 +37,17 @@ function FormularioRegistro({ onValidado }) {
       setMensaje("Revisa los campos marcados.");
       event.currentTarget.elements.namedItem(primerError).focus();
     } else {
-      const resultado = onValidado(datos);
-      if (resultado?.error) {
-        setErrores({ correo: resultado.error });
-        setMensaje(resultado.error);
+      setEnviando(true);
+      try {
+        const resultado = await onValidado(datos);
+        if (resultado?.error) {
+          setErrores(resultado.errores || {});
+          setMensaje(resultado.error);
+        }
+      } catch {
+        setMensaje("No se pudo crear la cuenta. Inténtalo nuevamente.");
+      } finally {
+        setEnviando(false);
       }
     }
   }
@@ -50,7 +63,8 @@ function FormularioRegistro({ onValidado }) {
           {...opciones}
           value={datos[nombre]}
           onChange={cambiarCampo}
-          required
+          required={opciones.required !== false}
+          disabled={enviando}
           className={errores[nombre] ? "input_error" : ""}
           aria-invalid={Boolean(errores[nombre])}
           aria-describedby={
@@ -81,9 +95,14 @@ function FormularioRegistro({ onValidado }) {
           <h2 id="titulo_registro">Crea tu cuenta</h2>
           <p className="registro_subtitulo">Solo toma un minuto</p>
           <div className="registro_fila">
-            {campo("nombre", "Nombre", { placeholder: "Nombre" })}
-            {campo("apellido", "Apellido", { placeholder: "Apellido" })}
+            {campo("nombre", "Primer nombre", { maxLength: 25 })}
+            {campo("segundoNombre", "Segundo nombre (opcional)", { maxLength: 25, required: false })}
           </div>
+          <div className="registro_fila">
+            {campo("apellido", "Apellido paterno", { maxLength: 25 })}
+            {campo("apellidoMaterno", "Apellido materno (opcional)", { maxLength: 25, required: false })}
+          </div>
+          {campo("username", "Nombre de usuario", { maxLength: 50, autoComplete: "username" })}
           {campo("rut", "RUT", {
             placeholder: "Ej: 12.345.678-5",
             maxLength: 12,
@@ -95,39 +114,22 @@ function FormularioRegistro({ onValidado }) {
           })}
           {campo("password", "Contraseña", {
             type: "password",
-            placeholder: "Entre 4 y 10 caracteres",
-            maxLength: 10,
+            placeholder: "Entre 8 y 100 caracteres",
+            maxLength: 100,
             autoComplete: "new-password",
           })}
-          <div className="registro_terminos">
-            <div className="registro_aceptacion">
-              <input
-                id="registro_terminos"
-                name="terminos"
-                type="checkbox"
-                checked={datos.terminos}
-                onChange={cambiarCampo}
-                required
-                aria-invalid={Boolean(errores.terminos)}
-                aria-describedby={
-                  errores.terminos ? "registro_error_terminos" : undefined
-                }
-              />
-              <label htmlFor="registro_terminos">
-                Acepto los términos y la política de privacidad
-              </label>
-            </div>
-            {errores.terminos && (
-              <p id="registro_error_terminos" className="txt_error">
-                {errores.terminos}
-              </p>
-            )}
-          </div>
-          <button type="submit">Crear cuenta</button>
+          {campo("confirmacionPassword", "Confirmación de contraseña", {
+            type: "password",
+            maxLength: 100,
+            autoComplete: "new-password",
+          })}
+          <button type="submit" disabled={enviando}>
+            {enviando ? "Creando cuenta..." : "Crear cuenta"}
+          </button>
           <p
             role="status"
             className={
-              Object.values(errores).some(Boolean) ? "txt_error" : "txt_exito"
+              mensaje ? "txt_error" : "txt_exito"
             }
           >
             {mensaje}

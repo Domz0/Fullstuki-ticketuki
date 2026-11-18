@@ -29,8 +29,7 @@ public class Usuario {
     @Column(name = "s_nombre", length = 25)
     private String s_nombre;
 
-    @NotBlank(message = "El apellido materno es requerido")
-    @Column(name = "a_materno", nullable = false, length = 25)
+    @Column(name = "a_materno", length = 25)
     private String a_materno;
 
     @NotBlank(message = "El apellido paterno es requerido")
@@ -42,7 +41,4 @@ public class Usuario {
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "direccion_usuario_id_direccion", referencedColumnName = "id_direccion_usuario")
-    private DireccionUsuario direccion;
 }

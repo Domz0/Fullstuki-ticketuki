@@ -10,7 +10,7 @@ import java.time.Duration;
 public class SesionActivaClient {
     private final WebClient client;
     private final String key;
-    public SesionActivaClient(WebClient.Builder builder, @Value("${MS_AUTH_URL:http://localhost:8011}") String url,
+    public SesionActivaClient(WebClient.Builder builder, @Value("${MS_AUTH_URL:http://localhost:8002}") String url,
             @Value("${INTERNAL_SERVICE_KEY:}") String key) {
         client = builder.baseUrl(url).build();
         this.key = key;

@@ -1,13 +1,10 @@
 package com.ticketuki.usuarioservice.service;
 
-import com.ticketuki.usuarioservice.dto.DireccionDTO;
 import com.ticketuki.usuarioservice.dto.UsuarioRequestDTO;
 import com.ticketuki.usuarioservice.dto.UsuarioResponseDTO;
 import com.ticketuki.usuarioservice.exception.UsuarioDuplicadoException;
 import com.ticketuki.usuarioservice.exception.UsuarioNotFoundException;
-import com.ticketuki.usuarioservice.model.DireccionUsuario;
 import com.ticketuki.usuarioservice.model.Usuario;
-import com.ticketuki.usuarioservice.repository.DireccionUsuarioRepository;
 import com.ticketuki.usuarioservice.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +21,6 @@ public class UsuarioService {
     private final com.ticketuki.common.validation.ValidacionDatos validacion;
     private final com.ticketuki.common.security.AccesoServicio acceso;
     private final UsuarioRepository usuarioRepository;
-    private final DireccionUsuarioRepository direccionRepository;
 
     private void validarDuplicados(UsuarioRequestDTO dto, Long id) {
         dto.setRun(dto.getRun());
@@ -38,15 +34,6 @@ public class UsuarioService {
     }
 
     private UsuarioResponseDTO toResponseDTO(Usuario usuario) {
-        DireccionDTO direccionDTO = null;
-        if (usuario.getDireccion() != null) {
-            direccionDTO = new DireccionDTO(
-                usuario.getDireccion().getCalle(),
-                usuario.getDireccion().getRegion(),
-                usuario.getDireccion().getComuna(),
-                usuario.getDireccion().getNum_calle()
-            );
-        }
         return new UsuarioResponseDTO(
             usuario.getId_usuario(),
             usuario.getRun(),
@@ -54,8 +41,7 @@ public class UsuarioService {
             usuario.getS_nombre(),
             usuario.getA_materno(),
             usuario.getA_paterno(),
-            usuario.getEmail(),
-            direccionDTO
+            usuario.getEmail()
         );
     }
 
@@ -89,15 +75,6 @@ public class UsuarioService {
         log.info("Creando nuevo usuario con run: {}", usuarioDTO.getRun());
         validarDuplicados(usuarioDTO, null);
 
-        DireccionUsuario direccion = new DireccionUsuario(
-            null,
-            usuarioDTO.getDireccion().getCalle(),
-            usuarioDTO.getDireccion().getRegion(),
-            usuarioDTO.getDireccion().getComuna(),
-            usuarioDTO.getDireccion().getNum_calle()
-        );
-        direccion = direccionRepository.save(direccion);
-
         Usuario usuario = new Usuario(
             null,
             usuarioDTO.getRun(),
@@ -105,8 +82,7 @@ public class UsuarioService {
             usuarioDTO.getS_nombre(),
             usuarioDTO.getA_materno(),
             usuarioDTO.getA_paterno(),
-            usuarioDTO.getEmail(),
-            direccion
+            usuarioDTO.getEmail()
         );
 
         Usuario usuarioGuardado = usuarioRepository.saveAndFlush(usuario);
@@ -137,16 +113,6 @@ public class UsuarioService {
         usuario.setA_materno(usuarioDTO.getA_materno());
         usuario.setA_paterno(usuarioDTO.getA_paterno());
         usuario.setEmail(usuarioDTO.getEmail());
-
-        if (usuarioDTO.getDireccion() != null) {
-            if (usuario.getDireccion() == null) {
-                usuario.setDireccion(new DireccionUsuario());
-            }
-            usuario.getDireccion().setCalle(usuarioDTO.getDireccion().getCalle());
-            usuario.getDireccion().setRegion(usuarioDTO.getDireccion().getRegion());
-            usuario.getDireccion().setComuna(usuarioDTO.getDireccion().getComuna());
-            usuario.getDireccion().setNum_calle(usuarioDTO.getDireccion().getNum_calle());
-        }
 
         Usuario usuarioActualizado = usuarioRepository.saveAndFlush(usuario);
         log.info("Usuario actualizado exitosamente: {}", id);
