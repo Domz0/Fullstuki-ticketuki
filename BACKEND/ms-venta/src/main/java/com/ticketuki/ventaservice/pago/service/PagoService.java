@@ -17,6 +17,8 @@ import java.util.List;
 @Slf4j
 @Service
 public class PagoService {
+    @org.springframework.beans.factory.annotation.Value("${pagos.simulados:false}")
+    private boolean pagosSimulados;
     private final com.ticketuki.common.validation.ValidacionDatos validacion;
     private final com.ticketuki.common.security.AccesoServicio acceso;
 
@@ -78,6 +80,8 @@ public class PagoService {
     @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "CREAR", id = "id_pago")
     public PagoResponseDTO procesarPago(PagoRequestDTO dto) {
         validacion.validar(dto);
+        if (dto.getUsuario_id() == null)
+            throw new IllegalArgumentException("Para comprar sin cuenta usa el flujo de compra pública");
         acceso.propietario(dto.getUsuario_id());
         log.info("Procesando pago para venta: {}", dto.getVenta_id());
         var venta = obtenerVenta(dto.getVenta_id());
@@ -123,6 +127,25 @@ public class PagoService {
     @com.ticketuki.common.audit.Auditar(entidad = "PAGO", accion = "ACTUALIZAR", id = "id_pago")
     public PagoResponseDTO completarPago(Long id) {
         acceso.administrador();
+        return completar(id);
+    }
+
+    @Transactional
+    public PagoResponseDTO simularPago(Long id) {
+        var pago = pagoRepository.findForUpdate(id).orElseThrow(() -> new PagoNotFoundException("Pago no encontrado"));
+        acceso.propietario(pago.getUsuario_id());
+        return simularCompraValidada(id);
+    }
+
+    @Transactional
+    public PagoResponseDTO simularCompraValidada(Long id) {
+        if (!pagosSimulados) throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.FORBIDDEN, "El pago simulado no está habilitado");
+        if (!tareas.esCompra(id)) throw new IllegalArgumentException("El pago debe pertenecer a una compra");
+        return completar(id);
+    }
+
+    private PagoResponseDTO completar(Long id) {
         Pago p = pagoRepository.findForUpdate(id)
                 .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado con id: " + id));
         if (p.getEstado() == EstadoPago.COMPLETADO) return toResponseDTO(p);

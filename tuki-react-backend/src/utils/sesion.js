@@ -52,7 +52,7 @@ export function cerrarSesion() {
   localStorage.removeItem("rol");
 }
 
-function leerSesion() {
+export function leerSesion() {
   const sesion = JSON.parse(localStorage.getItem("sesionBackend") || "null");
   if (!obtenerUsuario()) throw new Error("Tu sesión terminó. Vuelve a iniciar sesión.");
   return sesion;
@@ -64,6 +64,10 @@ export async function cargarPerfil() {
   const unir = (...partes) => partes.map(parte => parte?.trim()).filter(Boolean).join(" ");
   const usuario = {
     ...sesion.usuario,
+    primerNombre: perfil.p_nombre || "",
+    segundoNombre: perfil.s_nombre || "",
+    apellidoPaterno: perfil.a_paterno || "",
+    apellidoMaterno: perfil.a_materno || "",
     nombre: unir(perfil.p_nombre, perfil.s_nombre),
     apellido: unir(perfil.a_paterno, perfil.a_materno),
     rut: perfil.run || "",

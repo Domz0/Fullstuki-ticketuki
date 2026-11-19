@@ -46,8 +46,8 @@ public class AccesoCliente {
         if (path.matches("/tickets/disponibilidad/[0-9]+/[0-9]+")) return Mono.just(true);
         String[] partes = path.split("/");
         if (path.startsWith("/usuarios/")) return Mono.just(path.equals("/usuarios/" + usuarioId));
-        if (path.matches("/compras/[0-9]+"))
-            return ventas.get().uri(path)
+        if (path.matches("/compras/[0-9]+(/confirmar-simulado)?"))
+            return ventas.get().uri("/compras/" + partes[2])
                     .retrieve().bodyToMono(JsonNode.class).timeout(Duration.ofSeconds(5))
                     .map(c -> mismoUsuario(c, "usuario_id", usuarioId))
                     .onErrorResume(WebClientResponseException.NotFound.class, ex -> Mono.just(false))

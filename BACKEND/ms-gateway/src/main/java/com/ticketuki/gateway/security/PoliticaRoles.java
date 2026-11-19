@@ -7,6 +7,9 @@ public final class PoliticaRoles {
     private PoliticaRoles() {}
 
     public static boolean publica(String path, HttpMethod method) {
+        if (method == HttpMethod.POST && (path.equals("/compras/publicas")
+                || path.matches("/compras/publicas/[0-9]+/confirmar-simulado"))) return true;
+        if (method == HttpMethod.GET && path.matches("/compras/publicas/[0-9]+(/resultado)?")) return true;
         if (method == HttpMethod.GET && (path.matches("/eventos(/[0-9]+(/sectores(/[0-9]+)?)?)?")
                 || path.matches("/tickets/disponibilidad/evento/[0-9]+"))) return true;
         return method == HttpMethod.POST && Set.of("/auth/login", "/auth/registro").contains(path);
@@ -29,7 +32,7 @@ public final class PoliticaRoles {
         if (Set.of("eventos", "recintos", "sectores", "promociones", "estadosEvento", "estadosTicket", "estadosVenta").contains(raiz))
             return method == HttpMethod.GET;
         if (path.matches("/usuarios/[0-9]+")) return method == HttpMethod.GET || method == HttpMethod.PUT;
-        if (method == HttpMethod.POST) return path.equals("/compras") || path.equals("/ventas") || path.equals("/pagos");
+        if (method == HttpMethod.POST) return path.equals("/compras") || path.matches("/compras/[0-9]+/confirmar-simulado") || path.equals("/ventas") || path.equals("/pagos");
         if (method == HttpMethod.PUT)
             return path.matches("/tickets/[0-9]+(/transferir)?") || path.matches("/pagos/[0-9]+/cancelar");
         return method == HttpMethod.GET && (path.matches("/compras/[0-9]+") || path.matches("/pagos/[0-9]+/operacion") || path.matches("/tickets/venta/[0-9]+") || path.matches("/ventas/[0-9]+")

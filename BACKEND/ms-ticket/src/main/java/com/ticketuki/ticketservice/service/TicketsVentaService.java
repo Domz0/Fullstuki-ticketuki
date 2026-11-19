@@ -44,12 +44,9 @@ public class TicketsVentaService {
         referencia.detalles().forEach(d -> comprados.merge(d.evento_id_evento() + ":" + d.sector_id_sector(),
                 d.cantidad_ticket().longValue(), Long::sum));
         Map<String, Long> pedidos = new HashMap<>();
-        Set<String> asientos = new HashSet<>();
         for (var t : solicitud) {
             String grupo = t.getEvento_id_evento() + ":" + t.getSector_id_sector();
             pedidos.merge(grupo, 1L, Long::sum);
-            if (!asientos.add(grupo + ":" + t.getNum_asiento()))
-                throw new IllegalArgumentException("No se puede repetir un asiento");
         }
         if (!comprados.equals(pedidos)) throw new IllegalArgumentException("Los titulares no coinciden con la cantidad comprada");
         if (!repository.findByVenta_id_venta(venta).isEmpty())
@@ -97,19 +94,14 @@ public class TicketsVentaService {
                     || evento.fecha_evento().isBefore(LocalDate.now()))
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "El evento no está disponible");
             if (evento.aforo_evento() == null || sector.capacidad_sector() == null
-                    || evento.aforo_evento() <= 0 || sector.capacidad_sector() <= 0
-                    || t.getNum_asiento() < 1 || t.getNum_asiento() > sector.capacidad_sector())
-                throw new IllegalArgumentException("Capacidad o asiento inválido");
+                    || evento.aforo_evento() <= 0 || sector.capacidad_sector() <= 0)
+                throw new IllegalArgumentException("Capacidad inválida");
             long ocupadosEvento = repository.contarEvento(evento.id_evento()) + operaciones.reservadosEvento(evento.id_evento());
             long ocupadosSector = repository.contarSector(evento.id_evento(), sector.id_sector())
                     + operaciones.reservadosSector(evento.id_evento(), sector.id_sector());
             if (ocupadosEvento + cantidadesEvento.get(evento.id_evento()) > evento.aforo_evento()
                     || ocupadosSector + cantidadesSector.get(evento.id_evento() + ":" + sector.id_sector()) > sector.capacidad_sector())
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "No quedan cupos para esta reserva");
-            if (repository.existsByNum_asientoAndEvento_id_eventoAndSector_id_sector(
-                    t.getNum_asiento(), evento.id_evento(), sector.id_sector())
-                    || operaciones.asientoReservado(evento.id_evento(), sector.id_sector(), t.getNum_asiento()))
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "El asiento ya está ocupado o reservado");
         }
         operaciones.apartar(venta, solicitud, contenido, minutosReserva);
         return operaciones.reserva(venta);

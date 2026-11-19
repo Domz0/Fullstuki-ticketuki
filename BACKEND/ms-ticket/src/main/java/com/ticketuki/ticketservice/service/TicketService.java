@@ -55,7 +55,6 @@ public class TicketService {
         return new TicketResponseDTO(
                 ticket.getId_ticket(),
                 ticket.getCod_qr(),
-                ticket.getNum_asiento(),
                 ticket.getNombre_titular(),
                 ticket.getRun_titular(),
                 ticket.getFecha_emision(),
@@ -171,8 +170,6 @@ public class TicketService {
         if (evento.aforo_evento() == null || sector.capacidad_sector() == null
                 || evento.aforo_evento() <= 0 || sector.capacidad_sector() <= 0)
             throw new TicketOperacionInvalidaException("Capacidad sin configurar");
-        if (dto.getNum_asiento() > sector.capacidad_sector())
-            throw new TicketOperacionInvalidaException("El asiento supera la capacidad del sector");
         if (ticketRepository.contarEvento(evento.id_evento()) + operaciones.reservadosEvento(evento.id_evento()) >= evento.aforo_evento()
                 || ticketRepository.contarSector(evento.id_evento(), sector.id_sector()) + operaciones.reservadosSector(evento.id_evento(), sector.id_sector()) >= sector.capacidad_sector())
             throw new TicketOperacionInvalidaException("No quedan cupos para este evento y sector");
@@ -198,13 +195,6 @@ public class TicketService {
                 operaciones.reservadosEvento(evento), operaciones.reservadosSector(evento, sector));
     }
 
-    private void validarAsientoDisponible(Integer numAsiento, Long eventoId, Long sectorId) {
-        if (ticketRepository.existsByNum_asientoAndEvento_id_eventoAndSector_id_sector(
-                numAsiento, eventoId, sectorId) || operaciones.asientoReservado(eventoId, sectorId, numAsiento)) {
-            throw new TicketOperacionInvalidaException(
-                    "El asiento " + numAsiento + " ya está ocupado en este evento y sector");
-        }
-    }
 
     // ── Operaciones CRUD ──────────────────────────────────────────────────────
 
@@ -219,12 +209,10 @@ public class TicketService {
         if (!"ABIERTA".equals(operacion.estado()))
             throw new TicketOperacionInvalidaException("La emisión de la venta ya está cerrada");
         validarCapacidadYCompra(dto);
-        validarAsientoDisponible(dto.getNum_asiento(), dto.getEvento_id_evento(), dto.getSector_id_sector());
 
         Ticket ticket = new Ticket(
                 null,
                 QRGenerator.generarCodigoQR(),
-                dto.getNum_asiento(),
                 dto.getNombre_titular(),
                 dto.getRun_titular(),
                 LocalDate.now(),

@@ -30,7 +30,7 @@ CREATE TABLE detalle_venta (
     precio_iva BIGINT NOT NULL,
     precio_total BIGINT NOT NULL,
     comision BIGINT NOT NULL,
-    usuario_id_usuario BIGINT NOT NULL,
+    usuario_id_usuario BIGINT NULL,
     venta_id_venta BIGINT NOT NULL,
     sector_id_sector BIGINT NOT NULL,
     promocion_id BIGINT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE pago (
     timestamp DATETIME(6) NOT NULL,
     estado VARCHAR(25) NOT NULL DEFAULT 'PENDIENTE',
     venta_id BIGINT NOT NULL,
-    usuario_id BIGINT NOT NULL,
+    usuario_id BIGINT NULL,
     CONSTRAINT fk_pago_venta FOREIGN KEY (venta_id) REFERENCES venta(id_venta),
     INDEX idx_pago_usuario (usuario_id),
     INDEX idx_pago_fecha (timestamp)
@@ -66,14 +66,18 @@ CREATE TABLE auditoria_pendiente (
 
 CREATE TABLE compra (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id BIGINT NOT NULL,
+    usuario_id BIGINT NULL,
+    nombre_comprador VARCHAR(100) NULL,
+    rut_comprador VARCHAR(12) NULL,
+    correo_comprador VARCHAR(254) NULL,
+    acceso_hash VARCHAR(64) NULL,
     clave VARCHAR(80) NOT NULL,
     solicitud LONGTEXT NOT NULL,
     reserva_estado VARCHAR(20) NULL,
     reserva_hasta DATETIME(6) NULL,
     venta_id BIGINT NULL UNIQUE,
     pago_id BIGINT NULL UNIQUE,
-    UNIQUE KEY uk_compra_clave(usuario_id, clave),
+    UNIQUE KEY uk_compra_clave(clave),
     FOREIGN KEY (venta_id) REFERENCES venta(id_venta),
     FOREIGN KEY (pago_id) REFERENCES pago(id_pago)
 );

@@ -38,8 +38,7 @@ public class DetalleVenta {
     @Column(name = "comision", nullable = false)
     private Long comision;
 
-    @NotNull
-    @Column(name = "usuario_id_usuario", nullable = false)
+    @Column(name = "usuario_id_usuario")
     private Long usuario_id_usuario;
 
     @NotNull

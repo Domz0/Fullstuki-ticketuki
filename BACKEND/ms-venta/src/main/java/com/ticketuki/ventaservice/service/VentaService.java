@@ -109,9 +109,17 @@ public class VentaService {
     @com.ticketuki.common.audit.Auditar(entidad = "VENTA", accion = "CREAR", id = "id_venta")
     public VentaResponseDTO crearVenta(VentaRequestDTO dto) {
         validacion.validar(dto);
+        if (dto.getDetalles().stream().anyMatch(d -> d.getUsuario_id_usuario() == null))
+            throw new IllegalArgumentException("Para comprar sin cuenta usa el flujo de compra pública");
+        acceso.propietarios(dto.getDetalles().stream().map(DetalleVentaRequestDTO::getUsuario_id_usuario).toList());
+        return crearVentaCompra(dto);
+    }
+
+    @Transactional
+    VentaResponseDTO crearVentaCompra(VentaRequestDTO dto) {
+        validacion.validar(dto);
         if (dto == null || dto.getDetalles() == null || dto.getDetalles().isEmpty())
             throw new IllegalArgumentException("Debe indicar detalles de venta");
-        acceso.propietarios(dto.getDetalles().stream().map(DetalleVentaRequestDTO::getUsuario_id_usuario).toList());
         log.info("Creando venta con medio de pago: {}", dto.getMedio_pago());
         try { com.ticketuki.ventaservice.pago.model.MedioPago.valueOf(dto.getMedio_pago()); }
         catch (RuntimeException ex) { throw new IllegalArgumentException("Medio de pago inválido"); }
@@ -123,7 +131,7 @@ public class VentaService {
         Long comprador = dto.getDetalles().getFirst().getUsuario_id_usuario();
         if (dto.getDetalles().stream().anyMatch(d -> !java.util.Objects.equals(comprador, d.getUsuario_id_usuario())))
             throw new IllegalArgumentException("Todos los detalles deben pertenecer al mismo comprador");
-        catalogo.validarUsuario(comprador);
+        if (comprador != null) catalogo.validarUsuario(comprador);
         catalogo.validarCupos(dto.getDetalles());
 
         // 2. Calcular detalles en memoria (descuento, IVA 19%, comisión 10%)

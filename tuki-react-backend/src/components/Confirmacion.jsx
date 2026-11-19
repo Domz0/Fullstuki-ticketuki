@@ -10,16 +10,14 @@ function Confirmacion({ compra }) {
       <header className="flex_V confirmacion_encabezado">
         <h2 id="titulo_confirmacion">Compra confirmada</h2>
         <p className="texto_secundario">
-          Vista de ejemplo con datos ficticios. El QR no es una entrada válida.
+          Compra registrada y entradas emitidas. El pago fue simulado, sin cobro bancario.
         </p>
+        {!compra.correoEnviado && <p className="texto_secundario">
+          Guarda tus códigos. El envío al correo aún no está habilitado.
+        </p>}
       </header>
       <div className="flex_H panel confirmacion_tarjeta">
         <div className="flex_V confirmacion_acceso">
-          <img
-            src={compra.qr}
-            alt="QR de ejemplo"
-            className="flex_centrado qr"
-          />
           <dl className="confirmacion_identificador">
             <dt className="texto_small confirmacion_etiqueta">
               CODIGO DE ACCESO
@@ -27,7 +25,7 @@ function Confirmacion({ compra }) {
             <dd className="confirmacion_codigo">{compra.codigo}</dd>
           </dl>
           <p className="texto_small">
-            Un QR por entrada. Se escanea en el acceso del recinto.
+            Códigos de las entradas generadas por el servidor.
           </p>
         </div>
         <div className="flex_V confirmacion_compra confirmacion_datos">

@@ -17,7 +17,6 @@ public class DetalleVentaRequestDTO {
 
     private Long precio_neto;
 
-    @NotNull(message = "El usuario es requerido")
     private Long usuario_id_usuario;
 
     @NotNull(message = "El sector es requerido")

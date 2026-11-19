@@ -40,11 +40,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT t FROM Ticket t WHERE t.run_titular = :run_titular")
     List<Ticket> findByRun_titular(@Param("run_titular") String run_titular);
 
-    @Query("SELECT COUNT(t) > 0 FROM Ticket t WHERE t.num_asiento = :num_asiento AND t.evento_id_evento = :evento_id_evento AND t.sector_id_sector = :sector_id_sector AND (t.estado IS NULL OR t.estado <> com.ticketuki.ticketservice.model.EstadoTicket.CANCELADO)")
-    boolean existsByNum_asientoAndEvento_id_eventoAndSector_id_sector(
-            @Param("num_asiento") Integer num_asiento,
-            @Param("evento_id_evento") Long evento_id_evento,
-            @Param("sector_id_sector") Long sector_id_sector);
 
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.evento_id_evento = :evento AND (t.estado IS NULL OR t.estado <> com.ticketuki.ticketservice.model.EstadoTicket.CANCELADO)")
     long contarEvento(@Param("evento") Long evento);

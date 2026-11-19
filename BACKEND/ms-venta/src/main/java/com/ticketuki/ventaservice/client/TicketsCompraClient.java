@@ -28,10 +28,13 @@ public class TicketsCompraClient {
         CompraRequestDTO compra;
         try { compra = mapper.readValue(solicitud, CompraRequestDTO.class); }
         catch (Exception ex) { throw new IllegalStateException("Solicitud de compra inválida", ex); }
-        var titulares = compra.titulares().stream().map(t -> Map.of(
+        var titulares = compra.titulares().stream().map(t -> {
+            var ticket = new java.util.HashMap<String, Object>(Map.of(
                 "venta_id_venta", venta, "evento_id_evento", t.evento_id_evento(),
-                "sector_id_sector", t.sector_id_sector(), "num_asiento", t.num_asiento(),
-                "nombre_titular", t.nombre_titular(), "run_titular", t.run_titular())).toList();
+                "sector_id_sector", t.sector_id_sector(),
+                "nombre_titular", t.nombre_titular(), "run_titular", t.run_titular()));
+            return ticket;
+        }).toList();
         return Map.of("tickets", titulares);
     }
 
@@ -54,6 +57,13 @@ public class TicketsCompraClient {
     }
 
     public void cancelar(Long venta) { enviar("/interno/ventas/" + venta + "/cancelar", Map.of(), Void.class); }
+
+    public java.util.List<Map<String, Object>> listar(Long venta) {
+        comprobarClave();
+        return client.get().uri("/tickets/venta/" + venta).header("X-Internal-Key", clave)
+                .retrieve().bodyToMono(new org.springframework.core.ParameterizedTypeReference<java.util.List<Map<String, Object>>>() {})
+                .block(java.time.Duration.ofSeconds(10));
+    }
 
     private Reserva comprobar(Reserva reserva) {
         if (reserva == null || reserva.estado() == null

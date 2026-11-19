@@ -12,6 +12,10 @@ export function validarPago(datos, metodo) {
   const errores = {};
   if (!datos.nombre.trim()) errores.nombre = "Ingresa tu nombre";
   if (!datos.apellido.trim()) errores.apellido = "Ingresa tu apellido";
+  const nombreCompleto = [datos.nombre, datos.segundoNombre, datos.apellido, datos.apellidoMaterno]
+    .map(parte => parte?.trim()).filter(Boolean).join(" ");
+  if (nombreCompleto.length > 50)
+    errores.nombre = "Los nombres y apellidos juntos no pueden superar los 50 caracteres.";
 
   const rut = /^([0-9]{7,8}|[0-9]{1,2}\.[0-9]{3}\.[0-9]{3})-[0-9kK]$/;
   if (!rut.test(datos.rut.trim())) {
@@ -20,9 +24,9 @@ export function validarPago(datos, metodo) {
 
   const correo =
     /^[^\s@]+@(duoc\.cl|gmail\.com|duocuc\.cl|profesor\.duoc\.cl)$/i;
-  if (datos.correo.trim().length > 100 || !correo.test(datos.correo.trim())) {
+  if (datos.correo.trim().length > 254 || !correo.test(datos.correo.trim())) {
     errores.correo =
-      "Usa un correo de gmail.com, duoc.cl, duocuc.cl o profesor.duoc.cl";
+      "Usa un correo de duoc.cl, gmail.com, duocuc.cl o profesor.duoc.cl";
   }
 
   if (metodo === "credito") {

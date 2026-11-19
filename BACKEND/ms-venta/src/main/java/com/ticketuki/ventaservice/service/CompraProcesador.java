@@ -103,7 +103,7 @@ public class CompraProcesador {
                 if (Set.of(400,404,409,410,422).contains(ex.getStatusCode().value())) {
                     if ("RESERVAR".equals(tipo) || "CONFIRMAR".equals(tipo)) {
                         jdbc.update("UPDATE compra SET reserva_estado='RECHAZADA' WHERE pago_id=?", id);
-                        siguiente(id, "CANCELAR", "No se pudo reservar o confirmar los asientos; cancelación pendiente");
+                        siguiente(id, "CANCELAR", "No se pudo reservar o confirmar los cupos; cancelación pendiente");
                     } else if ("EMITIR".equals(tipo)) {
                         siguiente(id, "REEMBOLSAR", "No se pudo emitir la compra; reembolso simulado pendiente");
                     } else {

@@ -1,45 +1,55 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./PaginaPago.css";
 import PasosCompra from "../components/PasosCompra";
 import FormularioPago from "../components/FormularioPago";
 import ResumenPago from "../components/ResumenPago";
-import { leerCompra, guardarCompra, confirmarCompra, rechazarCompra } from "../utils/compra";
+import { leerCompra, guardarCompra, rechazarCompra } from "../utils/compra";
 import { tarjetaVencida } from "../utils/validarPago";
-import { guardarEntrada } from "../utils/entradas";
+import { prepararCompra, procesarCompra } from "../services/compras";
 import { navegar } from "../utils/navegacion";
 
 function PaginaPago({ evento, fecha, usuario }) {
   const [compra, setCompra] = useState(leerCompra);
   const [mensaje, setMensaje] = useState("");
   const confirmando = useRef(false);
-  if (!compra || compra.eventoId !== evento.id || compra.fechaId !== fecha.id) {
+  const consulta = useRef(null);
+  useEffect(() => () => consulta.current?.abort(), []);
+  const [procesando, setProcesando] = useState(false);
+  if (!compra || String(compra.eventoId) !== String(evento.id) || compra.fechaId !== fecha.id) {
     return <section><h2>Elige tus entradas primero</h2><a className="pago_volver" href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Elegir entradas</a></section>;
   }
 
-  function aplicarCodigo(codigo) {
-    const nueva = { ...compra, codigoDescuento: codigo };
-    guardarCompra(nueva);
-    setCompra(nueva);
-  }
-
-  function continuarAConfirmacion(datos, metodo, cuotas) {
+  async function continuarAConfirmacion(datos, metodo, cuotas) {
     if (confirmando.current) return;
     confirmando.current = true;
+    const controlador = new AbortController();
+    consulta.current = controlador;
+    setProcesando(true);
+    setMensaje("Registrando compra…");
     try {
-      if (compra.estado !== "confirmada" && metodo === "credito" && tarjetaVencida(datos.vencimiento)) {
+      if (!compra.solicitudBackend && metodo === "credito" && tarjetaVencida(datos.vencimiento)) {
         guardarCompra(rechazarCompra(compra, datos, metodo, "Tarjeta vencida"));
         navegar(`/pago-fallido/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`);
         return;
       }
-      const confirmada = compra.estado === "confirmada"
-        ? compra : confirmarCompra(compra, datos, metodo, cuotas);
+      const pendiente = compra.solicitudBackend ? compra : await prepararCompra(compra, datos, metodo, cuotas);
+      controlador.signal.throwIfAborted();
+      guardarCompra(pendiente);
+      setCompra(pendiente);
+      const confirmada = await procesarCompra(pendiente, (actualizada, aviso) => {
+        guardarCompra(actualizada);
+        setCompra(actualizada);
+        setMensaje(aviso);
+      }, controlador.signal);
       guardarCompra(confirmada);
       setCompra(confirmada);
-      guardarEntrada(confirmada, usuario);
-      navegar(`/confirmacion/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`);
-    } catch {
+      navegar(`/${confirmada.estado === "confirmada" ? "confirmacion" : "pago-fallido"}/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`);
+    } catch (error) {
+      if (error.name === "AbortError") return;
+      setMensaje(error.message || "No se pudo confirmar la compra. Inténtalo nuevamente.");
+    } finally {
       confirmando.current = false;
-      setMensaje("No se pudo confirmar la compra. Inténtalo nuevamente.");
+      setProcesando(false);
     }
   }
 
@@ -48,11 +58,13 @@ function PaginaPago({ evento, fecha, usuario }) {
       <PasosCompra etapa="pago" />
       <a className="pago_volver" href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Volver a elegir entradas</a>
       <div className="pago_contenedor">
-        <FormularioPago usuario={usuario} comprador={compra.comprador}
-          codigoAplicado={compra.codigoDescuento} onAplicarCodigo={aplicarCodigo}
-          onValidado={continuarAConfirmacion} />
+        {compra.solicitudBackend ? <section><h2>Compra en proceso</h2>
+          <p>Consulta el estado de tu compra para continuar.</p>
+          <button disabled={procesando} onClick={() => continuarAConfirmacion()}>Consultar compra</button>
+        </section> : <FormularioPago usuario={usuario} comprador={compra.comprador}
+          onValidado={continuarAConfirmacion} />}
         <ResumenPago evento={evento} fecha={fecha} seleccion={compra}
-          cantidad={compra.cantidad} codigo={compra.codigoDescuento} />
+          cantidad={compra.cantidad} bloqueado={procesando || Boolean(compra.solicitudBackend)} />
       </div>
       <p className="txt_error" role="status">{mensaje}</p>
     </>

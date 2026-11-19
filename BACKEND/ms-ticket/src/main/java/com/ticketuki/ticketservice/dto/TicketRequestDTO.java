@@ -15,9 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TicketRequestDTO {
 
-    @NotNull(message = "El número de asiento es requerido")
-    @Positive
-    private Integer num_asiento;
 
     @NotBlank(message = "El nombre del titular es requerido")
     @Size(max = 50, message = "El nombre del titular no puede exceder 50 caracteres")

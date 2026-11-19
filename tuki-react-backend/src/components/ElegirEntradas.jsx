@@ -29,7 +29,7 @@ function ElegirEntradas({ evento, seleccion, fechaElegida, sectores, onElegir, o
             onElegir={onElegir}
             fechaAgotada={fecha.estado === "Agotado"}
           />
-          <p className="plano_nota">Selección por área. La ubicación exacta dentro del área se asigna al ingresar al recinto.</p>
+          <p className="plano_nota">Compra de cupos por sector, sin asientos numerados. La ubicación dentro del sector es libre.</p>
         </section>
         <SeleccionEntradas seleccion={seleccion} cantidad={seleccion?.cantidad || 1}
           onCambiarCantidad={onCambiarCantidad} onContinuar={onContinuar}>

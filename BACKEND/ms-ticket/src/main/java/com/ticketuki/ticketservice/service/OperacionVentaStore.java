@@ -35,30 +35,25 @@ public class OperacionVentaStore {
     }
 
     private static final String VIGENTES = """
-            FROM reserva_asiento r JOIN operacion_venta o ON o.venta_id=r.venta_id
+            FROM reserva_cupo r JOIN operacion_venta o ON o.venta_id=r.venta_id
             WHERE (o.estado='CONFIRMADA' OR (o.estado='RESERVADA' AND o.reserva_hasta>CURRENT_TIMESTAMP(6)))
             """;
 
     public long reservadosEvento(Long evento) {
-        return jdbc.queryForObject("SELECT COUNT(*) " + VIGENTES + " AND r.evento_id=?", Long.class, evento);
+        return jdbc.queryForObject("SELECT COALESCE(SUM(r.cantidad),0) " + VIGENTES + " AND r.evento_id=?", Long.class, evento);
     }
 
     public long reservadosSector(Long evento, Long sector) {
-        return jdbc.queryForObject("SELECT COUNT(*) " + VIGENTES + " AND r.evento_id=? AND r.sector_id=?",
+        return jdbc.queryForObject("SELECT COALESCE(SUM(r.cantidad),0) " + VIGENTES + " AND r.evento_id=? AND r.sector_id=?",
                 Long.class, evento, sector);
     }
 
-    public boolean asientoReservado(Long evento, Long sector, Integer asiento) {
-        return jdbc.queryForObject("SELECT COUNT(*) " + VIGENTES
-                + " AND r.evento_id=? AND r.sector_id=? AND r.num_asiento=?",
-                Long.class, evento, sector, asiento) > 0;
-    }
 
     public void apartar(Long venta, java.util.List<com.ticketuki.ticketservice.dto.TicketRequestDTO> tickets,
                         String solicitud, int minutos) {
         for (var ticket : tickets)
-            jdbc.update("INSERT INTO reserva_asiento(venta_id,evento_id,sector_id,num_asiento) VALUES (?,?,?,?)",
-                    venta, ticket.getEvento_id_evento(), ticket.getSector_id_sector(), ticket.getNum_asiento());
+            jdbc.update("INSERT INTO reserva_cupo(venta_id,evento_id,sector_id,cantidad) VALUES (?,?,?,1) ON DUPLICATE KEY UPDATE cantidad=cantidad+1",
+                    venta, ticket.getEvento_id_evento(), ticket.getSector_id_sector());
         jdbc.update("""
                 UPDATE operacion_venta SET estado='RESERVADA', solicitud=?,
                 reserva_hasta=TIMESTAMPADD(MINUTE, ?, CURRENT_TIMESTAMP(6)) WHERE venta_id=?
@@ -74,11 +69,12 @@ public class OperacionVentaStore {
     }
 
     public java.util.List<Long> eventosReservados(Long venta) {
-        return jdbc.queryForList("SELECT DISTINCT evento_id FROM reserva_asiento WHERE venta_id=? ORDER BY evento_id",
+        return jdbc.queryForList("SELECT DISTINCT evento_id FROM reserva_cupo WHERE venta_id=? ORDER BY evento_id",
                 Long.class, venta);
     }
 
     public void liberar(Long venta) {
-        jdbc.update("DELETE FROM reserva_asiento WHERE venta_id=?", venta);
+        jdbc.update("DELETE FROM reserva_cupo WHERE venta_id=?", venta);
     }
+
 }

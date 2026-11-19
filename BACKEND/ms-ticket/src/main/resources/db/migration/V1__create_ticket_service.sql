@@ -1,7 +1,6 @@
 CREATE TABLE ticket (
     id_ticket BIGINT AUTO_INCREMENT PRIMARY KEY,
     cod_qr VARCHAR(10) NOT NULL UNIQUE,
-    num_asiento INTEGER NOT NULL,
     nombre_titular VARCHAR(50) NOT NULL,
     run_titular VARCHAR(12) NOT NULL,
     fecha_emision DATE NOT NULL,
@@ -9,10 +8,8 @@ CREATE TABLE ticket (
     evento_id_evento BIGINT,
     sector_id_sector BIGINT,
     estado VARCHAR(25) NULL,
-    asiento_activo INT GENERATED ALWAYS AS
-        (CASE WHEN estado = 'CANCELADO' THEN NULL ELSE num_asiento END) STORED,
     INDEX idx_ticket_estado_local (estado),
-    UNIQUE INDEX uq_asiento_activo (evento_id_evento, sector_id_sector, asiento_activo)
+    INDEX idx_ticket_evento_sector (evento_id_evento, sector_id_sector)
 );
 
 CREATE TABLE cupo_evento (
@@ -34,12 +31,12 @@ CREATE TABLE operacion_venta (
     reserva_hasta DATETIME(6) NULL
 );
 
-CREATE TABLE reserva_asiento (
+CREATE TABLE reserva_cupo (
     venta_id BIGINT NOT NULL,
     evento_id BIGINT NOT NULL,
     sector_id BIGINT NOT NULL,
-    num_asiento INT NOT NULL,
-    PRIMARY KEY (venta_id, evento_id, sector_id, num_asiento),
+    cantidad INT NOT NULL CHECK (cantidad > 0),
+    PRIMARY KEY (venta_id, evento_id, sector_id),
     CONSTRAINT fk_reserva_operacion FOREIGN KEY (venta_id) REFERENCES operacion_venta(venta_id),
-    INDEX idx_reserva_evento_sector (evento_id, sector_id, num_asiento)
+    INDEX idx_reserva_evento_sector (evento_id, sector_id)
 );

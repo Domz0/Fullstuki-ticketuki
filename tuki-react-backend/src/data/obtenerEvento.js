@@ -17,7 +17,7 @@ export function obtenerEvento(id = "destacado") {
   return {
     ...detalleEvento,
     ...evento,
-    id,
+    id: evento.id,
     categoriaId: evento.categoria,
     categoria: categorias[evento.categoria],
     ubicacion: `${evento.recinto}, ${evento.ciudad}`,

@@ -29,6 +29,8 @@ public class CompraService {
     @Transactional
     public Compra crear(CompraRequestDTO dto) {
         validacion.validar(dto);
+        if (dto.venta().getDetalles().stream().anyMatch(d -> d.getUsuario_id_usuario() == null))
+            throw new IllegalArgumentException("Para comprar sin cuenta usa el flujo de compra pública");
         acceso.propietarios(dto.venta().getDetalles().stream().map(DetalleVentaRequestDTO::getUsuario_id_usuario).toList());
         validarTitulares(dto);
         long usuario = dto.venta().getDetalles().getFirst().getUsuario_id_usuario();
@@ -56,19 +58,22 @@ public class CompraService {
         dto.venta().getDetalles().forEach(d -> cantidades.merge(d.getEvento_id_evento()+":"+d.getSector_id_sector(),
                 d.getCantidad_ticket().longValue(), Long::sum));
         Map<String, Long> titulares = new HashMap<>();
-        Set<String> asientos = new HashSet<>();
         for (var t : dto.titulares()) {
             String sector = t.evento_id_evento()+":"+t.sector_id_sector();
             titulares.merge(sector, 1L, Long::sum);
-            if (!asientos.add(sector+":"+t.num_asiento()))
-                throw new IllegalArgumentException("No se puede repetir un asiento en la compra");
         }
         if (!cantidades.equals(titulares))
-            throw new IllegalArgumentException("Debe indicar un titular y asiento por cada ticket comprado");
+            throw new IllegalArgumentException("Debe indicar un titular por cada ticket comprado");
     }
 
     @Transactional(readOnly=true)
     public Compra obtener(Long id) {
+        var compra = consultar(id);
+        acceso.propietario(compra.usuario_id());
+        return compra;
+    }
+
+    Compra consultar(Long id) {
         var filas = jdbc.query("""
                 SELECT c.*, p.estado AS pago_estado, t.tipo, t.estado AS tarea_estado, t.intentos, t.mensaje
                 FROM compra c JOIN pago p ON p.id_pago=c.pago_id
@@ -88,12 +93,11 @@ public class CompraService {
             if ("PENDIENTE".equals(tarea) && "REEMBOLSAR".equals(tipo)) estado = "REEMBOLSANDO";
             if ("RECHAZADA".equals(tarea)) estado = "REVISION_REQUERIDA";
             if ("PENDIENTE".equals(pago) && "VENCIDA".equals(reserva)) estado = "RESERVA_VENCIDA";
-            return new Compra(rs.getLong("id"), rs.getLong("usuario_id"), rs.getLong("venta_id"),
+            return new Compra(rs.getLong("id"), rs.getObject("usuario_id", Long.class), rs.getLong("venta_id"),
                     rs.getLong("pago_id"), estado, rs.getInt("intentos"), rs.getString("mensaje"), reserva,
                     rs.getTimestamp("reserva_hasta") == null ? null : rs.getTimestamp("reserva_hasta").toLocalDateTime());
         }, id);
         if (filas.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Compra no encontrada");
-        acceso.propietario(filas.getFirst().usuario_id());
         return filas.getFirst();
     }
 }

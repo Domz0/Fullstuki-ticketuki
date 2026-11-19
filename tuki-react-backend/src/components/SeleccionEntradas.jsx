@@ -15,7 +15,7 @@ function SeleccionEntradas({ seleccion, cantidad, onCambiarCantidad, onContinuar
     );
   }
 
-  const { subtotal, cargo, total } = calcularTotales(seleccion.precio, cantidad);
+  const { subtotal, cargo, iva, total } = calcularTotales(seleccion.precio, cantidad);
 
   function pesos(valor) {
     return "$" + valor.toLocaleString("es-CL");
@@ -39,6 +39,10 @@ function SeleccionEntradas({ seleccion, cantidad, onCambiarCantidad, onContinuar
         <div className="totales_fila">
           <dt>{cantidad} × entrada</dt>
           <dd>{pesos(subtotal)}</dd>
+        </div>
+        <div className="totales_fila">
+          <dt>IVA (19%)</dt>
+          <dd>{pesos(iva)}</dd>
         </div>
         <div className="totales_fila">
           <dt>Cargo por servicio</dt>

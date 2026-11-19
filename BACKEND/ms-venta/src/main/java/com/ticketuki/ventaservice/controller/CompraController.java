@@ -12,6 +12,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CompraController {
     private final CompraService service;
+    private final com.ticketuki.ventaservice.pago.service.PagoService pagos;
+
+    @PostMapping("/{id}/confirmar-simulado")
+    public CompraService.Compra confirmarSimulado(@PathVariable Long id) {
+        var compra = service.obtener(id);
+        pagos.simularPago(compra.pago_id());
+        return service.obtener(id);
+    }
 
     @PostMapping
     public CompraService.Compra crear(@Valid @RequestBody CompraRequestDTO dto, HttpServletRequest request) {

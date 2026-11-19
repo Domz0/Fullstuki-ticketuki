@@ -22,9 +22,6 @@ public class Ticket {
     @Column(name = "cod_qr", nullable = false, unique = true, length = 10)
     private String cod_qr;
 
-    @NotNull(message = "El número de asiento es requerido")
-    @Column(name = "num_asiento", nullable = false)
-    private Integer num_asiento;
 
     @NotBlank(message = "El nombre del titular es requerido")
     @Column(name = "nombre_titular", nullable = false, length = 50)
@@ -51,10 +48,9 @@ public class Ticket {
     @Column(name = "sector_id_sector")
     private Long sector_id_sector;
 
-    public Ticket(Long id_ticket, String cod_qr, Integer num_asiento, String nombre_titular, String run_titular, LocalDate fecha_emision, Long venta_id_venta, Long estado_ticket_id_estado, Long evento_id_evento, Long sector_id_sector) {
+    public Ticket(Long id_ticket, String cod_qr, String nombre_titular, String run_titular, LocalDate fecha_emision, Long venta_id_venta, Long estado_ticket_id_estado, Long evento_id_evento, Long sector_id_sector) {
         this.id_ticket = id_ticket;
         this.cod_qr = cod_qr;
-        this.num_asiento = num_asiento;
         this.nombre_titular = nombre_titular;
         this.run_titular = run_titular;
         this.fecha_emision = fecha_emision;

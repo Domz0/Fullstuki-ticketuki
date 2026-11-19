@@ -1,16 +1,19 @@
-export async function peticionApi(ruta, { method = "GET", body, token } = {}) {
+export async function peticionApi(ruta, { method = "GET", body, token, signal, accesoCompra } = {}) {
   const headers = { Accept: "application/json" };
   if (body !== undefined) headers["Content-Type"] = "application/json";
   if (token) headers.Authorization = `Bearer ${token}`;
+  if (accesoCompra) headers["X-Compra-Token"] = accesoCompra;
 
   let respuesta;
   try {
     respuesta = await fetch(`/api/${ruta.replace(/^\/+/, "")}`, {
       method,
       headers,
+      signal,
       body: body === undefined ? undefined : JSON.stringify(body),
     });
-  } catch {
+  } catch (error) {
+    if (error.name === "AbortError") throw error;
     throw new Error("No se pudo conectar con el servidor. Inténtalo nuevamente.");
   }
 

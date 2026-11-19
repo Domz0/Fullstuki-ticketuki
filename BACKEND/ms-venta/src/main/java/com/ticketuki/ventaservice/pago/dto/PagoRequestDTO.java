@@ -28,7 +28,6 @@ public class PagoRequestDTO {
     @Positive
     private Long venta_id;
 
-    @NotNull(message = "El ID de usuario es requerido")
     @Positive
     private Long usuario_id;
 }

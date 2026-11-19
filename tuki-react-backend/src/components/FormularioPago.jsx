@@ -1,4 +1,5 @@
-﻿import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { cargarPerfil } from "../utils/sesion";
 import { validarPago } from "../utils/validarPago";
 import "./FormularioPago.css";
 
@@ -12,6 +13,7 @@ function CampoPago({
   placeholder,
   maxLength,
   inputMode,
+  required = true,
 }) {
   return (
     <div className="pago_caja">
@@ -25,7 +27,7 @@ function CampoPago({
         placeholder={placeholder}
         maxLength={maxLength}
         inputMode={inputMode}
-        required
+        required={required}
         className={error ? "input_error" : ""}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `error_${nombre}` : undefined}
@@ -41,10 +43,12 @@ function CampoPago({
 
 function FormularioPago({ onValidado, usuario, comprador, codigoAplicado = "", onAplicarCodigo }) {
   const [datos, setDatos] = useState({
-    nombre: comprador?.nombre || usuario?.nombre || "",
-    apellido: comprador?.apellido || usuario?.apellido || "",
-    rut: comprador?.rut || usuario?.rut || "",
-    correo: comprador?.correo || usuario?.correo || "",
+    nombre: comprador?.primerNombre ?? comprador?.nombre ?? (usuario?.rol === "cliente" ? usuario.primerNombre || "" : ""),
+    segundoNombre: comprador?.segundoNombre ?? (usuario?.rol === "cliente" ? usuario.segundoNombre || "" : ""),
+    apellido: comprador?.apellidoPaterno ?? comprador?.apellido ?? (usuario?.rol === "cliente" ? usuario.apellidoPaterno || "" : ""),
+    apellidoMaterno: comprador?.apellidoMaterno ?? (usuario?.rol === "cliente" ? usuario.apellidoMaterno || "" : ""),
+    rut: comprador?.rut ?? (usuario?.rol === "cliente" ? usuario.rut || "" : ""),
+    correo: comprador?.correo ?? (usuario?.rol === "cliente" ? usuario.correo || "" : ""),
     numero_tarjeta: "",
     vencimiento: "",
     cvv: "",
@@ -56,8 +60,29 @@ function FormularioPago({ onValidado, usuario, comprador, codigoAplicado = "", o
   const [errores, setErrores] = useState({});
   const [validado, setValidado] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const editados = useRef(new Set());
+  const [avisoPerfil, setAvisoPerfil] = useState(() =>
+    usuario?.rol === "cliente" && !comprador ? "Cargando tus datos del perfil…" : "");
+  useEffect(() => {
+    if (usuario?.rol !== "cliente" || comprador) return;
+    let vigente = true;
+    cargarPerfil().then(perfil => {
+      if (!vigente) return;
+      const campos = { nombre: perfil.primerNombre, segundoNombre: perfil.segundoNombre,
+        apellido: perfil.apellidoPaterno, apellidoMaterno: perfil.apellidoMaterno,
+        correo: perfil.correo, rut: perfil.rut };
+      setDatos(actuales => ({ ...actuales, ...Object.fromEntries(
+        Object.entries(campos).filter(([campo]) => !editados.current.has(campo)),
+      ) }));
+      setAvisoPerfil("");
+    }).catch(() => {
+      if (vigente) setAvisoPerfil("No se pudieron cargar tus datos del perfil. Puedes completarlos manualmente.");
+    });
+    return () => { vigente = false; };
+  }, [usuario?.rol, usuario?.usuarioId, comprador]);
 
   function cambiarCampo(event) {
+    editados.current.add(event.target.name);
     const nuevosDatos = { ...datos, [event.target.name]: event.target.value };
     setDatos(nuevosDatos);
     setMensaje("");
@@ -125,9 +150,14 @@ function FormularioPago({ onValidado, usuario, comprador, codigoAplicado = "", o
       >
         <div className="pago_bloque">
           <h3>Datos del comprador</h3>
+          {avisoPerfil && <p role="status">{avisoPerfil}</p>}
           <div className="pago_fila">
-            {campo("nombre", "Nombre", { placeholder: "Nombre" })}
-            {campo("apellido", "Apellido", { placeholder: "Apellido" })}
+            {campo("nombre", "Primer nombre", { placeholder: "Primer nombre" })}
+            {campo("segundoNombre", "Segundo nombre (opcional)", { placeholder: "Segundo nombre", required: false })}
+          </div>
+          <div className="pago_fila">
+            {campo("apellido", "Apellido paterno", { placeholder: "Apellido paterno" })}
+            {campo("apellidoMaterno", "Apellido materno (opcional)", { placeholder: "Apellido materno", required: false })}
           </div>
           <div className="pago_fila">
             {campo("rut", "RUT", {
@@ -137,12 +167,12 @@ function FormularioPago({ onValidado, usuario, comprador, codigoAplicado = "", o
             {campo("correo", "Correo electrónico", {
               type: "email",
               placeholder: "Correo electrónico",
-              maxLength: 100,
+              maxLength: 254,
             })}
           </div>
         </div>
 
-        <div className="pago_bloque pago_descuento">
+        {onAplicarCodigo && <div className="pago_bloque pago_descuento">
           <h3>Código de descuento</h3>
           <div className="pago_caja">
             <label htmlFor="pago_codigo">Ingresa tu código (opcional)</label>
@@ -185,6 +215,7 @@ function FormularioPago({ onValidado, usuario, comprador, codigoAplicado = "", o
           </div>
         </div>
 
+        }
         <div className="pago_bloque">
           <h3 id="titulo_metodo">Método de pago</h3>
           <div

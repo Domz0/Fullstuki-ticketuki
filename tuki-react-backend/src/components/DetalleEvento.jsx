@@ -108,7 +108,7 @@ function DetalleEvento({ evento }) {
           <p className="reserva_rotulo">Entradas desde</p>
           <p className="reserva_precio">{pesos(evento.precio)}</p>
           <p className="reserva_nota">
-            Precio final por entrada: {pesos(evento.precioConCargo)} con cargo
+            Precio final por entrada: {pesos(evento.precioConCargo)} con IVA y cargo
           </p>
           <div className="reserva_botones">
             <button

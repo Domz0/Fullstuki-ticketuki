@@ -1,8 +1,8 @@
 import { calcularTotales } from "../utils/compra";
 import "./ResumenPago.css";
 
-function ResumenPago({ evento, fecha, seleccion, cantidad, codigo = "" }) {
-  const { subtotal, cargo, descuento, total } = calcularTotales(seleccion.precio, cantidad, codigo);
+function ResumenPago({ evento, fecha, seleccion, cantidad, codigo = "", bloqueado = false }) {
+  const { subtotal, cargo, iva, descuento, total } = calcularTotales(seleccion.precio, cantidad, codigo);
   function pesos(valor) {
     return "$" + valor.toLocaleString("es-CL");
   }
@@ -34,6 +34,10 @@ function ResumenPago({ evento, fecha, seleccion, cantidad, codigo = "" }) {
           <dd>{pesos(subtotal)}</dd>
         </div>
         <div className="resumen_fila">
+          <dt>IVA (19%)</dt>
+          <dd>{pesos(iva)}</dd>
+        </div>
+        <div className="resumen_fila">
           <dt>Cargo por servicio</dt>
           <dd>{pesos(cargo)}</dd>
         </div>
@@ -50,13 +54,13 @@ function ResumenPago({ evento, fecha, seleccion, cantidad, codigo = "" }) {
       <button
         type="submit"
         form="formulario_pago"
+        disabled={bloqueado}
         className="boton morado resumen_pago_continuar"
       >
         Continuar · {pesos(total)}
       </button>
       <p className="resumen_nota">
-        Vista de ejemplo. Al continuar se validan los datos y se muestra la
-        confirmación, sin realizar un cobro.
+        Pago simulado: se registrará la compra y se emitirán las entradas, sin realizar un cobro bancario.
       </p>
     </aside>
   );

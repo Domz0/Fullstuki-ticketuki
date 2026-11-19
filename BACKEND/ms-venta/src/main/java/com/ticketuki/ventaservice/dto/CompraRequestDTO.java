@@ -9,7 +9,7 @@ public record CompraRequestDTO(
         @NotNull @Valid VentaRequestDTO venta,
         @NotEmpty @Size(max=100) List<@NotNull @Valid Titular> titulares) {
     public record Titular(@NotNull @Positive Long evento_id_evento,
-            @NotNull @Positive Long sector_id_sector, @NotNull @Positive Integer num_asiento,
+            @NotNull @Positive Long sector_id_sector,
             @NotBlank @Size(max=50) String nombre_titular,
             @NotBlank @Pattern(regexp="\\d{1,2}\\.\\d{3}\\.\\d{3}-[\\dKk]") String run_titular) {}
 }
