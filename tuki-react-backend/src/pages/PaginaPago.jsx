@@ -55,6 +55,14 @@ function PaginaPago({ evento, fecha, usuario }) {
 
   return (
     <>
+      {procesando && (
+        <section className="pago_cargando" aria-label="Compra en proceso">
+          <span className="pago_cargando_circulo" aria-hidden="true" />
+          <h2>Procesando tu compra</h2>
+          <p role="status" aria-live="polite" aria-atomic="true">{mensaje}</p>
+        </section>
+      )}
+      <div hidden={procesando}>
       <PasosCompra etapa="pago" />
       <a className="pago_volver" href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Volver a elegir entradas</a>
       <div className="pago_contenedor">
@@ -67,6 +75,7 @@ function PaginaPago({ evento, fecha, usuario }) {
           cantidad={compra.cantidad} bloqueado={procesando || Boolean(compra.solicitudBackend)} />
       </div>
       <p className="txt_error" role="status">{mensaje}</p>
+      </div>
     </>
   );
 }

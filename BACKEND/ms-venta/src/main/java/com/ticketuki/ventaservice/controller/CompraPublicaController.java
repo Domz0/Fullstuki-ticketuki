@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CompraPublicaController {
     private final CompraPublicaService service;
+    private final CompraProcesador procesador;
     @PostMapping
     public CompraService.Compra crear(@Valid @RequestBody CompraPublicaDTO dto,
             @RequestHeader("X-Compra-Token") String secreto, HttpServletRequest request) {
-        return service.crear(dto, secreto, request.getHeader("Authorization") != null);
+        var compra = service.crear(dto, secreto, request.getHeader("Authorization") != null);
+        procesador.procesarInmediato(compra.pago_id());
+        return service.obtener(compra.id(), secreto);
     }
     @GetMapping("/{id}")
     public CompraService.Compra obtener(@PathVariable Long id, @RequestHeader("X-Compra-Token") String secreto) {
@@ -23,7 +26,9 @@ public class CompraPublicaController {
     }
     @PostMapping("/{id}/confirmar-simulado")
     public CompraService.Compra confirmar(@PathVariable Long id, @RequestHeader("X-Compra-Token") String secreto) {
-        return service.confirmar(id, secreto);
+        var compra = service.confirmar(id, secreto);
+        procesador.procesarInmediato(compra.pago_id());
+        return service.obtener(id, secreto);
     }
     @GetMapping("/{id}/resultado")
     public java.util.Map<String,Object> resultado(@PathVariable Long id, @RequestHeader("X-Compra-Token") String secreto) {

@@ -20,3 +20,44 @@
   outline: 2px solid var(--color-morado);
   outline-offset: 3px;
 }
+
+.pago_cargando {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.pago_cargando_circulo {
+  width: 64px;
+  height: 64px;
+  box-sizing: border-box;
+  border: 5px solid var(--color-linea);
+  border-top-color: var(--color-morado);
+  border-radius: 50%;
+  animation: pago_girar 0.9s linear infinite;
+}
+
+.pago_cargando h2 {
+  margin: 6px 0 0;
+  font-size: 24px;
+}
+
+.pago_cargando p {
+  margin: 0;
+  max-width: 480px;
+  color: var(--color-texto-suave);
+  line-height: 1.5;
+}
+
+@keyframes pago_girar {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pago_cargando_circulo { animation-duration: 2.4s; }
+}

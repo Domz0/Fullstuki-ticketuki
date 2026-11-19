@@ -1,5 +1,6 @@
 ﻿import { navegar } from "../utils/navegacion";
 import "./Confirmacion.css";
+import qrEjemplo from "../assets/qr-ejemplo.png";
 
 function Confirmacion({ compra }) {
   return (
@@ -18,6 +19,7 @@ function Confirmacion({ compra }) {
       </header>
       <div className="flex_H panel confirmacion_tarjeta">
         <div className="flex_V confirmacion_acceso">
+          <img className="flex_centrado qr" src={qrEjemplo} alt="QR de ejemplo" />
           <dl className="confirmacion_identificador">
             <dt className="texto_small confirmacion_etiqueta">
               CODIGO DE ACCESO

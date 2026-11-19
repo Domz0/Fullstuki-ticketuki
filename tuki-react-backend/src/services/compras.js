@@ -56,7 +56,8 @@ export async function procesarCompra(compra, informar, signal) {
     if (operacion.estado === "REVISION_REQUERIDA")
       throw new Error("La compra requiere revisión del administrador. No vuelvas a crearla.");
     if (operacion.estado === "PENDIENTE_PAGO" && operacion.reserva_estado === "RESERVADA") {
-      await api(`/${operacion.id}/confirmar-simulado`, { method: "POST" });
+      operacion = await api(`/${operacion.id}/confirmar-simulado`, { method: "POST" });
+      if (operacion.estado !== "PENDIENTE_PAGO") continue;
     }
     await new Promise(resolve => setTimeout(resolve, 2000));
     operacion = await api(`/${operacion.id}`);

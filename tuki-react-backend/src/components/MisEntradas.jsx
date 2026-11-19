@@ -1,6 +1,7 @@
 ﻿import { navegar } from "../utils/navegacion";
 import { useEffect, useState } from "react";
 import { cargarMisEntradas } from "../services/entradas";
+import qrEjemplo from "../assets/qr-ejemplo.png";
 import "./MisEntradas.css";
 
 function MisEntradas({ usuario }) {
@@ -70,6 +71,7 @@ function MisEntradas({ usuario }) {
               <p className="entrada_fecha">Orden: {entrada.orden} · 1 entrada</p>
             </div>
             <div className="entrada_acceso">
+              <img className="qr" src={qrEjemplo} alt="QR de ejemplo" />
               <div className="entrada_codigo_caja">
                 <p className="entrada_rotulo entrada_rotulo_codigo">Código</p>
                 <p className="entrada_codigo">{entrada.codigo}</p>

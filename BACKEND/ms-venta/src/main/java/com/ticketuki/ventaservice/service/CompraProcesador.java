@@ -31,8 +31,26 @@ public class CompraProcesador {
                 ORDER BY revisada_en, pago_id LIMIT 50
                 """, Long.class);
         for (Long id : ids) {
-            try { procesar(id); }
-            catch (Exception ex) { log.warn("La operación del pago {} queda pendiente para reintento", id); }
+            procesarInmediato(id);
+        }
+    }
+
+    // Se llama después de confirmar la transacción que crea la tarea.
+    // Cada paso confirma su propia transacción antes de contactar al siguiente servicio.
+    public void procesarInmediato(Long id) {
+        try {
+            for (int paso = 0; paso < 4; paso++) {
+                var antes = jdbc.queryForList("SELECT tipo, estado FROM pago_tarea WHERE pago_id=?", id);
+                if (antes.isEmpty()) return;
+                String tipo = antes.getFirst().get("tipo").toString();
+                procesar(id);
+                var despues = jdbc.queryForList("SELECT tipo, estado FROM pago_tarea WHERE pago_id=?", id);
+                if (despues.isEmpty() || !"PENDIENTE".equals(despues.getFirst().get("estado"))
+                        || tipo.equals(despues.getFirst().get("tipo"))) return;
+                // Avanza solo si cambió la tarea. Un fallo en el mismo paso espera al reintento programado.
+            }
+        } catch (Exception ex) {
+            log.warn("La operación del pago {} queda pendiente para reintento", id);
         }
     }
 
