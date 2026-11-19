@@ -1,55 +1,88 @@
+import { useEffect, useState } from "react";
 import EsqueletoEventos from "../components/EsqueletoEventos";
 import Portada from "../components/Portada";
 import Evento from "../components/Evento";
-import { useEffect, useState } from "react";
 import { cargarCatalogo } from "../services/eventos";
 
+// carga catalogo y los eventos de inicio
 function Inicio() {
   const [catalogo, setCatalogo] = useState([]);
-  const [estado, setEstado] = useState("");
+  const [error, setError] = useState("");
   const [cargando, setCargando] = useState(true);
+
   useEffect(() => {
     let vigente = true;
-    cargarCatalogo().then(eventos => {
-      if (vigente) { setCatalogo(eventos); setEstado(""); }
-    }).catch(error => { if (vigente) setEstado(error.message); })
-      .finally(() => { if (vigente) setCargando(false); });
-    return () => { vigente = false; };
+
+    async function cargarEventos() {
+      try {
+        const eventos = await cargarCatalogo();
+        if (!vigente) return;
+
+        setCatalogo(eventos);
+        setError("");
+      } catch (fallo) {
+        if (vigente) {
+          setError(fallo.message);
+        }
+      } finally {
+        if (vigente) {
+          setCargando(false);
+        }
+      }
+    }
+
+    cargarEventos();
+
+    // ignora si el usuario salio de la pagina
+    return () => {
+      vigente = false;
+    };
   }, []);
-  if (cargando) return <EsqueletoEventos />;
+
+  if (cargando) {
+    return <EsqueletoEventos />;
+  }
+
   const categorias = {
     musica: "Música",
     artes: "Artes y Teatro",
     deportes: "Deportes",
     ferias: "Ferias & Expos",
   };
-  const vigentes = catalogo.filter(e => e.ventaHabilitada).sort((a, b) => (a.fechaInicio || "").localeCompare(b.fechaInicio || ""));
-  const eventos = vigentes.slice(0, 8);
-  const destacado = vigentes.find(e => e.destacado) || vigentes[0];
+
+  const vigentes = catalogo.filter(evento => evento.ventaHabilitada);
+  vigentes.sort((primero, segundo) => {
+    const primeraFecha = primero.fechaInicio || "";
+    const segundaFecha = segundo.fechaInicio || "";
+    return primeraFecha.localeCompare(segundaFecha);
+  });
+
+  const proximosEventos = vigentes.slice(0, 8);
+  const destacado = vigentes.find(evento => evento.destacado) || vigentes[0];
+
+  function prepararTarjeta(evento) {
+    return {
+      ...evento,
+      categoria: categorias[evento.categoria],
+      fecha: evento.detalle.split(" · ").slice(1).join(" · "),
+      enlace: "#/evento/" + evento.id,
+    };
+  }
+
   return (
     <>
       {destacado && <Portada evento={destacado} />}
-      <section
-        className="inicio_eventos"
-        aria-labelledby="inicio_eventos_titulo"
-      >
+      <section className="inicio_eventos" aria-labelledby="inicio_eventos_titulo">
         <h2 id="inicio_eventos_titulo">Próximos eventos</h2>
-        {estado && <p role="status">{estado}</p>}
+        {error && <p role="status">{error}</p>}
         <div className="eventos_contenedor">
-          {eventos.map((evento) => (
-            <Evento
-              key={evento.id}
-              evento={{
-                ...evento,
-                categoria: categorias[evento.categoria],
-                fecha: evento.detalle.split(" · ").slice(1).join(" · "),
-                enlace: `#/evento/${evento.id}`,
-              }}
-            />
+          {proximosEventos.map(evento => (
+            <Evento key={evento.id} evento={prepararTarjeta(evento)} />
           ))}
         </div>
       </section>
     </>
   );
 }
+
 export default Inicio;

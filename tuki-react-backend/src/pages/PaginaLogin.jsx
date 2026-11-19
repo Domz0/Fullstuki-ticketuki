@@ -7,14 +7,42 @@ function PaginaLogin({ onIniciarSesion, registroExitoso = false, contrasenaActua
     try {
       const usuario = await iniciarSesion(datos);
       onIniciarSesion(usuario);
-      navegar(usuario.rol === "admin" ? "/admin/dashboard" : "/inicio");
+
+      if (usuario.rol === "admin") {
+        navegar("/admin/dashboard");
+      } else {
+        navegar("/inicio");
+      }
+
       return {};
-    } catch (error) {
-      return { error: error.message || "No se pudo iniciar sesión. Inténtalo nuevamente." };
+    } catch (fallo) {
+      // muestra el mensaje sin borrra los datos ingresados
+      return {
+        error: fallo.message || "No se pudo iniciar sesión. Inténtalo nuevamente.",
+      };
     }
   }
-  const avisoSesion = new URLSearchParams(window.location.hash.split("?")[1] || "").get("sesion");
-  return <>{avisoSesion && <p role="status">{avisoSesion === "vencida" ? "Tu sesión venció. Inicia sesión nuevamente." : "La sesión cambió en otra pestaña. Inicia sesión para continuar."}</p>}
-    <FormularioLogin onValidado={ingresar} registroExitoso={registroExitoso} contrasenaActualizada={contrasenaActualizada} /></>;
+
+  const parametros = window.location.hash.split("?")[1] || "";
+  const avisoSesion = new URLSearchParams(parametros).get("sesion");
+  let mensajeSesion = "";
+
+  if (avisoSesion === "vencida") {
+    mensajeSesion = "Tu sesión venció. Inicia sesión nuevamente.";
+  } else if (avisoSesion) {
+    mensajeSesion = "La sesión cambió en otra pestaña. Inicia sesión para continuar.";
+  }
+
+  return (
+    <>
+      {mensajeSesion && <p role="status">{mensajeSesion}</p>}
+      <FormularioLogin
+        onValidado={ingresar}
+        registroExitoso={registroExitoso}
+        contrasenaActualizada={contrasenaActualizada}
+      />
+    </>
+  );
 }
+
 export default PaginaLogin;

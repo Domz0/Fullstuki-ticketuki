@@ -7,31 +7,70 @@ import EntradasInvitadoDebug from "../components/EntradasInvitadoDebug";
 import AdminCodigos from "../components/AdminCodigos";
 import "./PaginaAdmin.css";
 
-const secciones = {
-  codigos: { titulo: "Códigos de descuento", contenido: () => <AdminCodigos /> },
-  "entradas-invitado": { titulo: "Entradas invitado (debug)", contenido: () => <EntradasInvitadoDebug /> },
-  "crear-evento": { titulo: "Crear evento", contenido: () => <CrearEvento /> },
-  eventos: { titulo: "Gestionar eventos", contenido: () => <GestionEventos /> },
-  "editar-evento": { titulo: "Editar evento", contenido: (eventoId) => <EditarEvento id={eventoId} /> },
-  historial: { titulo: "Historial de movimientos", contenido: () => <HistorialCompras /> },
-};
-const dashboard = { titulo: "Dashboard", contenido: () => <Dashboard /> };
-
 function PaginaAdmin({ seccion, eventoId, onCerrarSesion }) {
-  const actual = Object.hasOwn(secciones, seccion ?? "") ? secciones[seccion] : dashboard;
-  const marcar = (activa) => (activa ? "page" : undefined);
+  let titulo = "Dashboard";
+  let contenido = <Dashboard />;
+  let seccionActiva = "dashboard";
+
+  switch (seccion) {
+    case "codigos":
+      titulo = "Códigos de descuento";
+      contenido = <AdminCodigos />;
+      seccionActiva = "codigos";
+      break;
+    case "entradas-invitado":
+      titulo = "Entradas invitado (debug)";
+      contenido = <EntradasInvitadoDebug />;
+      seccionActiva = "entradas-invitado";
+      break;
+    case "crear-evento":
+      titulo = "Crear evento";
+      contenido = <CrearEvento />;
+      seccionActiva = "crear-evento";
+      break;
+    case "eventos":
+      titulo = "Gestionar eventos";
+      contenido = <GestionEventos />;
+      seccionActiva = "eventos";
+      break;
+    case "editar-evento":
+      titulo = "Editar evento";
+      contenido = <EditarEvento id={eventoId} />;
+      seccionActiva = "eventos";
+      break;
+    case "historial":
+      titulo = "Historial de movimientos";
+      contenido = <HistorialCompras />;
+      seccionActiva = "historial";
+      break;
+    default:
+      break;
+  }
+
+  const opcionesMenu = [
+    { seccion: "dashboard", nombre: "Dashboard" },
+    { seccion: "entradas-invitado", nombre: "Entradas invitado (debug)" },
+    { seccion: "crear-evento", nombre: "Crear evento" },
+    { seccion: "codigos", nombre: "Códigos de descuento" },
+    { seccion: "eventos", nombre: "Gestionar eventos" },
+    { seccion: "historial", nombre: "Historial de movimientos" },
+  ];
+
   return (
     <div className="admin">
       <aside className="admin_lateral" aria-label="Menú de administración">
         <p className="admin_marca">Ticketuki <span>Admin</span></p>
         <nav className="admin_menu">
           <p>Principal</p>
-          <a href="#/admin/dashboard" aria-current={marcar(actual === dashboard)}>Dashboard</a>
-          <a href="#/admin/entradas-invitado" aria-current={marcar(seccion === "entradas-invitado")}>Entradas invitado (debug)</a>
-          <a href="#/admin/crear-evento" aria-current={marcar(seccion === "crear-evento")}>Crear evento</a>
-          <a href="#/admin/codigos" aria-current={marcar(seccion === "codigos")}>Códigos de descuento</a>
-          <a href="#/admin/eventos" aria-current={marcar(seccion === "eventos" || seccion === "editar-evento")}>Gestionar eventos</a>
-          <a href="#/admin/historial" aria-current={marcar(seccion === "historial")}>Historial de movimientos</a>
+          {opcionesMenu.map(opcion => (
+            <a
+              key={opcion.seccion}
+              href={"#/admin/" + opcion.seccion}
+              aria-current={seccionActiva === opcion.seccion ? "page" : undefined}
+            >
+              {opcion.nombre}
+            </a>
+          ))}
         </nav>
         <div className="admin_pie">
           <a href="#/inicio">Volver al sitio</a>
@@ -39,8 +78,13 @@ function PaginaAdmin({ seccion, eventoId, onCerrarSesion }) {
           <p>AD · Administrador</p>
         </div>
       </aside>
-      <main className="admin_contenido" aria-label={actual.titulo} key={`${seccion}-${eventoId || ""}`}>
-        {actual.contenido(eventoId)}
+      {/* reinicia los formularios al cambiar de seccion */}
+      <main
+        className="admin_contenido"
+        aria-label={titulo}
+        key={seccion + "-" + (eventoId || "")}
+      >
+        {contenido}
       </main>
     </div>
   );

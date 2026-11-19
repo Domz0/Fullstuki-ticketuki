@@ -1,24 +1,61 @@
 import PasosCompra from "../components/PasosCompra";
 import PagoFallido from "../components/PagoFallido";
-import { leerCompra } from "../utils/compra";
+import { calcularTotales, leerCompra } from "../utils/compra";
 import { navegar } from "../utils/navegacion";
 
-const metodos = { debito: "Débito", credito: "Crédito", transferencia: "Transferencia bancaria" };
+const metodosPago = {
+  debito: "Débito",
+  credito: "Crédito",
+  transferencia: "Transferencia bancaria",
+};
 
 function PaginaPagoFallido({ evento, fecha }) {
   const compra = leerCompra();
-  const consulta = `?fecha=${encodeURIComponent(fecha.id)}`;
-  if (!compra || compra.estado !== "rechazada" || String(compra.eventoId) !== String(evento.id) || compra.fechaId !== fecha.id) {
-    return <section><h2>No hay un pago rechazado para esta función</h2><a href={`#/entradas/${evento.id}${consulta}`}>Elegir entradas</a></section>;
+  const parametros = "?fecha=" + encodeURIComponent(fecha.id);
+  const mismoEvento = String(compra?.eventoId) === String(evento.id);
+  const mismaFecha = compra?.fechaId === fecha.id;
+  const compraRechazada = compra?.estado === "rechazada";
+
+  if (!compraRechazada || !mismoEvento || !mismaFecha) {
+    return (
+      <section>
+        <h2>No hay un pago rechazado para esta función</h2>
+        <a href={"#/entradas/" + evento.id + parametros}>Elegir entradas</a>
+      </section>
+    );
   }
+
+  // muestra el resumen del fallo
+  const totales = calcularTotales(compra.precio, compra.cantidad, compra.porcentajeDescuento);
+  const requiereNuevaSeleccion = Boolean(compra.solicitudBackend);
+  const datosCompra = {
+    ...compra,
+    total: totales.total,
+    evento: evento.nombre,
+    recinto: evento.recinto,
+    metodoPago: metodosPago[compra.metodo] || "Sin especificar",
+  };
+
+  function reintentar() {
+    // consulta cupos nuevamente
+    let destino = "pago";
+    if (requiereNuevaSeleccion) {
+      destino = "entradas";
+    }
+
+    navegar("/" + destino + "/" + evento.id + parametros);
+  }
+
   return (
     <>
       <PasosCompra etapa="pago" />
       <PagoFallido
-        compra={{ ...compra, metodoPago: metodos[compra.metodo] }}
-        onReintentar={() => navegar(`/${compra.solicitudBackend ? "entradas" : "pago"}/${evento.id}${consulta}`)}
+        compra={datosCompra}
+        requiereNuevaSeleccion={requiereNuevaSeleccion}
+        onReintentar={reintentar}
       />
     </>
   );
 }
+
 export default PaginaPagoFallido;

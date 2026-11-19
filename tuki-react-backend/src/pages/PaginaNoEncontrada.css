@@ -1,0 +1,25 @@
+.no_encontrada_volver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--color-morado);
+  border-radius: 10px;
+  background: var(--color-morado);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter 150ms ease;
+}
+
+.no_encontrada_volver:hover {
+  color: #fff;
+  filter: brightness(1.12);
+}
+
+.no_encontrada_volver:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}

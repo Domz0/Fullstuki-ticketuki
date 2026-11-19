@@ -1,27 +1,60 @@
-import Cuenta from "../components/Cuenta";
 import { useEffect, useState } from "react";
+import Cuenta from "../components/Cuenta";
 import { cargarPerfil } from "../utils/sesion";
 
+// consulta al perfil antes de mostrar
 function PaginaCuenta({ seccion, usuario, onCerrarSesion, onActualizarUsuario }) {
-  const [estado, setEstado] = useState({ cargando: true, error: "" });
-  const [intento, setIntento] = useState(0);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
+  const [recarga, setRecarga] = useState(0);
+
   useEffect(() => {
     let vigente = true;
-    cargarPerfil().then(perfil => {
-      if (!vigente) return;
-      onActualizarUsuario(perfil);
-      setEstado({ cargando: false, error: "" });
-    }).catch(error => {
-      if (vigente) setEstado({ cargando: false, error: error.message });
-    });
-    return () => { vigente = false; };
-  }, [usuario.usuarioId, onActualizarUsuario, intento]);
-  if (estado.cargando) return <p role="status">Cargando tus datos…</p>;
-  if (estado.error) return <section className="cuenta">
-    <p role="alert">{estado.error}</p>
-    <button onClick={() => { setEstado({ cargando: true, error: "" }); setIntento(intento + 1); }}>Reintentar</button>
-    <button onClick={onCerrarSesion}>Cerrar sesión</button>
-  </section>;
+
+    async function consultarPerfil() {
+      try {
+        const perfil = await cargarPerfil();
+        if (!vigente) return;
+
+        // comparte los datos con el resto
+        onActualizarUsuario(perfil);
+      } catch (fallo) {
+        if (vigente) {
+          setError(fallo.message);
+        }
+      } finally {
+        if (vigente) {
+          setCargando(false);
+        }
+      }
+    }
+
+    consultarPerfil();
+    return () => {
+      vigente = false;
+    };
+  }, [usuario.usuarioId, onActualizarUsuario, recarga]);
+
+  function reintentarCarga() {
+    setError("");
+    setCargando(true);
+    setRecarga(recarga + 1);
+  }
+
+  if (cargando) {
+    return <p role="status">Cargando tus datos…</p>;
+  }
+
+  if (error) {
+    return (
+      <section className="cuenta">
+        <p role="alert">{error}</p>
+        <button onClick={reintentarCarga}>Reintentar</button>
+        <button onClick={onCerrarSesion}>Cerrar sesión</button>
+      </section>
+    );
+  }
+
   return (
     <Cuenta
       usuario={usuario}
@@ -31,4 +64,5 @@ function PaginaCuenta({ seccion, usuario, onCerrarSesion, onActualizarUsuario })
     />
   );
 }
+
 export default PaginaCuenta;
