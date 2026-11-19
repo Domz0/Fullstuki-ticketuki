@@ -17,28 +17,15 @@ function Inicio() {
     return () => { vigente = false; };
   }, []);
   if (cargando) return <EsqueletoEventos />;
-  const nombres = [
-    "Festival de rock en vivo",
-    "Concierto de música electrónica",
-    "Obra de teatro clásica",
-    "Clásico de fútbol local",
-    "Feria del libro",
-    "Expo tecnología y videojuegos",
-    "Ballet contemporáneo",
-    "Torneo de tenis internacional",
-  ];
   const categorias = {
     musica: "Música",
     artes: "Artes y Teatro",
     deportes: "Deportes",
     ferias: "Ferias & Expos",
   };
-  const eventos = nombres
-    .map((nombre) => catalogo.find((item) => item.nombre === nombre))
-    .filter(Boolean);
-  const destacado = catalogo
-    .filter(evento => evento.categoria === "musica" && evento.ventaHabilitada)
-    .sort((a, b) => (a.fechaInicio || "").localeCompare(b.fechaInicio || ""))[0];
+  const vigentes = catalogo.filter(e => e.ventaHabilitada).sort((a, b) => (a.fechaInicio || "").localeCompare(b.fechaInicio || ""));
+  const eventos = vigentes.slice(0, 8);
+  const destacado = vigentes.find(e => e.destacado) || vigentes[0];
   return (
     <>
       {destacado && <Portada evento={destacado} />}

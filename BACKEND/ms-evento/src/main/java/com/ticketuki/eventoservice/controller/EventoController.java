@@ -19,6 +19,11 @@ import java.util.List;
 public class EventoController {
     private final EventoService eventoService;
 
+    @PutMapping("/{id}/destacado")
+    public ResponseEntity<EventoResponseDTO> destacar(@PathVariable Long id) {
+        return ResponseEntity.ok(eventoService.destacar(id));
+    }
+
     @GetMapping
     public ResponseEntity<List<EventoResponseDTO>> obtenerTodos() {
         log.info("GET /eventos - Listando eventos");

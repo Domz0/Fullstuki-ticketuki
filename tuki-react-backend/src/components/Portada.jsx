@@ -1,5 +1,6 @@
 ﻿import imagen from "../assets/portada.png";
 import "./Portada.css";
+import { categorias } from "../utils/eventos";
 
 function Portada({ evento }) {
   return (
@@ -11,7 +12,7 @@ function Portada({ evento }) {
       />
       <div className="portada_velo" aria-hidden="true"></div>
       <div className="portada_texto">
-        <p className="portada_etiqueta">Destacado · Música</p>
+        <p className="portada_etiqueta">Destacado · {categorias[evento.categoria] || evento.categoria}</p>
         <h1 className="portada_titulo">{evento.nombre}</h1>
         <p className="portada_datos">
           {evento.detalle}

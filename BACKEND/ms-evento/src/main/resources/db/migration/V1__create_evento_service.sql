@@ -37,6 +37,13 @@ INSERT INTO evento (id_evento, nombre_evento, aforo_evento, fecha_evento, descri
  'El dúo francés de electrónica Justice presenta su gira Woman Worldwide, un espectáculo de sonido e iluminación diseñado para hacer vibrar cada rincón del recinto. Cross, Audio Video Disco y sus mejores hits en una sola noche.',
  3, 'AGENDADO');
 
+CREATE TABLE portada (
+    id BIGINT PRIMARY KEY,
+    evento_id BIGINT NULL,
+    FOREIGN KEY (evento_id) REFERENCES evento(id_evento) ON DELETE SET NULL
+);
+INSERT INTO portada (id, evento_id) VALUES (1, NULL);
+
 CREATE TABLE auditoria_pendiente (
     id VARCHAR(36) PRIMARY KEY,
     payload TEXT NOT NULL,

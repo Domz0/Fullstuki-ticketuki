@@ -1,4 +1,5 @@
 import { peticionApi } from "./api";
+import { eventoConcluido } from "../utils/estadoEvento";
 
 export function adaptarEvento(evento) {
   const recinto = evento.recinto_catalogo || "Recinto por confirmar";
@@ -11,6 +12,7 @@ export function adaptarEvento(evento) {
     || { 1: "Agendado", 2: "Disponible" }[evento.estado_evento_id_estado] || "Por confirmar";
   return {
     id: evento.id_evento,
+    destacado: Boolean(evento.destacado),
     nombre: evento.nombre_evento,
     categoria: evento.categoria || "musica",
     subcategoria: evento.subcategoria || "Otros",
@@ -30,7 +32,7 @@ export function adaptarEvento(evento) {
 export async function cargarCatalogo() {
   const datos = await peticionApi("/eventos");
   if (!Array.isArray(datos)) throw new Error("No se pudo interpretar el catálogo del servidor.");
-  const eventos = await Promise.all(datos.map(async dato => {
+  const eventos = await Promise.all(datos.filter(dato => !eventoConcluido(dato)).map(async dato => {
     const evento = adaptarEvento(dato);
     try {
       const resumen = await cargarDisponibilidad(evento.id);

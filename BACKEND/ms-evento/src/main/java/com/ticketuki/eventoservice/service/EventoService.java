@@ -21,6 +21,29 @@ public class EventoService {
     private final EventoRepository eventoRepository;
     private final SectoresEventoService sectores;
     private final com.ticketuki.eventoservice.client.RecintoEventoClient recintos;
+    private final org.springframework.jdbc.core.JdbcTemplate jdbc;
+
+    private void datosCatalogo(Evento evento, EventoRequestDTO dto) {
+        evento.setCategoria(dto.getCategoria());
+        evento.setSubcategoria(dto.getSubcategoria());
+        evento.setCiudad(dto.getCiudad());
+        evento.setRecinto_catalogo(dto.getRecinto_catalogo());
+        evento.setHorario(dto.getHorario());
+        evento.setFecha_visible(null);
+        if (dto.getEstado_evento_id_estado() == null) throw new IllegalArgumentException("Selecciona el estado del evento");
+    }
+
+    @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "EVENTO", accion = "ACTUALIZAR", id = "id_evento")
+    public EventoResponseDTO destacar(Long id) {
+        acceso.administrador();
+        jdbc.queryForObject("SELECT id FROM portada WHERE id=1 FOR UPDATE", Long.class);
+        var evento = eventoRepository.findForUpdate(id).orElseThrow(() -> new EventoNotFoundException("Evento no encontrado"));
+        if (!Long.valueOf(2).equals(evento.getEstado_evento_id_estado()) || evento.getFecha_evento().isBefore(LocalDate.now(java.time.ZoneId.of("America/Santiago"))))
+            throw new IllegalArgumentException("El destacado debe ser un evento disponible y vigente");
+        jdbc.update("UPDATE portada SET evento_id=? WHERE id=1", id);
+        return toResponseDTO(evento);
+    }
 
     private EventoResponseDTO toResponseDTO(Evento evento) {
         var configurados = sectores.listar(evento.getId_evento());
@@ -43,6 +66,7 @@ public class EventoService {
         respuesta.setFecha_visible(evento.getFecha_visible());
         respuesta.setDisponibilidad(null); // Los cupos actuales se consultan en ms-ticket.
         respuesta.setPlazo(evento.getPlazo());
+        respuesta.setDestacado(jdbc.queryForObject("SELECT COUNT(*) FROM portada WHERE evento_id=?", Integer.class, evento.getId_evento()) > 0);
         return respuesta;
     }
 
@@ -69,8 +93,10 @@ public class EventoService {
         validacion.validar(eventoDTO);
         acceso.administrador();
         log.info("Creando evento: {}", eventoDTO.getNombre_evento());
+        if (eventoDTO.getFecha_evento().isBefore(LocalDate.now(java.time.ZoneId.of("America/Santiago"))))
+            throw new IllegalArgumentException("No puedes crear un evento con fecha pasada");
         var configuracion = sectores.preparar(eventoDTO.getRecinto_id_recinto(), eventoDTO.getSectores());
-        eventoDTO.setAforo_evento(configuracion.stream().mapToInt(SectoresEventoService.Sector::capacidad_sector).sum());
+        eventoDTO.setAforo_evento(configuracion.stream().mapToInt(SectoresEventoService.Sector::capacidad_sector).reduce(0, Math::addExact));
         Evento evento = new Evento(null,
                 eventoDTO.getNombre_evento(),
                 eventoDTO.getAforo_evento(),
@@ -79,6 +105,7 @@ public class EventoService {
                 eventoDTO.getEstado_evento_id_estado(),
                 eventoDTO.getRecinto_id_recinto(),
                 eventoDTO.getParticipantes());
+        datosCatalogo(evento, eventoDTO);
         evento = eventoRepository.saveAndFlush(evento);
         sectores.crear(evento.getId_evento(), configuracion);
         return toResponseDTO(evento);
@@ -107,6 +134,7 @@ public class EventoService {
         evento.setEstado_evento_id_estado(eventoDTO.getEstado_evento_id_estado());
         evento.setRecinto_id_recinto(eventoDTO.getRecinto_id_recinto());
         evento.setParticipantes(eventoDTO.getParticipantes());
+        datosCatalogo(evento, eventoDTO);
         return toResponseDTO(eventoRepository.save(evento));
     }
 

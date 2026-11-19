@@ -38,4 +38,14 @@ public class EventoRequestDTO {
     private String participantes;
     @jakarta.validation.Valid
     private java.util.List<com.ticketuki.eventoservice.service.SectoresEventoService.Configuracion> sectores;
+    @NotBlank @jakarta.validation.constraints.Pattern(regexp = "musica|artes|deportes|ferias")
+    private String categoria;
+    @NotBlank @Size(max = 50)
+    private String subcategoria;
+    @NotBlank @Size(max = 50)
+    private String ciudad;
+    @NotBlank @Size(max = 100)
+    private String recinto_catalogo;
+    @NotBlank @jakarta.validation.constraints.Pattern(regexp = "([01][0-9]|2[0-3]):[0-5][0-9]")
+    private String horario;
 }

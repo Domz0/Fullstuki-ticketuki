@@ -26,6 +26,7 @@ public class EventoResponseDTO {
     private String fecha_visible;
     private String disponibilidad;
     private Integer plazo;
+    private boolean destacado;
 
     public EventoResponseDTO(Long id, String nombre, Integer aforo, java.time.LocalDate fecha, String descripcion, Long estado, Long recinto, String participantes) {
         this.id_evento = id; this.nombre_evento = nombre; this.aforo_evento = aforo;

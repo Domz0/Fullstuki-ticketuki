@@ -33,7 +33,7 @@ function PaginaAdmin({ seccion, eventoId, onCerrarSesion }) {
           <p>AD · Administrador</p>
         </div>
       </aside>
-      <main className="admin_contenido" aria-label={actual.titulo}>
+      <main className="admin_contenido" aria-label={actual.titulo} key={`${seccion}-${eventoId || ""}`}>
         {actual.contenido(eventoId)}
       </main>
     </div>
