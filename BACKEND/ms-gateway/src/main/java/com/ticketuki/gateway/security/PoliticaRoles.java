@@ -29,6 +29,8 @@ public final class PoliticaRoles {
         if (raiz.equals("historial")) return "ADMIN".equals(rol) && method == HttpMethod.GET;
         if ("ADMIN".equals(rol)) return true;
         if (path.equals("/ventas/mis-compras")) return method == HttpMethod.GET;
+        if (path.equals("/usuarios/destinatario")) return method == HttpMethod.GET;
+        if (path.matches("/tickets/[0-9]+/regalar")) return method == HttpMethod.PUT;
         if (method == HttpMethod.GET && path.matches("/tickets/disponibilidad/[0-9]+/[0-9]+")) return true;
         if (Set.of("eventos", "recintos", "sectores", "promociones", "estadosEvento", "estadosTicket", "estadosVenta").contains(raiz))
             return method == HttpMethod.GET;

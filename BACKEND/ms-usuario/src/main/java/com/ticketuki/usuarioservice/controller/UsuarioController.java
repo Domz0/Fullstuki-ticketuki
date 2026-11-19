@@ -18,6 +18,11 @@ import java.util.List;
 public class UsuarioController {
     private final UsuarioService usuarioService;
 
+    @GetMapping("/destinatario")
+    public ResponseEntity<UsuarioService.Destinatario> buscarDestinatario(@RequestParam String correo) {
+        return ResponseEntity.ok(usuarioService.buscarDestinatario(correo));
+    }
+
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDTO>> listarUsuarios() {
         log.info("GET /api/usuarios - Listando usuarios");

@@ -19,6 +19,11 @@ public class WebClientConfig {
     @Value("${ms.venta.url:http://localhost:8006}")
     private String ventaUrl;
 
+    @Bean("usuarioWebClient")
+    public WebClient usuarioWebClient(@Value("${ms.usuario.url:http://localhost:8001}") String usuarioUrl) {
+        return com.ticketuki.common.http.HttpServicios.builder(clave).baseUrl(usuarioUrl).build();
+    }
+
     @Bean("eventoWebClient")
     public WebClient eventoWebClient() {
         return com.ticketuki.common.http.HttpServicios.builder(clave).baseUrl(eventoUrl).build();

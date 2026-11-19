@@ -19,11 +19,17 @@ public class ReferenciasTicketClient {
     private final WebClient eventos;
     private final WebClient recintos;
     private final WebClient ventas;
+    private final WebClient usuarios;
 
     public ReferenciasTicketClient(@Qualifier("eventoWebClient") WebClient eventos,
-            @Qualifier("recintoWebClient") WebClient recintos, @Qualifier("ventaWebClient") WebClient ventas) {
+            @Qualifier("recintoWebClient") WebClient recintos, @Qualifier("ventaWebClient") WebClient ventas,
+            @Qualifier("usuarioWebClient") WebClient usuarios) {
         this.eventos = eventos; this.recintos = recintos; this.ventas = ventas;
+        this.usuarios = usuarios;
     }
+
+    public record Destinatario(Long id_usuario, String run, String p_nombre, String a_paterno, String email) {}
+    public Destinatario destinatario(Long id) { return get(usuarios, "/usuarios/" + id, Destinatario.class); }
 
     private <T> T get(WebClient client, String path, Class<T> type) {
         return com.ticketuki.common.http.HttpServicios.consultar(client, path, type);

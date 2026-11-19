@@ -43,6 +43,7 @@ public class AccesoCliente {
 
     public Mono<Boolean> permite(String path, Long usuarioId) {
         if (usuarioId == null || usuarioId <= 0) return Mono.just(false);
+        if (path.equals("/usuarios/destinatario")) return Mono.just(true);
         if (path.matches("/tickets/disponibilidad/[0-9]+/[0-9]+")) return Mono.just(true);
         String[] partes = path.split("/");
         if (path.startsWith("/usuarios/")) return Mono.just(path.equals("/usuarios/" + usuarioId));

@@ -22,6 +22,18 @@ public class UsuarioService {
     private final com.ticketuki.common.security.AccesoServicio acceso;
     private final UsuarioRepository usuarioRepository;
 
+    public record Destinatario(Long id, String nombre, String correo) {}
+
+    @Transactional(readOnly = true)
+    public Destinatario buscarDestinatario(String correo) {
+        acceso.actor();
+        if (correo == null || !correo.trim().matches("(?i)^[^\\s@]+@(duoc\\.cl|gmail\\.com|duocuc\\.cl|profesor\\.duoc\\.cl)$"))
+            throw new IllegalArgumentException("Ingresa un correo completo de un dominio permitido");
+        var usuario = usuarioRepository.findByEmailIgnoreCase(correo.trim())
+                .orElseThrow(() -> new UsuarioNotFoundException("No se encontró un destinatario con ese correo"));
+        return new Destinatario(usuario.getId_usuario(), usuario.getP_nombre() + " " + usuario.getA_paterno(), usuario.getEmail());
+    }
+
     private void validarDuplicados(UsuarioRequestDTO dto, Long id) {
         dto.setRun(dto.getRun());
         dto.setEmail(dto.getEmail());

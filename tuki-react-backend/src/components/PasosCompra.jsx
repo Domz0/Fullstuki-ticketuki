@@ -6,19 +6,19 @@ const pasos = [
   { id: "confirmacion", nombre: "Confirmación" },
 ];
 
-function PasosCompra({ etapa = "entradas" }) {
+function PasosCompra({ etapa = "entradas", pasos: lista = pasos, etiqueta = "Progreso de la compra" }) {
   let actual = 0;
-  pasos.forEach((paso, posicion) => {
+  lista.forEach((paso, posicion) => {
     if (paso.id === etapa) actual = posicion;
   });
 
   return (
-    <nav className="pasos" aria-label="Progreso de la compra">
+    <nav className="pasos" aria-label={etiqueta}>
       <p className="pasos_resumen">
-        Paso {actual + 1} de {pasos.length}
+        Paso {actual + 1} de {lista.length}
       </p>
       <ol className="pasos_lista">
-        {pasos.map((paso, posicion) => (
+        {lista.map((paso, posicion) => (
           <li
             key={paso.id}
             className={`paso ${posicion < actual ? "is-completo" : posicion === actual ? "is-activo" : ""}`}

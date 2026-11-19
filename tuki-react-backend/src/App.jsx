@@ -43,7 +43,7 @@ function App() {
   const { pantalla, id, parametros } = leerRuta(hash);
   useEffect(() => {
     if (["cuenta", "transferir"].includes(pantalla) && !usuario) navegar("/login");
-    if (["login", "registro", "cuenta"].includes(pantalla) && usuario?.rol === "admin") navegar("/admin/dashboard");
+    if (["login", "registro", "cuenta", "transferir"].includes(pantalla) && usuario?.rol === "admin") navegar("/admin/dashboard");
     else if (["login", "registro"].includes(pantalla) && usuario) navegar("/cuenta/datos");
     if (pantalla === "admin" && usuario?.rol !== "admin") navegar(usuario ? "/inicio" : "/login");
   }, [pantalla, usuario]);
@@ -81,7 +81,7 @@ function App() {
     );
   else if (pantalla === "cuenta") contenido = null;
   else if (pantalla === "transferir")
-    contenido = usuario ? <PaginaTransferir usuario={usuario} codigo={id} /> : null;
+    contenido = usuario?.rol === "cliente" ? <PaginaTransferir usuario={usuario} /> : null;
   else if (pantalla === "evento")
     contenido = <PaginaEvento eventoId={id} />;
   else if (pantalla === "entradas")

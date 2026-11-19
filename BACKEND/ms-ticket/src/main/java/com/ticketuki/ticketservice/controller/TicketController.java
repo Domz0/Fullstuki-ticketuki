@@ -22,6 +22,12 @@ public class TicketController {
 
     private final TicketService ticketService;
 
+    @PutMapping("/{id}/regalar")
+    public ResponseEntity<TicketResponseDTO> regalarTicket(@PathVariable Long id,
+            @Valid @RequestBody com.ticketuki.ticketservice.dto.RegalarTicketDTO dto) {
+        return ResponseEntity.ok(ticketService.regalarTicket(id, dto));
+    }
+
     @GetMapping
     public ResponseEntity<List<TicketResponseDTO>> listarTickets() {
         return ResponseEntity.ok(ticketService.listarTickets());

@@ -29,6 +29,7 @@ export async function cargarMisEntradas(rut, signal) {
     const rotulo = cancelada ? "Cancelada" : estadoTicket === 2 ? "Utilizada" : finalizada ? "Evento pasado"
       : estadoTicket === 4 ? "Entrada recibida" : estadoTicket === 1 ? "Válida" : "Estado por confirmar";
     return { id: ticket.id_ticket, eventoId: ticket.evento_id_evento, estado, rotulo,
+      transferible: estado === "proximas" && evento?.estado_evento_id_estado === 2 && Boolean(evento?.fecha_evento),
       nombre: evento?.nombre_evento || `Evento ${ticket.evento_id_evento}`,
       recinto: evento?.recinto_catalogo || "Recinto por confirmar",
       fecha: evento ? [evento.fecha_visible || evento.fecha_evento, !evento.fecha_visible && evento.horario].filter(Boolean).join(" · ") : "Fecha por confirmar",

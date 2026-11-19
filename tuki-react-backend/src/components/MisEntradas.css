@@ -229,11 +229,10 @@
   }
 
   .mis_entradas .entrada {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      "datos"
-      "acceso"
-      "acciones";
+      "datos datos"
+      "acceso acciones";
   }
 
   .mis_entradas .entrada_datos {
@@ -246,13 +245,15 @@
     align-items: center;
     justify-content: flex-start;
     gap: 12px;
-    padding: 14px 16px 10px;
+    padding: 14px 8px 16px 16px;
     border-left: 0;
   }
 
 
   .mis_entradas .entrada_acciones {
-    padding: 0 16px 16px;
+    align-self: end;
+    justify-content: flex-end;
+    padding: 0 16px 16px 0;
   }
 
   .mis_entradas .entrada_rotulo_codigo {
@@ -264,6 +265,7 @@
     margin-top: 3px;
     font-size: 13px;
     color: var(--color-texto);
+    overflow-wrap: anywhere;
   }
 
 

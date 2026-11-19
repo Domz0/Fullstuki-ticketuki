@@ -68,6 +68,7 @@ function Header({ categoria, usuario, onCerrarSesion }) {
           )}
         </nav>
       </div>
+      <div className="header_navegacion">
       <nav className="categorias" aria-label="Categorías">
         {[
           ["musica", "Música"],
@@ -84,6 +85,8 @@ function Header({ categoria, usuario, onCerrarSesion }) {
           </a>
         ))}
       </nav>
+      {usuario?.rol === "cliente" && <a className="menu_transferir" href="#/transferir">Transferir entradas</a>}
+      </div>
     </header>
   );
 }

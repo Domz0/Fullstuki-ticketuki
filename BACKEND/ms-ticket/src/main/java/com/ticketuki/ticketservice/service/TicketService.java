@@ -298,6 +298,11 @@ public class TicketService {
         Ticket ticket = ticketRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
         acceso.titular(ticket.getRun_titular());
+        var eventoTransferencia = referencias.evento(ticket.getEvento_id_evento());
+        if (!Long.valueOf(2).equals(eventoTransferencia.estado_evento_id_estado())
+                || eventoTransferencia.fecha_evento() == null
+                || eventoTransferencia.fecha_evento().isBefore(java.time.LocalDate.now(java.time.ZoneId.of("America/Santiago"))))
+            throw new TicketOperacionInvalidaException("Solo puedes transferir entradas de eventos vigentes");
         String nombreEstado = obtenerNombreEstado(ticket.getEstado_ticket_id_estado());
         if (!List.of("VALIDO", "TRANSFERIDO").contains(normalizar(nombreEstado))) {
             throw new TicketOperacionInvalidaException(
@@ -317,6 +322,23 @@ public class TicketService {
         ticket.setCod_qr(QRGenerator.generarCodigoQR());
         ticket.setEstado_ticket_id_estado(idTransferido);
         return toResponseDTO(ticketRepository.saveAndFlush(ticket));
+    }
+
+    @Transactional
+    @com.ticketuki.common.audit.Auditar(entidad = "TICKET", accion = "ACTUALIZAR", id = "id_ticket")
+    public TicketResponseDTO regalarTicket(Long id, com.ticketuki.ticketservice.dto.RegalarTicketDTO dto) {
+        validacion.validar(dto);
+        if (!"CLIENTE".equals(acceso.actor().rol()))
+            throw new TicketOperacionInvalidaException("Debes iniciar sesión con una cuenta personal para transferir");
+        var ticket = ticketRepository.findByIdForUpdate(id)
+                .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado: " + id));
+        acceso.titular(ticket.getRun_titular());
+        var destinatario = referencias.destinatario(dto.destinatario());
+        if (!java.util.Objects.equals(destinatario.id_usuario(), dto.destinatario())
+                || destinatario.email() == null || !destinatario.email().equalsIgnoreCase(dto.correo().trim()))
+            throw new TicketOperacionInvalidaException("El destinatario cambió. Busca nuevamente su correo");
+        return transferirTicket(id, new TransferirTicketDTO(
+                destinatario.p_nombre() + " " + destinatario.a_paterno(), destinatario.run()));
     }
 
     // ── Consultas ─────────────────────────────────────────────────────────────
