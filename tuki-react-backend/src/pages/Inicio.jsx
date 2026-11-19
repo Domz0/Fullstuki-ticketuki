@@ -1,18 +1,22 @@
-﻿import Portada from "../components/Portada";
+import EsqueletoEventos from "../components/EsqueletoEventos";
+import Portada from "../components/Portada";
 import Evento from "../components/Evento";
 import { useEffect, useState } from "react";
 import { cargarCatalogo } from "../services/eventos";
 
 function Inicio() {
   const [catalogo, setCatalogo] = useState([]);
-  const [estado, setEstado] = useState("Cargando eventos…");
+  const [estado, setEstado] = useState("");
+  const [cargando, setCargando] = useState(true);
   useEffect(() => {
     let vigente = true;
     cargarCatalogo().then(eventos => {
       if (vigente) { setCatalogo(eventos); setEstado(""); }
-    }).catch(error => { if (vigente) setEstado(error.message); });
+    }).catch(error => { if (vigente) setEstado(error.message); })
+      .finally(() => { if (vigente) setCargando(false); });
     return () => { vigente = false; };
   }, []);
+  if (cargando) return <EsqueletoEventos />;
   const nombres = [
     "Festival de rock en vivo",
     "Concierto de música electrónica",

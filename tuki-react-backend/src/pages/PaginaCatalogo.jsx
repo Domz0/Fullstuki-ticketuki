@@ -1,3 +1,4 @@
+import EsqueletoEventos from "../components/EsqueletoEventos";
 import CatalogoEventos from "../components/CatalogoEventos";
 import { useEffect, useState } from "react";
 import { cargarCatalogo } from "../services/eventos";
@@ -18,7 +19,7 @@ function PaginaCatalogo({ categoria, busqueda }) {
     });
     return () => { vigente = false; };
   }, [intento]);
-  if (cargando) return <section className="catalogo"><p role="status">Cargando eventos…</p></section>;
+  if (cargando) return <EsqueletoEventos vista="catalogo" />;
   if (error) return <section className="catalogo">
     <p role="alert">{error}</p>
     <button onClick={() => { setError(""); setCargando(true); setIntento(intento + 1); }}>Reintentar</button>
