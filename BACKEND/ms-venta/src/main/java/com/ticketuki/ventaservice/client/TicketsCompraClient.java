@@ -18,6 +18,13 @@ public class TicketsCompraClient {
     private final String clave;
 
     public record Reserva(String estado, LocalDateTime vence_en) {}
+    public record Devolucion(Long id_ticket, Long venta_id_venta, Long evento_id_evento, Long sector_id_sector) {}
+
+    public Devolucion devolucion(Long id) {
+        comprobarClave();
+        return client.get().uri("/interno/devoluciones/{id}", id).header("X-Internal-Key", clave).retrieve()
+                .bodyToMono(Devolucion.class).block(java.time.Duration.ofSeconds(10));
+    }
 
     public TicketsCompraClient(@Qualifier("ticketWebClient") WebClient client, ObjectMapper mapper,
             @Value("${internal.service-key:${INTERNAL_SERVICE_KEY:}}") String clave) {

@@ -11,6 +11,16 @@ CREATE TABLE venta (
     INDEX idx_venta_estado_local (estado)
 );
 
+CREATE TABLE reembolso_ticket (
+    ticket_id BIGINT PRIMARY KEY,
+    venta_id BIGINT NOT NULL,
+    monto BIGINT NOT NULL,
+    iva BIGINT NOT NULL,
+    comision BIGINT NOT NULL,
+    creado_en DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    FOREIGN KEY (venta_id) REFERENCES venta(id_venta)
+);
+
 CREATE TABLE promocion (
     id_promocion BIGINT AUTO_INCREMENT PRIMARY KEY,
     empresa VARCHAR(100) NOT NULL,

@@ -289,3 +289,6 @@
   }
 }
 
+.entrada_devolucion { border: 1px solid var(--color-linea); border-radius: 12px; padding: 20px; margin: 20px 0; background: var(--color-fondo-alto); }
+.entrada_devolucion_botones { display: flex; flex-wrap: wrap; gap: 12px; }
+.entrada_acciones { gap: 10px; flex-wrap: wrap; }

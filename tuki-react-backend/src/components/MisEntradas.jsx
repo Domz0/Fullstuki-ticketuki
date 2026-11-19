@@ -1,12 +1,28 @@
 ﻿import { navegar } from "../utils/navegacion";
 import { useEffect, useState } from "react";
-import { cargarMisEntradas } from "../services/entradas";
+import { cargarMisEntradas, devolverEntrada } from "../services/entradas";
 import qrEjemplo from "../assets/qr-ejemplo.png";
 import "./MisEntradas.css";
 
 function MisEntradas({ usuario }) {
   const [consulta, setConsulta] = useState({ entradas: [], cargando: true, error: "" });
   const [intento, setIntento] = useState(0);
+  const [devolucion, setDevolucion] = useState(null);
+  const [devolviendo, setDevolviendo] = useState(false);
+  const [aviso, setAviso] = useState("");
+  async function confirmarDevolucion() {
+    if (!devolucion || devolviendo) return;
+    setDevolviendo(true); setAviso("");
+    try {
+      const resultado = await devolverEntrada(devolucion.id);
+      setAviso(resultado.estado === "REEMBOLSADA"
+        ? "Entrada devuelta. El cupo está disponible y el reembolso simulado quedó registrado."
+        : "Entrada cancelada y cupo liberado. El reembolso simulado está pendiente de registro; se reintentará automáticamente.");
+      setDevolucion(null); setFiltro("canceladas"); recargar();
+    } catch (error) {
+      if (error.name !== "AbortError") setAviso(`${error.message} Actualiza tus entradas antes de reintentar.`);
+    } finally { setDevolviendo(false); }
+  }
   useEffect(() => {
     const controlador = new AbortController();
     cargarMisEntradas(usuario.rut, controlador.signal).then(entradas => {
@@ -33,6 +49,17 @@ function MisEntradas({ usuario }) {
         Mis entradas
       </h3>
       <button className="boton" type="button" onClick={recargar} disabled={cargando}>Actualizar entradas</button>
+      {aviso && <p role="status">{aviso}</p>}
+      {devolucion && <section className="entrada_devolucion" aria-label="Confirmar devolución">
+        <h4>¿Devolver esta entrada?</h4>
+        <p>{devolucion.nombre} · {devolucion.sector} · Código {devolucion.codigo}</p>
+        <p>Esta entrada quedará cancelada y su cupo volverá a estar disponible. Se registrará un reembolso simulado del importe pagado por ella, incluido IVA y cargo por servicio. Las demás entradas de la orden no se modificarán.</p>
+        <p>La devolución no se puede deshacer y no genera un abono bancario real.</p>
+        <div className="entrada_devolucion_botones">
+          <button className="boton" disabled={devolviendo} onClick={() => setDevolucion(null)}>Volver</button>
+          <button className="boton" disabled={devolviendo} onClick={confirmarDevolucion}>{devolviendo ? "Procesando devolución…" : "Confirmar devolución"}</button>
+        </div>
+      </section>}
       {cargando && <p role="status">Cargando tus entradas…</p>}
       {error && <p role="alert">{error}</p>}
       {!cargando && !error && entradas.some(entrada => entrada.detalleIncompleto) &&
@@ -78,6 +105,7 @@ function MisEntradas({ usuario }) {
               </div>
             </div>
             <div className="entrada_acciones">
+              {entrada.devolvible && <button className="boton" disabled={devolviendo} onClick={() => { setDevolucion(entrada); setAviso(""); }}>Devolver entrada</button>}
               <button
                 type="button"
                 className="boton entrada_detalle"

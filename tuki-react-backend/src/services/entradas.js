@@ -1,6 +1,10 @@
 import { peticionApi } from "./api";
 import { leerSesion } from "../utils/sesion";
 
+export async function devolverEntrada(id) {
+  return peticionApi(`/tickets/${id}/devolver`, { method: "POST", token: leerSesion().token });
+}
+
 export async function cargarMisEntradas(rut, signal) {
   const { token } = leerSesion();
   const tickets = await peticionApi(`/tickets/titular/${encodeURIComponent(rut)}`, { token, signal });
@@ -30,6 +34,7 @@ export async function cargarMisEntradas(rut, signal) {
       : estadoTicket === 4 ? "Entrada recibida" : estadoTicket === 1 ? "Válida" : "Estado por confirmar";
     return { id: ticket.id_ticket, eventoId: ticket.evento_id_evento, estado, rotulo,
       transferible: estado === "proximas" && evento?.estado_evento_id_estado === 2 && Boolean(evento?.fecha_evento),
+      devolvible: [1, 4].includes(estadoTicket) && Boolean(evento?.fecha_evento) && !finalizada,
       nombre: evento?.nombre_evento || `Evento ${ticket.evento_id_evento}`,
       recinto: evento?.recinto_catalogo || "Recinto por confirmar",
       fecha: evento ? [evento.fecha_visible || evento.fecha_evento, !evento.fecha_visible && evento.horario].filter(Boolean).join(" · ") : "Fecha por confirmar",

@@ -12,6 +12,13 @@ CREATE TABLE ticket (
     INDEX idx_ticket_evento_sector (evento_id_evento, sector_id_sector)
 );
 
+CREATE TABLE devolucion_pendiente (
+    ticket_id BIGINT PRIMARY KEY,
+    creada_en DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    enviada_en DATETIME(6) NULL,
+    FOREIGN KEY (ticket_id) REFERENCES ticket(id_ticket)
+);
+
 CREATE TABLE cupo_evento (
     evento_id BIGINT PRIMARY KEY
 );
