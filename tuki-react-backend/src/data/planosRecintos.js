@@ -1,3 +1,4 @@
+// distribución visual del mapa
 const estadio = {
   acceso: "Escenario",
   accesoCol: "4 / span 6",
@@ -55,6 +56,7 @@ const ferial = {
 const planos = { estadio, teatro, arena, ferial };
 
 function tipoRecinto(evento) {
+  // por ahora elegimos el diseño según el nombre del recinto
   const nombre = evento.recinto.toLowerCase();
   if (nombre.includes("teatro")) return "teatro";
   if (nombre.includes("arena")) return "arena";

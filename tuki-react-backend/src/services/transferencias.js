@@ -2,12 +2,24 @@ import { peticionApi } from "./api";
 import { leerSesion } from "../utils/sesion";
 
 export function buscarDestinatario(correo, signal) {
-  return peticionApi(`/usuarios/destinatario?correo=${encodeURIComponent(correo.trim().toLowerCase())}`, {
-    token: leerSesion().token, signal,
+  const { token } = leerSesion();
+  const correoBusqueda = encodeURIComponent(correo.trim().toLowerCase());
+
+  return peticionApi(`/usuarios/destinatario?correo=${correoBusqueda}`, {
+    token,
+    signal,
   });
 }
 
+// comprueba con el backend que la entrada es de quien la regala
 export function regalarEntrada(entrada, destinatario) {
-  return peticionApi(`/tickets/${entrada.id}/regalar`, { method: "PUT", token: leerSesion().token,
-    body: { destinatario: destinatario.id, correo: destinatario.correo } });
+  const { token } = leerSesion();
+  return peticionApi(`/tickets/${entrada.id}/regalar`, {
+    method: "PUT",
+    token,
+    body: {
+      destinatario: destinatario.id,
+      correo: destinatario.correo,
+    },
+  });
 }

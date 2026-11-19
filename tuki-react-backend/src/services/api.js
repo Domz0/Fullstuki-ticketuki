@@ -1,42 +1,44 @@
 import { expirarSesion, sesionGuardada } from "../utils/controlSesion";
 
-export async function peticionApi(ruta, { method = "GET", body, token, signal, accesoCompra } = {}) {
-  if (token && sesionGuardada()?.token === token && sesionGuardada().expiraEn <= Date.now()) {
+// punto para mandar JSON, agregar el token y comunicar errores
+export async function peticionApi(ruta, opciones = {}) {
+  const { method = "GET", body, token, signal, accesoCompra } = opciones;
+  const sesion = sesionGuardada();
+
+  if (token && sesion?.token === token && sesion.expiraEn <= Date.now()) {
     expirarSesion(token);
     throw new Error("Tu sesión venció. Inicia sesión nuevamente.");
   }
+
   const headers = { Accept: "application/json" };
   if (body !== undefined) headers["Content-Type"] = "application/json";
   if (token) headers.Authorization = `Bearer ${token}`;
   if (accesoCompra) headers["X-Compra-Token"] = accesoCompra;
 
+  const url = `/api/${ruta.replace(/^\/+/, "")}`;
   let respuesta;
   try {
-    respuesta = await fetch(`/api/${ruta.replace(/^\/+/, "")}`, {
+    respuesta = await fetch(url, {
       method,
       headers,
       signal,
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch (error) {
+    // salir cancela consultas, no es error
     if (error.name === "AbortError") throw error;
     throw new Error("No se pudo conectar con el servidor. Inténtalo nuevamente.");
   }
 
-  if (token && respuesta.status === 401) expirarSesion(token);
-  if (token && sesionGuardada()?.token !== token) throw new DOMException("La sesión cambió", "AbortError");
-  const texto = await respuesta.text();
-  let datos = null;
-  if (texto) {
-    try {
-      datos = JSON.parse(texto);
-    } catch {
-      if (respuesta.ok) {
-        throw new Error("El servidor devolvió una respuesta que no es JSON.");
-      }
-    }
+  if (token && respuesta.status === 401) {
+    expirarSesion(token);
+  }
+  if (token && sesionGuardada()?.token !== token) {
+    // no se pasan datos a sesiones cerradas
+    throw new DOMException("La sesión cambió", "AbortError");
   }
 
+  const datos = await leerRespuesta(respuesta);
   if (!respuesta.ok) {
     const error = new Error(
       datos?.message || `No se pudo completar la solicitud (${respuesta.status}).`,
@@ -45,6 +47,18 @@ export async function peticionApi(ruta, { method = "GET", body, token, signal, a
     error.errors = datos?.errors || {};
     throw error;
   }
-
   return datos;
+}
+
+async function leerRespuesta(respuesta) {
+  const texto = await respuesta.text();
+  if (!texto) return null;
+
+  try {
+    return JSON.parse(texto);
+  } catch {
+    // maneja errores html del servidor
+    if (!respuesta.ok) return null;
+    throw new Error("El servidor devolvió una respuesta que no es JSON.");
+  }
 }
