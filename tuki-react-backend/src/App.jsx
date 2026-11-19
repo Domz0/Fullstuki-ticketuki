@@ -14,13 +14,18 @@ import PaginaNoEncontrada from "./pages/PaginaNoEncontrada";
 import PaginaAdmin from "./pages/PaginaAdmin";
 import { obtenerUsuario, cerrarSesion } from "./utils/sesion";
 import { leerRuta, navegar } from "./utils/navegacion";
-import "./App.css";
 import { expirarSesion, limpiarDatosPrivados, sesionGuardada } from "./utils/controlSesion";
+import "./App.css";
 
 function App() {
-  const [usuario, setUsuario] = useState(() => {
-    try { return obtenerUsuario(); } catch { return null; }
-  });
+  const [usuario, setUsuario] = useState(obtenerUsuario);
+  const [hash, setHash] = useState(window.location.hash);
+  const { pantalla, id, parametros } = leerRuta(hash);
+
+  const esAdministrador = usuario?.rol === "admin";
+  const esAcceso = pantalla === "login" || pantalla === "registro";
+  const categoria = ["musica", "artes", "deportes", "ferias"].includes(id) ? id : "musica";
+  const seccionCuenta = ["entradas", "historial"].includes(id) ? id : "datos";
 
   function salir() {
     cerrarSesion();
@@ -28,97 +33,177 @@ function App() {
     navegar("/inicio");
   }
 
-  const [hash, setHash] = useState(window.location.hash);
+  // mantiene la pantalla sincronizada con el vencimiento y cierre de sesion
   useEffect(() => {
-    const sesion = sesionGuardada();
-    function vencida() { setUsuario(null); navegar("/login?sesion=vencida"); }
-    function cerrada() { setUsuario(null); }
-    function revisar() {
-      const actual = sesionGuardada();
-      if (actual?.token && actual.expiraEn <= Date.now()) expirarSesion(actual.token);
+    const sesionInicial = sesionGuardada();
+
+    function mostrarSesionVencida() {
+      setUsuario(null);
+      navegar("/login?sesion=vencida");
     }
-    function sincronizar(e) {
-      if (e.key !== "sesionBackend" && e.key !== null) return;
-      const actual = sesionGuardada();
-      if (actual?.token !== sesion?.token) {
-        limpiarDatosPrivados(); setUsuario(null); navegar("/login?sesion=cambiada");
-      } else revisar();
+
+    function quitarUsuario() {
+      setUsuario(null);
     }
-    window.addEventListener("sesion-vencida", vencida);
-    window.addEventListener("sesion-cerrada", cerrada);
-    window.addEventListener("storage", sincronizar);
-    window.addEventListener("focus", revisar);
-    const timer = sesion?.token ? setTimeout(revisar, Math.max(0, Math.min(sesion.expiraEn - Date.now(), 2147483647))) : null;
+
+    function revisarVencimiento() {
+      const actual = sesionGuardada();
+      if (actual?.token && actual.expiraEn <= Date.now()) {
+        expirarSesion(actual.token);
+      }
+    }
+
+    function sincronizarSesion(evento) {
+      // storage avisa cuando otra pestaña modifica los datos del navegador
+      if (evento.key !== "sesionBackend" && evento.key !== null) return;
+
+      const actual = sesionGuardada();
+      if (actual?.token !== sesionInicial?.token) {
+        limpiarDatosPrivados();
+        setUsuario(null);
+        navegar("/login?sesion=cambiada");
+        return;
+      }
+      revisarVencimiento();
+    }
+
+    window.addEventListener("sesion-vencida", mostrarSesionVencida);
+    window.addEventListener("sesion-cerrada", quitarUsuario);
+    window.addEventListener("storage", sincronizarSesion);
+    window.addEventListener("focus", revisarVencimiento);
+
+    let temporizador;
+    if (sesionInicial?.token) {
+      const tiempoRestante = sesionInicial.expiraEn - Date.now();
+      // setTimeout admite como máximo este número de milisegundos
+      const limiteTemporizador = 2147483647;
+      const espera = Math.max(0, Math.min(tiempoRestante, limiteTemporizador));
+      temporizador = setTimeout(revisarVencimiento, espera);
+    }
+
     return () => {
-      clearTimeout(timer);
-      window.removeEventListener("sesion-vencida", vencida);
-      window.removeEventListener("sesion-cerrada", cerrada);
-      window.removeEventListener("storage", sincronizar);
-      window.removeEventListener("focus", revisar);
+      clearTimeout(temporizador);
+      window.removeEventListener("sesion-vencida", mostrarSesionVencida);
+      window.removeEventListener("sesion-cerrada", quitarUsuario);
+      window.removeEventListener("storage", sincronizarSesion);
+      window.removeEventListener("focus", revisarVencimiento);
     };
   }, [usuario]);
+
+  // cambiar el hash abre otra pantalla y vuelve al inicio de la pagina
   useEffect(() => {
-    function actualizar() {
+    function actualizarRuta() {
       setHash(window.location.hash);
       window.scrollTo(0, 0);
     }
-    window.addEventListener("hashchange", actualizar);
-    return () => window.removeEventListener("hashchange", actualizar);
+
+    window.addEventListener("hashchange", actualizarRuta);
+    return () => window.removeEventListener("hashchange", actualizarRuta);
   }, []);
 
-  const { pantalla, id, parametros } = leerRuta(hash);
+  // redirige segun la sesion, el backend tambien comprueba los permisos
   useEffect(() => {
-    if (["cuenta", "transferir"].includes(pantalla) && !usuario) navegar("/login");
-    if (["login", "registro", "cuenta", "transferir"].includes(pantalla) && usuario?.rol === "admin") navegar("/admin/dashboard");
-    else if (["login", "registro"].includes(pantalla) && usuario) navegar("/cuenta/datos");
-    if (pantalla === "admin" && usuario?.rol !== "admin") navegar(usuario ? "/inicio" : "/login");
-  }, [pantalla, usuario]);
+    if (pantalla === "admin") {
+      if (!usuario) {
+        navegar("/login");
+      } else if (!esAdministrador) {
+        navegar("/inicio");
+      }
+      return;
+    }
 
-  const categoria = ["musica", "artes", "deportes", "ferias"].includes(id)
-    ? id
-    : "musica";
+    const requiereCuenta = pantalla === "cuenta" || pantalla === "transferir";
+    if (requiereCuenta && !usuario) {
+      navegar("/login");
+      return;
+    }
+    if (esAdministrador && (esAcceso || requiereCuenta)) {
+      navegar("/admin/dashboard");
+      return;
+    }
+    if (esAcceso && usuario) {
+      navegar("/cuenta/datos");
+    }
+  }, [pantalla, usuario, esAdministrador, esAcceso]);
 
-  const esAcceso = pantalla === "login" || pantalla === "registro";
-  let contenido;
-
-  if (pantalla === "admin") {
-    return usuario?.rol === "admin"
-      ? <PaginaAdmin seccion={id} eventoId={parametros.get("id")} onCerrarSesion={salir} />
-      : null;
+  // cada ruta devuelve su pagina con los datos que necesita
+  function mostrarPagina() {
+    switch (pantalla) {
+      case "inicio":
+        return <Inicio />;
+      case "catalogo":
+        return (
+          <PaginaCatalogo
+            categoria={categoria}
+            busqueda={parametros.get("q") || ""}
+          />
+        );
+      case "registro":
+        return <PaginaRegistro />;
+      case "login":
+        return (
+          <PaginaLogin
+            onIniciarSesion={setUsuario}
+            registroExitoso={parametros.get("registro") === "ok"}
+            contrasenaActualizada={parametros.get("contrasena") === "ok"}
+          />
+        );
+      case "cuenta":
+        if (!usuario) return null;
+        return (
+          <PaginaCuenta
+            usuario={usuario}
+            onCerrarSesion={salir}
+            onActualizarUsuario={setUsuario}
+            seccion={seccionCuenta}
+          />
+        );
+      case "transferir":
+        if (usuario?.rol !== "cliente") return null;
+        return <PaginaTransferir usuario={usuario} />;
+      case "evento":
+        return <PaginaEvento eventoId={id} />;
+      case "entradas":
+        return <PaginaEntradas eventoId={id} />;
+      case "pago":
+      case "pago-fallido":
+      case "confirmacion":
+        return (
+          <PaginaFlujoCompra
+            eventoId={id}
+            fechaId={parametros.get("fecha")}
+            pantalla={pantalla}
+            usuario={usuario}
+          />
+        );
+      default:
+        return <PaginaNoEncontrada />;
+    }
   }
 
-  if (pantalla === "inicio") contenido = <Inicio />;
-  else if (pantalla === "catalogo")
-    contenido = (
-      <PaginaCatalogo
-        categoria={categoria}
-        busqueda={parametros.get("q") || ""}
+  // el administrador utiliza su propia barra lateral
+  if (pantalla === "admin") {
+    if (!esAdministrador) return null;
+    return (
+      <PaginaAdmin
+        seccion={id}
+        eventoId={parametros.get("id")}
+        onCerrarSesion={salir}
       />
     );
-  else if (pantalla === "registro") contenido = <PaginaRegistro />;
-  else if (pantalla === "login") contenido = <PaginaLogin onIniciarSesion={setUsuario} registroExitoso={parametros.get("registro") === "ok"} contrasenaActualizada={parametros.get("contrasena") === "ok"} />;
-  else if (pantalla === "cuenta" && usuario)
-    contenido = (
-      <PaginaCuenta usuario={usuario} onCerrarSesion={salir} onActualizarUsuario={setUsuario} seccion={["entradas", "historial"].includes(id) ? id : "datos"} />
-    );
-  else if (pantalla === "cuenta") contenido = null;
-  else if (pantalla === "transferir")
-    contenido = usuario?.rol === "cliente" ? <PaginaTransferir usuario={usuario} /> : null;
-  else if (pantalla === "evento")
-    contenido = <PaginaEvento eventoId={id} />;
-  else if (pantalla === "entradas")
-    contenido = (
-      <PaginaEntradas eventoId={id} />
-    );
-  else if (["pago", "pago-fallido", "confirmacion"].includes(pantalla))
-    contenido = <PaginaFlujoCompra eventoId={id} fechaId={parametros.get("fecha")} pantalla={pantalla} usuario={usuario} />;
-  else contenido = <PaginaNoEncontrada />;
+  }
 
   return (
     <>
-      {!esAcceso && <Header usuario={usuario} onCerrarSesion={salir} categoria={pantalla === "catalogo" ? categoria : undefined} />}
+      {!esAcceso && (
+        <Header
+          usuario={usuario}
+          onCerrarSesion={salir}
+          categoria={pantalla === "catalogo" ? categoria : undefined}
+        />
+      )}
       <main className={`pantalla pantalla_${pantalla}`} key={hash}>
-        {contenido}
+        {mostrarPagina()}
       </main>
       {!esAcceso && <Footer />}
     </>

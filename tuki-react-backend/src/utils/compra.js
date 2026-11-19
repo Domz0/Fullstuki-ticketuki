@@ -1,66 +1,90 @@
+// las duraciones están expresadas en milisegundos
+const DURACION_SELECCION = 30 * 60 * 1000;
+const DURACION_OPERACION = 24 * 60 * 60 * 1000;
+
+// guardamos solo lo necesario para recuperar la operación
+const CAMPOS_COMPRA = [
+  "compraId", "creadaEn", "eventoId", "evento", "recinto", "fechaId", "fecha",
+  "sectorId", "area", "precio", "cantidad", "estado", "codigoDescuento",
+  "porcentajeDescuento", "comprador", "metodo", "cuotas", "accesoCompra",
+  "solicitudBackend", "operacionBackend", "motivo", "cuentaCompra",
+];
+
 export function calcularTotales(precio, cantidad, porcentaje = 0) {
   const subtotal = precio * cantidad;
-  const porEntrada = Math.round(precio * (Number(porcentaje) || 0) / 100);
-  const cargo = Math.round((precio - porEntrada) * 0.1) * cantidad;
-  const iva = Math.round((precio - porEntrada) * 0.19) * cantidad;
-  const descuento = porEntrada * cantidad;
-  return { subtotal, cargo, iva, descuento, total: subtotal + iva + cargo - descuento };
-}
+  const descuentoPorEntrada = Math.round(precio * (Number(porcentaje) || 0) / 100);
+  const precioConDescuento = precio - descuentoPorEntrada;
+  const cargo = Math.round(precioConDescuento * 0.1) * cantidad;
+  const iva = Math.round(precioConDescuento * 0.19) * cantidad;
+  const descuento = descuentoPorEntrada * cantidad;
+  const total = subtotal + iva + cargo - descuento;
 
-const MINUTOS_SELECCION = 30 * 60 * 1000;
-const HORAS_OPERACION = 24 * 60 * 60 * 1000;
+  return { subtotal, cargo, iva, descuento, total };
+}
 
 export function leerCompra() {
   try {
     const compra = JSON.parse(sessionStorage.getItem("compraActual") || "null");
-    if (!compra || compra.version !== 2 || !compra.compraId || !Number.isFinite(compra.venceEn) || compra.venceEn <= Date.now()) {
-      sessionStorage.removeItem("compraActual"); return null;
+    const formatoValido = compra?.version === 2 && compra.compraId;
+    const vigente = Number.isFinite(compra?.venceEn) && compra.venceEn > Date.now();
+
+    if (!formatoValido || !vigente) {
+      sessionStorage.removeItem("compraActual");
+      return null;
     }
     return compra;
-  } catch { sessionStorage.removeItem("compraActual"); return null; }
+  } catch {
+    // un registro dañado no se puede usar para continuar el pago.
+    sessionStorage.removeItem("compraActual");
+    return null;
+  }
 }
 
 export function guardarCompra(compra) {
   const anterior = leerCompra();
-  if (anterior && anterior.compraId !== compra.compraId && anterior.estado === "procesando")
+  const mismaCompra = anterior?.compraId === compra.compraId;
+
+  if (anterior && !mismaCompra && anterior.estado === "procesando") {
     throw new Error("Hay una compra pendiente en esta pestaña. Consúltala antes de iniciar otra.");
-  if (compra.estado !== "seleccion" && anterior?.compraId !== compra.compraId)
+  }
+  if (compra.estado !== "seleccion" && !mismaCompra) {
     throw new Error("La compra venció o cambió. Vuelve a revisar tus entradas.");
-  const operacionDesde = (anterior?.compraId === compra.compraId && anterior.operacionDesde) || (compra.solicitudBackend ? Date.now() : null);
+  }
+
+  // recuperar una compra no debe reiniciar su plazo de vencimiento
+  let operacionDesde = null;
+  if (mismaCompra && anterior.operacionDesde) {
+    operacionDesde = anterior.operacionDesde;
+  } else if (compra.solicitudBackend) {
+    operacionDesde = Date.now();
+  }
+
+  let venceEn = compra.creadaEn + DURACION_SELECCION;
+  if (operacionDesde) {
+    venceEn = operacionDesde + DURACION_OPERACION;
+  }
+  if (!Number.isFinite(venceEn) || venceEn <= Date.now()) {
+    throw new Error("La selección venció. Elige tus entradas nuevamente.");
+  }
+
   const guardada = {};
-  // Nunca se guardan datos de tarjeta ni se usa una lista local de tickets como comprobante.
-  for (const campo of ["compraId", "creadaEn", "eventoId", "evento", "recinto", "fechaId", "fecha", "sectorId", "area", "precio",
-    "cantidad", "estado", "codigoDescuento", "porcentajeDescuento", "comprador", "metodo", "cuotas", "accesoCompra", "solicitudBackend", "operacionBackend", "motivo", "cuentaCompra"])
-    if (compra[campo] !== undefined) guardada[campo] = compra[campo];
+  for (const campo of CAMPOS_COMPRA) {
+    if (compra[campo] !== undefined) {
+      guardada[campo] = compra[campo];
+    }
+  }
   guardada.version = 2;
   guardada.operacionDesde = operacionDesde;
-  guardada.venceEn = operacionDesde ? operacionDesde + HORAS_OPERACION : compra.creadaEn + MINUTOS_SELECCION;
-  if (!Number.isFinite(guardada.venceEn) || guardada.venceEn <= Date.now()) throw new Error("La selección venció. Elige tus entradas nuevamente.");
+  guardada.venceEn = venceEn;
+
   sessionStorage.setItem("compraActual", JSON.stringify(guardada));
   return guardada;
 }
 
-export function migrarCompraAnterior() {
-  const anterior = localStorage.getItem("compraActual");
-  if (!anterior) return;
-  let compra;
-  try {
-    compra = JSON.parse(anterior);
-  } catch (error) {
-    if (!(error instanceof SyntaxError)) throw error;
-    localStorage.removeItem("compraActual");
-    return;
-  }
-  try {
-    if (!sessionStorage.getItem("compraActual") && compra?.solicitudBackend?.clave && /^[a-f0-9]{64}$/.test(compra.accesoCompra)) {
-      const seleccion = { ...compra, compraId: crypto.randomUUID(), creadaEn: Date.now(), estado: "seleccion" };
-      guardarCompra(seleccion);
-      guardarCompra({ ...seleccion, estado: compra.estado });
-    }
-  } finally { localStorage.removeItem("compraActual"); }
-}
-
 export function crearSeleccion(evento, fecha, sector, cantidad) {
+  let fechaVisible = `${fecha.dia} ${fecha.mes}`;
+  if (fecha.horario) fechaVisible += ` · ${fecha.horario}`;
+
   return {
     compraId: crypto.randomUUID(),
     creadaEn: Date.now(),
@@ -68,7 +92,7 @@ export function crearSeleccion(evento, fecha, sector, cantidad) {
     evento: evento.nombre,
     recinto: evento.recinto,
     fechaId: fecha.id,
-    fecha: `${fecha.dia} ${fecha.mes}${fecha.horario ? " · " + fecha.horario : ""}`,
+    fecha: fechaVisible,
     sectorId: sector.id,
     area: sector.nombre,
     precio: sector.precio,
@@ -83,8 +107,12 @@ export function limpiarComprador(comprador) {
   const segundoNombre = comprador.segundoNombre?.trim() || "";
   const apellidoPaterno = comprador.apellido.trim();
   const apellidoMaterno = comprador.apellidoMaterno?.trim() || "";
+
   return {
-    primerNombre, segundoNombre, apellidoPaterno, apellidoMaterno,
+    primerNombre,
+    segundoNombre,
+    apellidoPaterno,
+    apellidoMaterno,
     nombre: [primerNombre, segundoNombre].filter(Boolean).join(" "),
     apellido: [apellidoPaterno, apellidoMaterno].filter(Boolean).join(" "),
     rut: comprador.rut.trim(),
@@ -92,10 +120,12 @@ export function limpiarComprador(comprador) {
   };
 }
 
+// prepara los datos que muestra la pantalla de pago fallido
 export function rechazarCompra(compra, comprador, metodo, motivo) {
+  const totales = calcularTotales(compra.precio, compra.cantidad, compra.porcentajeDescuento);
   return {
     ...compra,
-    ...calcularTotales(compra.precio, compra.cantidad, compra.porcentajeDescuento),
+    ...totales,
     comprador: limpiarComprador(comprador),
     metodo,
     estado: "rechazada",

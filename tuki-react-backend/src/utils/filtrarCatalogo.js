@@ -1,28 +1,36 @@
-﻿export function filtrarCatalogo(eventos, filtros, busqueda, orden) {
-  return eventos
-    .filter((evento) => {
-      if (
-        ![evento.nombre, evento.recinto, evento.ciudad]
-          .join(" ")
-          .toLowerCase()
-          .includes(busqueda.trim().toLowerCase())
-      )
-        return false;
-      for (const grupo of ["subcategoria", "ciudad", "recinto"]) {
-        if (filtros[grupo] && evento[grupo] !== filtros[grupo]) return false;
-      }
-      if (evento.fechaInicio && filtros.plazo) {
-        const dias = (new Date(evento.fechaInicio) - new Date()) / 86400000;
-        const limites = { 1: 7, 2: 30, 3: 90 };
-        return dias >= 0 && dias <= limites[filtros.plazo];
-      }
-      return !filtros.plazo || evento.plazo <= Number(filtros.plazo);
-    })
-    .sort((a, b) =>
-      orden === "precio"
-        ? (a.precio ?? Infinity) - (b.precio ?? Infinity)
-        : a.fechaInicio && b.fechaInicio
-          ? new Date(a.fechaInicio) - new Date(b.fechaInicio)
-          : a.plazo - b.plazo,
-    );
+export function filtrarCatalogo(eventos, filtros, busqueda, orden) {
+  const textoBuscado = busqueda.trim().toLowerCase();
+  const eventosFiltrados = eventos.filter(evento => {
+    const textoEvento = [evento.nombre, evento.recinto, evento.ciudad]
+      .join(" ")
+      .toLowerCase();
+    if (!textoEvento.includes(textoBuscado)) return false;
+
+    for (const campo of ["subcategoria", "ciudad", "recinto"]) {
+      if (filtros[campo] && evento[campo] !== filtros[campo]) return false;
+    }
+
+    return cumplePlazo(evento, filtros.plazo);
+  });
+
+  // crea lista segu filtro
+  return eventosFiltrados.sort((primero, segundo) => {
+    if (orden === "precio") {
+      return (primero.precio ?? Infinity) - (segundo.precio ?? Infinity);
+    }
+    if (primero.fechaInicio && segundo.fechaInicio) {
+      return new Date(primero.fechaInicio) - new Date(segundo.fechaInicio);
+    }
+    return primero.plazo - segundo.plazo;
+  });
+}
+
+function cumplePlazo(evento, plazo) {
+  if (!plazo) return true;
+  if (!evento.fechaInicio) return evento.plazo <= Number(plazo);
+
+  const limitesEnDias = { 1: 7, 2: 30, 3: 90 };
+  const milisegundosPorDia = 24 * 60 * 60 * 1000;
+  const diasHastaEvento = (new Date(evento.fechaInicio) - new Date()) / milisegundosPorDia;
+  return diasHastaEvento >= 0 && diasHastaEvento <= limitesEnDias[plazo];
 }

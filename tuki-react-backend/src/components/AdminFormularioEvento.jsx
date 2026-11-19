@@ -57,7 +57,6 @@ export default function AdminFormularioEvento({ evento }) {
         ...(!evento ? { sectores: sectores.map(s => ({ sector_id: s.id_sector, capacidad: Number(s.capacidad), precio: Number(s.precio) })) } : {}) };
       const resultado = await apiAdmin(evento ? `/eventos/${evento.id_evento}` : "/eventos", { method: evento ? "PUT" : "POST", body });
       setGuardado(resultado);
-      try { sessionStorage.removeItem("catalogoBackend"); } catch { /* El catálogo se recarga desde la API. */ }
     } catch (fallo) { setError(fallo.message); }
     finally { setGuardando(false); bloqueo.current = false; }
   }
