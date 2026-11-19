@@ -56,6 +56,7 @@ function FormularioPago({ onValidado, usuario, comprador, codigoAplicado = "", o
   const [metodo, setMetodo] = useState("debito");
   const [cuotas, setCuotas] = useState(1);
   const [codigo, setCodigo] = useState(codigoAplicado);
+  const [validandoCodigo, setValidandoCodigo] = useState(false);
   const [mensajeCodigo, setMensajeCodigo] = useState("");
   const [errores, setErrores] = useState({});
   const [validado, setValidado] = useState(false);
@@ -190,28 +191,27 @@ function FormularioPago({ onValidado, usuario, comprador, codigoAplicado = "", o
               <button
                 type="button"
                 className="boton pago_aplicar"
-                onClick={() => {
-                  if (codigo.trim() !== "ROCK20") {
-                    setMensajeCodigo("Código no válido");
-                    return;
-                  }
+                disabled={validandoCodigo}
+                onClick={async () => {
+                  setValidandoCodigo(true);
                   try {
-                    onAplicarCodigo("ROCK20");
-                    setMensajeCodigo("Descuento del 20% aplicado.");
-                  } catch {
-                    setMensajeCodigo("No se pudo aplicar el descuento. Inténtalo nuevamente.");
-                  }
+                    const porcentaje = await onAplicarCodigo(codigo.trim().toUpperCase());
+                    setMensajeCodigo(porcentaje ? `Descuento del ${porcentaje}% aplicado.` : "Descuento quitado.");
+                  } catch (error) {
+                    setMensajeCodigo(error.message || "No se pudo aplicar el descuento.");
+                  } finally { setValidandoCodigo(false); }
                 }}
               >
-                Aplicar
+                {validandoCodigo ? "Validando…" : "Aplicar"}
               </button>
             </div>
             <p
               role="status"
-              className={codigo.trim() === "ROCK20" ? "txt_exito" : "txt_error"}
+              className={codigo.trim().toUpperCase() === codigoAplicado && codigoAplicado ? "txt_exito" : "txt_error"}
             >
               {mensajeCodigo}
             </p>
+            {codigoAplicado && <p>Código aplicado: <strong>{codigoAplicado}</strong>. Vacía el campo y pulsa Aplicar para quitarlo.</p>}
           </div>
         </div>
 

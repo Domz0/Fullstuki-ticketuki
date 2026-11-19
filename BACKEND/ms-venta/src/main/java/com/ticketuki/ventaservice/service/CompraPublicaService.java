@@ -30,6 +30,7 @@ public class CompraPublicaService {
     private final ObjectMapper mapper;
     private final AccesoServicio acceso;
     private final ValidacionDatos validacion;
+    private final CodigosDescuento codigos;
 
     private String hash(String secreto) {
         if (secreto == null || !secreto.matches("[a-f0-9]{64}"))
@@ -51,7 +52,7 @@ public class CompraPublicaService {
         validacion.validar(dto);
         String huella = hash(secreto);
         Long usuario = conSesion ? acceso.actor().usuarioId() : null;
-        var detalle = new DetalleVentaRequestDTO(dto.cantidad(), null, usuario, dto.sector(), null, dto.evento());
+        var detalle = new DetalleVentaRequestDTO(dto.cantidad(), null, usuario, dto.sector(), codigos.promocion(dto.codigo(), dto.evento()), dto.evento());
         var ventaDto = new VentaRequestDTO(dto.medio().name(), "SIM-" + dto.clave().substring(0, Math.min(46, dto.clave().length())), null, List.of(detalle));
         var titulares = java.util.stream.IntStream.range(0, dto.cantidad()).mapToObj(i ->
                 new CompraRequestDTO.Titular(dto.evento(), dto.sector(), dto.nombre(), dto.rut())).toList();

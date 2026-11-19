@@ -39,6 +39,14 @@ public class CatalogoVentaClient {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Usuario de referencia inválido");
     }
 
+    public Evento eventoDisponible(Long id) {
+        var evento = consultar(eventos, "/eventos/" + id, Evento.class);
+        if (!java.util.Objects.equals(evento.id_evento(), id) || !Long.valueOf(2).equals(evento.estado_evento_id_estado())
+                || evento.fecha_evento() == null || evento.fecha_evento().isBefore(LocalDate.now(java.time.ZoneId.of("America/Santiago"))))
+            throw new IllegalArgumentException("El evento no está disponible para descuentos");
+        return evento;
+    }
+
     public long precioPara(DetalleVentaRequestDTO dto) {
         var sector = consultar(eventos, "/eventos/" + dto.getEvento_id_evento() + "/sectores/" + dto.getSector_id_sector(), Sector.class);
         var evento = consultar(eventos, "/eventos/" + dto.getEvento_id_evento(), Evento.class);

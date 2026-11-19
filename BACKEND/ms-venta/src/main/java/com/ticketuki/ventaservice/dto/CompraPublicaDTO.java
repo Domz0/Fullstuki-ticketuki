@@ -13,4 +13,5 @@ public record CompraPublicaDTO(
         @NotBlank @Email @Size(max=254)
         @Pattern(regexp="(?i)^[^\\s@]+@(duoc\\.cl|gmail\\.com|duocuc\\.cl|profesor\\.duoc\\.cl)$",
                 message="Usa un correo de duoc.cl, gmail.com, duocuc.cl o profesor.duoc.cl") String correo,
-        @NotNull MedioPago medio) {}
+        @NotNull MedioPago medio,
+        @Size(max=30) @Pattern(regexp="[A-Za-z0-9_-]*") String codigo) {}

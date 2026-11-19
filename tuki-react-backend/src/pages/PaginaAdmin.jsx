@@ -4,9 +4,11 @@ import CrearEvento from "../components/CrearEvento";
 import GestionEventos from "../components/GestionEventos";
 import EditarEvento from "../components/EditarEvento";
 import EntradasInvitadoDebug from "../components/EntradasInvitadoDebug";
+import AdminCodigos from "../components/AdminCodigos";
 import "./PaginaAdmin.css";
 
 const secciones = {
+  codigos: { titulo: "Códigos de descuento", contenido: () => <AdminCodigos /> },
   "entradas-invitado": { titulo: "Entradas invitado (debug)", contenido: () => <EntradasInvitadoDebug /> },
   "crear-evento": { titulo: "Crear evento", contenido: () => <CrearEvento /> },
   eventos: { titulo: "Gestionar eventos", contenido: () => <GestionEventos /> },
@@ -27,6 +29,7 @@ function PaginaAdmin({ seccion, eventoId, onCerrarSesion }) {
           <a href="#/admin/dashboard" aria-current={marcar(actual === dashboard)}>Dashboard</a>
           <a href="#/admin/entradas-invitado" aria-current={marcar(seccion === "entradas-invitado")}>Entradas invitado (debug)</a>
           <a href="#/admin/crear-evento" aria-current={marcar(seccion === "crear-evento")}>Crear evento</a>
+          <a href="#/admin/codigos" aria-current={marcar(seccion === "codigos")}>Códigos de descuento</a>
           <a href="#/admin/eventos" aria-current={marcar(seccion === "eventos" || seccion === "editar-evento")}>Gestionar eventos</a>
           <a href="#/admin/historial" aria-current={marcar(seccion === "historial")}>Historial de movimientos</a>
         </nav>

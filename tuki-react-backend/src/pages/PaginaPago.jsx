@@ -7,6 +7,7 @@ import { leerCompra, guardarCompra, rechazarCompra } from "../utils/compra";
 import { tarjetaVencida } from "../utils/validarPago";
 import { prepararCompra, procesarCompra, consultarCompra } from "../services/compras";
 import { navegar } from "../utils/navegacion";
+import { peticionApi } from "../services/api";
 
 function PaginaPago({ evento, fecha, usuario }) {
   const [compra, setCompra] = useState(leerCompra);
@@ -87,7 +88,14 @@ function PaginaPago({ evento, fecha, usuario }) {
         {compra.solicitudBackend ? <section><h2>Compra en proceso</h2>
           <p>Consulta el estado de tu compra para continuar.</p>
           <button className="pago_volver" disabled={procesando || recuperando} onClick={() => continuarAConfirmacion()}>Continuar compra pendiente</button>
-        </section> : <FormularioPago usuario={usuario} comprador={compra.comprador}
+        </section> : <FormularioPago usuario={usuario} comprador={compra.comprador} codigoAplicado={compra.codigoDescuento}
+          onAplicarCodigo={async codigo => {
+            const promo = codigo ? await peticionApi(`/compras/codigos/validar?evento=${encodeURIComponent(compra.eventoId)}&codigo=${encodeURIComponent(codigo)}`) : null;
+            if (leerCompra()?.compraId !== compra.compraId || confirmando.current) throw new Error("La compra cambió. Vuelve a revisar la selección.");
+            const actualizada = { ...compra, codigoDescuento: promo?.codigo || "", porcentajeDescuento: promo?.descuento || 0 };
+            guardarCompra(actualizada); setCompra(actualizada);
+            return promo?.descuento || 0;
+          }}
           onValidado={continuarAConfirmacion} />}
         <ResumenPago evento={evento} fecha={fecha} seleccion={compra}
           cantidad={compra.cantidad} bloqueado={procesando || Boolean(compra.solicitudBackend)} />

@@ -1,8 +1,9 @@
-export function calcularTotales(precio, cantidad, codigo = "") {
+export function calcularTotales(precio, cantidad, porcentaje = 0) {
   const subtotal = precio * cantidad;
-  const cargo = Math.round(precio * 0.1) * cantidad;
-  const iva = Math.round(precio * 0.19) * cantidad;
-  const descuento = codigo === "ROCK20" ? Math.round((subtotal + cargo) * 0.2) : 0;
+  const porEntrada = Math.round(precio * (Number(porcentaje) || 0) / 100);
+  const cargo = Math.round((precio - porEntrada) * 0.1) * cantidad;
+  const iva = Math.round((precio - porEntrada) * 0.19) * cantidad;
+  const descuento = porEntrada * cantidad;
   return { subtotal, cargo, iva, descuento, total: subtotal + iva + cargo - descuento };
 }
 
@@ -29,7 +30,7 @@ export function guardarCompra(compra) {
   const guardada = {};
   // Nunca se guardan datos de tarjeta ni se usa una lista local de tickets como comprobante.
   for (const campo of ["compraId", "creadaEn", "eventoId", "evento", "recinto", "fechaId", "fecha", "sectorId", "area", "precio",
-    "cantidad", "estado", "codigoDescuento", "comprador", "metodo", "cuotas", "accesoCompra", "solicitudBackend", "operacionBackend", "motivo", "cuentaCompra"])
+    "cantidad", "estado", "codigoDescuento", "porcentajeDescuento", "comprador", "metodo", "cuotas", "accesoCompra", "solicitudBackend", "operacionBackend", "motivo", "cuentaCompra"])
     if (compra[campo] !== undefined) guardada[campo] = compra[campo];
   guardada.version = 2;
   guardada.operacionDesde = operacionDesde;
@@ -94,7 +95,7 @@ export function limpiarComprador(comprador) {
 export function rechazarCompra(compra, comprador, metodo, motivo) {
   return {
     ...compra,
-    ...calcularTotales(compra.precio, compra.cantidad, compra.codigoDescuento),
+    ...calcularTotales(compra.precio, compra.cantidad, compra.porcentajeDescuento),
     comprador: limpiarComprador(comprador),
     metodo,
     estado: "rechazada",

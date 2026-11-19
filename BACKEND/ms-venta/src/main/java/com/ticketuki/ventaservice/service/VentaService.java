@@ -34,6 +34,7 @@ public class VentaService {
     private final VentaRepository ventaRepository;
     private final DetalleVentaRepository detalleVentaRepository;
     private final PromocionRepository promocionRepository;
+    private final CodigosDescuento codigos;
     private final com.ticketuki.ventaservice.client.CatalogoVentaClient catalogo;
 
 
@@ -69,6 +70,7 @@ public class VentaService {
         // Si viene un id de promoción, validar que exista y esté vigente, luego aplicar el descuento
         if (dto.getPromocion_id() != null) {
             Promocion promo = obtenerPromocionActiva(dto.getPromocion_id());
+            codigos.validarEvento(dto.getPromocion_id(), dto.getEvento_id_evento());
             if (promo != null) {
                 com.ticketuki.ventaservice.promocion.model.ReglaPromocion.desde(promo.getRestriccion()).validar(medio, dto.getCantidad_ticket());
                 descuentoMonto = Math.round(precioNeto * promo.getDescuento() / 100.0);

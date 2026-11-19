@@ -1,8 +1,8 @@
 import { calcularTotales } from "../utils/compra";
 import "./ResumenPago.css";
 
-function ResumenPago({ evento, fecha, seleccion, cantidad, codigo = "", bloqueado = false }) {
-  const { subtotal, cargo, iva, descuento, total } = calcularTotales(seleccion.precio, cantidad, codigo);
+function ResumenPago({ evento, fecha, seleccion, cantidad, bloqueado = false }) {
+  const { subtotal, cargo, iva, descuento, total } = calcularTotales(seleccion.precio, cantidad, seleccion.porcentajeDescuento);
   function pesos(valor) {
     return "$" + valor.toLocaleString("es-CL");
   }

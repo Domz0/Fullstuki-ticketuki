@@ -43,7 +43,7 @@ export async function prepararCompra(compra, datos, metodo, cuotas) {
   return { ...compra, comprador, metodo, cuotas, accesoCompra, cuentaCompra: obtenerUsuario()?.authId || null,
     estado: "procesando", solicitudBackend: {
       clave, evento: Number(compra.eventoId), sector: Number(compra.sectorId), cantidad: compra.cantidad,
-      nombre, rut, correo: comprador.correo, medio: metodo.toUpperCase(),
+      nombre, rut, correo: comprador.correo, medio: metodo.toUpperCase(), codigo: compra.codigoDescuento || null,
     } };
 }
 

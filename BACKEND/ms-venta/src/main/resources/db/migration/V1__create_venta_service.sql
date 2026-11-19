@@ -23,6 +23,13 @@ CREATE TABLE promocion (
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE codigo_descuento (
+    codigo VARCHAR(30) PRIMARY KEY,
+    evento_id BIGINT NOT NULL,
+    promocion_id BIGINT NOT NULL UNIQUE,
+    FOREIGN KEY (promocion_id) REFERENCES promocion(id_promocion)
+);
+
 CREATE TABLE detalle_venta (
     id_detalle BIGINT AUTO_INCREMENT PRIMARY KEY,
     cantidad_ticket INTEGER NOT NULL,
