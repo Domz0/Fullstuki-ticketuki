@@ -1,7 +1,6 @@
 import Cuenta from "../components/Cuenta";
 import { useEffect, useState } from "react";
 import { cargarPerfil } from "../utils/sesion";
-import { obtenerEntradas } from "../utils/entradas";
 
 function PaginaCuenta({ seccion, usuario, onCerrarSesion, onActualizarUsuario }) {
   const [estado, setEstado] = useState({ cargando: true, error: "" });
@@ -23,16 +22,9 @@ function PaginaCuenta({ seccion, usuario, onCerrarSesion, onActualizarUsuario })
     <button onClick={() => { setEstado({ cargando: true, error: "" }); setIntento(intento + 1); }}>Reintentar</button>
     <button onClick={onCerrarSesion}>Cerrar sesión</button>
   </section>;
-  let entradas;
-  try {
-    entradas = obtenerEntradas(usuario);
-  } catch {
-    return <p role="alert">No se pudieron cargar tus entradas. Inténtalo nuevamente.</p>;
-  }
   return (
     <Cuenta
       usuario={usuario}
-      entradas={entradas}
       seccion={seccion}
       onCerrarSesion={onCerrarSesion}
       onActualizarUsuario={onActualizarUsuario}

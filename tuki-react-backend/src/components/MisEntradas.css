@@ -140,7 +140,7 @@
 
 
 .mis_entradas .entrada_rotulo_codigo {
-  display: none;
+  display: block;
 }
 
 .mis_entradas .entrada_codigo_caja {
@@ -252,7 +252,7 @@
 
 
   .mis_entradas .entrada_acciones {
-    padding: 0 16px 16px calc(var(--qr) + 28px);
+    padding: 0 16px 16px;
   }
 
   .mis_entradas .entrada_rotulo_codigo {
@@ -268,7 +268,7 @@
 
 
   .mis_entradas .entrada_detalle {
-    display: none;
+    display: inline-flex;
   }
 
   .mis_entradas .entrada_cerrada .entrada_acceso {
@@ -276,7 +276,7 @@
   }
 
   .mis_entradas .entrada_cerrada .entrada_acciones {
-    display: none;
+    display: flex;
   }
 }
 

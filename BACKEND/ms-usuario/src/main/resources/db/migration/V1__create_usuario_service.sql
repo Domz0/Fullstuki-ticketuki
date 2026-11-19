@@ -20,6 +20,10 @@ CREATE TABLE registro_usuario (
     CONSTRAINT fk_registro_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id_usuario)
 );
 
+-- Perfil de prueba
+INSERT INTO usuario (id_usuario, run, p_nombre, s_nombre, a_paterno, a_materno, email) VALUES
+(4, '99.999.999-9', 'nombretest', NULL, 'apedillotest', NULL, 'test@duoc.cl');
+
 CREATE TABLE auditoria_pendiente (
     id VARCHAR(36) PRIMARY KEY,
     payload TEXT NOT NULL,

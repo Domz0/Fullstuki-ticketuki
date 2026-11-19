@@ -40,3 +40,10 @@ CREATE TABLE reserva_cupo (
     CONSTRAINT fk_reserva_operacion FOREIGN KEY (venta_id) REFERENCES operacion_venta(venta_id),
     INDEX idx_reserva_evento_sector (evento_id, sector_id)
 );
+
+-- pasadas de nombretest.
+INSERT INTO ticket (cod_qr, nombre_titular, run_titular, fecha_emision,
+    venta_id_venta, evento_id_evento, sector_id_sector, estado) VALUES
+('TEST000001', 'nombretest apedillotest', '99.999.999-9', '2026-11-01', 1001, 101, 104, 'USADO'),
+('TEST000002', 'nombretest apedillotest', '99.999.999-9', '2026-11-02', 1002, 106, 117, 'USADO'),
+('TEST000003', 'nombretest apedillotest', '99.999.999-9', '2026-11-03', 1003, 110, 104, 'USADO');

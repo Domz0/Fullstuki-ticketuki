@@ -3,7 +3,7 @@ import Perfil from "./Perfil";
 import MisEntradas from "./MisEntradas";
 import "./Cuenta.css";
 
-function Cuenta({ usuario, entradas, seccion = "datos", onCerrarSesion, onActualizarUsuario }) {
+function Cuenta({ usuario, seccion = "datos", onCerrarSesion, onActualizarUsuario }) {
   {
     /*parte en los datos y cambia segun el botons*/
   }
@@ -54,7 +54,7 @@ function Cuenta({ usuario, entradas, seccion = "datos", onCerrarSesion, onActual
       {seccion === "datos" ? (
         <Perfil usuario={usuario} onActualizarUsuario={onActualizarUsuario} />
       ) : (
-        <MisEntradas entradas={entradas} />
+        <MisEntradas key={usuario.usuarioId} usuario={usuario} />
       )}
     </section>
   );

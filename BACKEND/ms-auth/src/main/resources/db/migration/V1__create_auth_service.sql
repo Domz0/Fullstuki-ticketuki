@@ -20,6 +20,9 @@ INSERT INTO usuario_auth (username, password) VALUES
 INSERT INTO usuario_auth (username, password, rol, activo) VALUES
 ('admin@duoc.cl', 'admin123', 'ADMIN', TRUE);
 
+INSERT INTO usuario_auth (username, password, rol, usuario_id, activo) VALUES
+('nombretest', 'test1234', 'CLIENTE', 4, TRUE);
+
 CREATE TABLE auditoria_pendiente (
     id VARCHAR(36) PRIMARY KEY,
     payload TEXT NOT NULL,

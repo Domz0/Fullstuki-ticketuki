@@ -91,3 +91,19 @@ CREATE TABLE pago_tarea (
     INDEX idx_tarea_revision (estado, revisada_en),
     FOREIGN KEY (pago_id) REFERENCES pago(id_pago)
 );
+
+INSERT INTO venta (id_venta, fecha_venta, medio_pago, cod_autorizacion, estado, monto_total) VALUES
+(1001, '2026-11-01 12:00:00', 'DEBITO', 'SIM-TEST-1001', 'CONFIRMADA', 45150),
+(1002, '2026-11-02 12:00:00', 'DEBITO', 'SIM-TEST-1002', 'CONFIRMADA', 15480),
+(1003, '2026-11-03 12:00:00', 'DEBITO', 'SIM-TEST-1003', 'CONFIRMADA', 23220);
+
+INSERT INTO detalle_venta (cantidad_ticket, precio_neto, precio_iva, precio_total, comision,
+    usuario_id_usuario, venta_id_venta, sector_id_sector, evento_id_evento) VALUES
+(1, 35000, 6650, 45150, 3500, 4, 1001, 104, 101),
+(1, 12000, 2280, 15480, 1200, 4, 1002, 117, 106),
+(1, 18000, 3420, 23220, 1800, 4, 1003, 104, 110);
+
+INSERT INTO pago (monto, medio_pago, cod_autorizacion, timestamp, estado, venta_id, usuario_id) VALUES
+(45150, 'DEBITO', 'SIM-TEST-1001', '2026-11-01 12:00:00', 'COMPLETADO', 1001, 4),
+(15480, 'DEBITO', 'SIM-TEST-1002', '2026-11-02 12:00:00', 'COMPLETADO', 1002, 4),
+(23220, 'DEBITO', 'SIM-TEST-1003', '2026-11-03 12:00:00', 'COMPLETADO', 1003, 4);
