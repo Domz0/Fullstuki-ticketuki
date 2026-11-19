@@ -10,17 +10,6 @@ export function obtenerUsuario() {
   }
 }
 
-export function registrarUsuario(datos) {
-  localStorage.setItem("nombre", datos.nombre.trim());
-  localStorage.setItem("apellido", datos.apellido.trim());
-  localStorage.setItem("rut", datos.rut.trim());
-  localStorage.setItem("correo", datos.correo.trim().toLowerCase());
-  localStorage.setItem("password", datos.password);
-  localStorage.setItem("miembroDesde", String(new Date().getFullYear()));
-  localStorage.setItem("sesionIniciada", "false");
-  localStorage.removeItem("rol");
-}
-
 export async function iniciarSesion(datos) {
   const respuesta = await peticionApi("/auth/login", {
     method: "POST",
@@ -42,14 +31,11 @@ export async function iniciarSesion(datos) {
   localStorage.setItem("sesionBackend", JSON.stringify({
     token: respuesta.token, usuario, expiraEn: Date.now() + respuesta.expiraEnMs,
   }));
-  localStorage.removeItem("password");
   return usuario;
 }
 
 export function cerrarSesion() {
   localStorage.removeItem("sesionBackend");
-  localStorage.removeItem("sesionIniciada");
-  localStorage.removeItem("rol");
 }
 
 export function leerSesion() {

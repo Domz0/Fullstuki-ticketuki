@@ -8,13 +8,10 @@ import PaginaLogin from "./pages/PaginaLogin";
 import PaginaCuenta from "./pages/PaginaCuenta";
 import PaginaEvento from "./pages/PaginaEvento";
 import PaginaEntradas from "./pages/PaginaEntradas";
-import PaginaPago from "./pages/PaginaPago";
-import PaginaConfirmacion from "./pages/PaginaConfirmacion";
-import PaginaPagoFallido from "./pages/PaginaPagoFallido";
+import PaginaFlujoCompra from "./pages/PaginaFlujoCompra";
 import PaginaTransferir from "./pages/PaginaTransferir";
 import PaginaNoEncontrada from "./pages/PaginaNoEncontrada";
 import PaginaAdmin from "./pages/PaginaAdmin";
-import { obtenerEvento } from "./data/obtenerEvento";
 import { obtenerUsuario, cerrarSesion } from "./utils/sesion";
 import { leerRuta, navegar } from "./utils/navegacion";
 import "./App.css";
@@ -51,10 +48,6 @@ function App() {
   const categoria = ["musica", "artes", "deportes", "ferias"].includes(id)
     ? id
     : "musica";
-  const evento = obtenerEvento(id);
-  const fecha =
-    evento?.fechas.find((item) => item.id === parametros.get("fecha")) ||
-    evento?.fechas[0];
 
   const esAcceso = pantalla === "login" || pantalla === "registro";
   let contenido;
@@ -88,23 +81,8 @@ function App() {
     contenido = (
       <PaginaEntradas eventoId={id} />
     );
-  else if (evento && pantalla === "pago")
-    contenido = (
-      <PaginaPago
-        usuario={usuario}
-        evento={evento}
-        fecha={fecha}
-      />
-    );
-  else if (evento && pantalla === "pago-fallido")
-    contenido = <PaginaPagoFallido evento={evento} fecha={fecha} />;
-  else if (evento && pantalla === "confirmacion")
-    contenido = (
-      <PaginaConfirmacion
-        evento={evento}
-        fecha={fecha}
-      />
-    );
+  else if (["pago", "pago-fallido", "confirmacion"].includes(pantalla))
+    contenido = <PaginaFlujoCompra eventoId={id} fechaId={parametros.get("fecha")} pantalla={pantalla} usuario={usuario} />;
   else contenido = <PaginaNoEncontrada />;
 
   return (

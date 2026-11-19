@@ -1,7 +1,7 @@
 import PasosCompra from "./PasosCompra";
 import SeleccionEntradas from "./SeleccionEntradas";
 import MapaRecinto from "./MapaRecinto";
-import { obtenerPlano } from "../data/sectores";
+import { obtenerPlano } from "../data/planosRecintos";
 import "./ElegirEntradas.css";
 
 function ElegirEntradas({ evento, seleccion, fechaElegida, sectores, onElegir, onCambiarCantidad, onContinuar }) {

@@ -1,6 +1,6 @@
 import { navegar } from "../utils/navegacion";
 import MapaRecinto from "./MapaRecinto";
-import { obtenerPlano } from "../data/sectores";
+import { obtenerPlano } from "../data/planosRecintos";
 import "./DetalleEvento.css";
 
 function DetalleEvento({ evento }) {

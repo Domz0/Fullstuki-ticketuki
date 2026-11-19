@@ -58,18 +58,3 @@ export function rechazarCompra(compra, comprador, metodo, motivo) {
     motivo,
   };
 }
-
-export function confirmarCompra(compra, comprador, metodo, cuotas) {
-  const referencia = crypto.randomUUID().toUpperCase();
-  return {
-    ...compra,
-    ...calcularTotales(compra.precio, compra.cantidad, compra.codigoDescuento),
-    comprador: limpiarComprador(comprador),
-    motivo: undefined,
-    metodo,
-    cuotas: metodo === "credito" ? cuotas : 1,
-    estado: "confirmada",
-    orden: `TKI-${referencia.slice(0, 13)}`,
-    codigo: `TKI-${referencia.slice(0, 8)}`,
-  };
-}
