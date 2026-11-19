@@ -33,6 +33,7 @@
 .admin_tabla th, .admin_tabla td { padding: 14px; border-bottom: 1px solid var(--color-linea); text-align: left; }
 .admin_tabla th { color: var(--color-texto-apagado); }
 .admin_indicadores { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.invitados_debug_lista { display: grid; gap: 16px; margin: 20px 0; }
 .admin_tarjeta { padding: 20px; background: var(--color-fondo-alto); border: 1px solid var(--color-linea); border-radius: 10px; }
 .admin_tarjeta h2 { margin: 0 0 12px; font-size: 15px; }
 .admin_tarjeta strong { font-size: clamp(20px, 2.5vw, 30px); overflow-wrap: anywhere; }

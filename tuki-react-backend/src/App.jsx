@@ -15,6 +15,7 @@ import PaginaAdmin from "./pages/PaginaAdmin";
 import { obtenerUsuario, cerrarSesion } from "./utils/sesion";
 import { leerRuta, navegar } from "./utils/navegacion";
 import "./App.css";
+import { expirarSesion, limpiarDatosPrivados, sesionGuardada } from "./utils/controlSesion";
 
 function App() {
   const [usuario, setUsuario] = useState(() => {
@@ -28,6 +29,34 @@ function App() {
   }
 
   const [hash, setHash] = useState(window.location.hash);
+  useEffect(() => {
+    const sesion = sesionGuardada();
+    function vencida() { setUsuario(null); navegar("/login?sesion=vencida"); }
+    function cerrada() { setUsuario(null); }
+    function revisar() {
+      const actual = sesionGuardada();
+      if (actual?.token && actual.expiraEn <= Date.now()) expirarSesion(actual.token);
+    }
+    function sincronizar(e) {
+      if (e.key !== "sesionBackend" && e.key !== null) return;
+      const actual = sesionGuardada();
+      if (actual?.token !== sesion?.token) {
+        limpiarDatosPrivados(); setUsuario(null); navegar("/login?sesion=cambiada");
+      } else revisar();
+    }
+    window.addEventListener("sesion-vencida", vencida);
+    window.addEventListener("sesion-cerrada", cerrada);
+    window.addEventListener("storage", sincronizar);
+    window.addEventListener("focus", revisar);
+    const timer = sesion?.token ? setTimeout(revisar, Math.max(0, Math.min(sesion.expiraEn - Date.now(), 2147483647))) : null;
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("sesion-vencida", vencida);
+      window.removeEventListener("sesion-cerrada", cerrada);
+      window.removeEventListener("storage", sincronizar);
+      window.removeEventListener("focus", revisar);
+    };
+  }, [usuario]);
   useEffect(() => {
     function actualizar() {
       setHash(window.location.hash);

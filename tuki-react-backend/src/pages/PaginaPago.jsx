@@ -5,7 +5,7 @@ import FormularioPago from "../components/FormularioPago";
 import ResumenPago from "../components/ResumenPago";
 import { leerCompra, guardarCompra, rechazarCompra } from "../utils/compra";
 import { tarjetaVencida } from "../utils/validarPago";
-import { prepararCompra, procesarCompra } from "../services/compras";
+import { prepararCompra, procesarCompra, consultarCompra } from "../services/compras";
 import { navegar } from "../utils/navegacion";
 
 function PaginaPago({ evento, fecha, usuario }) {
@@ -15,6 +15,22 @@ function PaginaPago({ evento, fecha, usuario }) {
   const consulta = useRef(null);
   useEffect(() => () => consulta.current?.abort(), []);
   const [procesando, setProcesando] = useState(false);
+  const [recuperando, setRecuperando] = useState(() => Boolean(leerCompra()?.solicitudBackend));
+  useEffect(() => {
+    const pendiente = leerCompra();
+    if (!pendiente?.solicitudBackend || String(pendiente.eventoId) !== String(evento.id) || pendiente.fechaId !== fecha.id) return;
+    const controlador = new AbortController();
+    consultarCompra(pendiente, controlador.signal).then(actualizada => {
+      if (controlador.signal.aborted) return;
+      guardarCompra(actualizada); setCompra(actualizada);
+      if (actualizada.estado === "confirmada") navegar(`/confirmacion/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`);
+      else if (actualizada.estado === "rechazada") navegar(`/pago-fallido/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`);
+      else setMensaje("Compra recuperada. Puedes continuar la misma operación sin crear otra.");
+    }).catch(error => {
+      if (!controlador.signal.aborted) setMensaje(error.status === 404 ? "La solicitud todavía no está registrada. Puedes continuar para enviarla con la misma referencia." : error.message);
+    }).finally(() => { if (!controlador.signal.aborted) setRecuperando(false); });
+    return () => controlador.abort();
+  }, [evento.id, fecha.id]);
   if (!compra || String(compra.eventoId) !== String(evento.id) || compra.fechaId !== fecha.id) {
     return <section><h2>Elige tus entradas primero</h2><a className="pago_volver" href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Elegir entradas</a></section>;
   }
@@ -27,6 +43,7 @@ function PaginaPago({ evento, fecha, usuario }) {
     setProcesando(true);
     setMensaje("Registrando compra…");
     try {
+      if (leerCompra()?.compraId !== compra.compraId) throw new Error("La selección venció. Vuelve a elegir tus entradas.");
       if (!compra.solicitudBackend && metodo === "credito" && tarjetaVencida(datos.vencimiento)) {
         guardarCompra(rechazarCompra(compra, datos, metodo, "Tarjeta vencida"));
         navegar(`/pago-fallido/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`);
@@ -41,6 +58,7 @@ function PaginaPago({ evento, fecha, usuario }) {
         setCompra(actualizada);
         setMensaje(aviso);
       }, controlador.signal);
+      controlador.signal.throwIfAborted();
       guardarCompra(confirmada);
       setCompra(confirmada);
       navegar(`/${confirmada.estado === "confirmada" ? "confirmacion" : "pago-fallido"}/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`);
@@ -55,20 +73,20 @@ function PaginaPago({ evento, fecha, usuario }) {
 
   return (
     <>
-      {procesando && (
+      {(procesando || recuperando) && (
         <section className="pago_cargando" aria-label="Compra en proceso">
           <span className="pago_cargando_circulo" aria-hidden="true" />
-          <h2>Procesando tu compra</h2>
-          <p role="status" aria-live="polite" aria-atomic="true">{mensaje}</p>
+          <h2>{recuperando ? "Recuperando tu compra" : "Procesando tu compra"}</h2>
+          <p role="status" aria-live="polite" aria-atomic="true">{recuperando ? "Consultando el estado guardado en el servidor…" : mensaje}</p>
         </section>
       )}
-      <div hidden={procesando}>
+      <div hidden={procesando || recuperando}>
       <PasosCompra etapa="pago" />
       <a className="pago_volver" href={`#/entradas/${evento.id}?fecha=${encodeURIComponent(fecha.id)}`}>Volver a elegir entradas</a>
       <div className="pago_contenedor">
         {compra.solicitudBackend ? <section><h2>Compra en proceso</h2>
           <p>Consulta el estado de tu compra para continuar.</p>
-          <button disabled={procesando} onClick={() => continuarAConfirmacion()}>Consultar compra</button>
+          <button className="pago_volver" disabled={procesando || recuperando} onClick={() => continuarAConfirmacion()}>Continuar compra pendiente</button>
         </section> : <FormularioPago usuario={usuario} comprador={compra.comprador}
           onValidado={continuarAConfirmacion} />}
         <ResumenPago evento={evento} fecha={fecha} seleccion={compra}

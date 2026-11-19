@@ -37,7 +37,7 @@ public class CompraService {
         String solicitud;
         try { solicitud = mapper.writeValueAsString(dto); }
         catch (Exception ex) { throw new IllegalArgumentException("Compra inválida", ex); }
-        jdbc.update("INSERT INTO compra(usuario_id, clave, solicitud, reserva_estado) VALUES (?,?,?,'PENDIENTE') ON DUPLICATE KEY UPDATE id=id",
+        jdbc.update("INSERT INTO compra(usuario_id, clave, solicitud, origen, reserva_estado) VALUES (?,?,?,'CUENTA','PENDIENTE') ON DUPLICATE KEY UPDATE id=id",
                 usuario, dto.clave(), solicitud);
         var fila = jdbc.queryForMap("SELECT id, solicitud, venta_id FROM compra WHERE usuario_id=? AND clave=? FOR UPDATE",
                 usuario, dto.clave());

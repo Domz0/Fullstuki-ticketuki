@@ -2,7 +2,7 @@ import { useState } from "react";
 import ElegirEntradas from "../components/ElegirEntradas";
 import { useEventoDisponible } from "../hooks/useEventoDisponible";
 import { cargarEventoDisponible } from "../services/eventos";
-import { guardarCompra, crearSeleccion } from "../utils/compra";
+import { guardarCompra, crearSeleccion, leerCompra } from "../utils/compra";
 import { navegar } from "../utils/navegacion";
 
 function PaginaEntradas({ eventoId }) {
@@ -11,6 +11,10 @@ function PaginaEntradas({ eventoId }) {
   const [cantidad, setCantidad] = useState(1);
   const [mensaje, setMensaje] = useState("");
   const [verificando, setVerificando] = useState(false);
+  const pendiente = leerCompra();
+  if (pendiente?.estado === "procesando") return <section><h2>Tienes una compra pendiente en esta pestaña</h2>
+    <p>Consulta su estado antes de iniciar otra compra. Para otra selección puedes usar una pestaña nueva.</p>
+    <a className="pago_volver" href={`#/pago/${pendiente.eventoId}?fecha=${encodeURIComponent(pendiente.fechaId)}`}>Recuperar compra pendiente</a></section>;
   if (cargando) return <p role="status">Consultando cupos…</p>;
   if (error) return <section><p role="alert">{error}</p><button onClick={reintentar}>Reintentar</button></section>;
   const sectores = evento.sectores;

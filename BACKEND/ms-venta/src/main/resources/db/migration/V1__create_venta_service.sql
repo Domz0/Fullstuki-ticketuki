@@ -67,6 +67,7 @@ CREATE TABLE auditoria_pendiente (
 CREATE TABLE compra (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     usuario_id BIGINT NULL,
+    origen VARCHAR(15) NOT NULL DEFAULT 'DESCONOCIDO',
     nombre_comprador VARCHAR(100) NULL,
     rut_comprador VARCHAR(12) NULL,
     correo_comprador VARCHAR(254) NULL,

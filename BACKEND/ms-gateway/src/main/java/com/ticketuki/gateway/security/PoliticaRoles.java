@@ -7,6 +7,7 @@ public final class PoliticaRoles {
     private PoliticaRoles() {}
 
     public static boolean publica(String path, HttpMethod method) {
+        if (method == HttpMethod.GET && path.matches("/compras/publicas/por-clave/[a-zA-Z0-9-]+")) return true;
         if (method == HttpMethod.POST && (path.equals("/compras/publicas")
                 || path.matches("/compras/publicas/[0-9]+/confirmar-simulado"))) return true;
         if (method == HttpMethod.GET && path.matches("/compras/publicas/[0-9]+(/resultado)?")) return true;

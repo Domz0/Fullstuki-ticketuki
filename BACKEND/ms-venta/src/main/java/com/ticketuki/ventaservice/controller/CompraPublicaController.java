@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 public class CompraPublicaController {
     private final CompraPublicaService service;
     private final CompraProcesador procesador;
+    @GetMapping("/por-clave/{clave}")
+    public CompraService.Compra porClave(@PathVariable String clave, @RequestHeader("X-Compra-Token") String secreto) {
+        return service.porClave(clave, secreto);
+    }
     @PostMapping
     public CompraService.Compra crear(@Valid @RequestBody CompraPublicaDTO dto,
             @RequestHeader("X-Compra-Token") String secreto, HttpServletRequest request) {

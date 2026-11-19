@@ -1,4 +1,5 @@
 import { peticionApi } from "../services/api";
+import { expirarSesion, limpiarDatosPrivados, sesionGuardada } from "./controlSesion";
 
 export function obtenerUsuario() {
   try {
@@ -36,11 +37,16 @@ export async function iniciarSesion(datos) {
 
 export function cerrarSesion() {
   localStorage.removeItem("sesionBackend");
+  limpiarDatosPrivados();
+  window.dispatchEvent(new CustomEvent("sesion-cerrada"));
 }
 
 export function leerSesion() {
-  const sesion = JSON.parse(localStorage.getItem("sesionBackend") || "null");
-  if (!obtenerUsuario()) throw new Error("Tu sesión terminó. Vuelve a iniciar sesión.");
+  const sesion = sesionGuardada();
+  if (!obtenerUsuario()) {
+    expirarSesion(sesion?.token);
+    throw new Error("Tu sesión terminó. Vuelve a iniciar sesión.");
+  }
   return sesion;
 }
 

@@ -13,6 +13,8 @@ function PaginaLogin({ onIniciarSesion, registroExitoso = false, contrasenaActua
       return { error: error.message || "No se pudo iniciar sesión. Inténtalo nuevamente." };
     }
   }
-  return <FormularioLogin onValidado={ingresar} registroExitoso={registroExitoso} contrasenaActualizada={contrasenaActualizada} />;
+  const avisoSesion = new URLSearchParams(window.location.hash.split("?")[1] || "").get("sesion");
+  return <>{avisoSesion && <p role="status">{avisoSesion === "vencida" ? "Tu sesión venció. Inicia sesión nuevamente." : "La sesión cambió en otra pestaña. Inicia sesión para continuar."}</p>}
+    <FormularioLogin onValidado={ingresar} registroExitoso={registroExitoso} contrasenaActualizada={contrasenaActualizada} /></>;
 }
 export default PaginaLogin;

@@ -1,4 +1,10 @@
+import { expirarSesion, sesionGuardada } from "../utils/controlSesion";
+
 export async function peticionApi(ruta, { method = "GET", body, token, signal, accesoCompra } = {}) {
+  if (token && sesionGuardada()?.token === token && sesionGuardada().expiraEn <= Date.now()) {
+    expirarSesion(token);
+    throw new Error("Tu sesión venció. Inicia sesión nuevamente.");
+  }
   const headers = { Accept: "application/json" };
   if (body !== undefined) headers["Content-Type"] = "application/json";
   if (token) headers.Authorization = `Bearer ${token}`;
@@ -17,6 +23,8 @@ export async function peticionApi(ruta, { method = "GET", body, token, signal, a
     throw new Error("No se pudo conectar con el servidor. Inténtalo nuevamente.");
   }
 
+  if (token && respuesta.status === 401) expirarSesion(token);
+  if (token && sesionGuardada()?.token !== token) throw new DOMException("La sesión cambió", "AbortError");
   const texto = await respuesta.text();
   let datos = null;
   if (texto) {

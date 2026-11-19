@@ -59,9 +59,9 @@ public class CompraPublicaService {
         try { solicitud = mapper.writeValueAsString(new CompraRequestDTO(dto.clave(), ventaDto, titulares)); }
         catch (Exception ex) { throw new IllegalArgumentException("Compra inválida", ex); }
         jdbc.update("""
-                INSERT INTO compra(usuario_id,clave,solicitud,nombre_comprador,rut_comprador,correo_comprador,acceso_hash,reserva_estado)
-                VALUES (?,?,?,?,?,?,?,'PENDIENTE') ON DUPLICATE KEY UPDATE id=id
-                """, usuario, dto.clave(), solicitud, dto.nombre(), dto.rut(), dto.correo(), huella);
+                INSERT INTO compra(usuario_id,clave,solicitud,nombre_comprador,rut_comprador,correo_comprador,acceso_hash,origen,reserva_estado)
+                VALUES (?,?,?,?,?,?,?,?,'PENDIENTE') ON DUPLICATE KEY UPDATE id=id
+                """, usuario, dto.clave(), solicitud, dto.nombre(), dto.rut(), dto.correo(), huella, conSesion ? "CUENTA" : "INVITADO");
         var fila = jdbc.queryForMap("SELECT id,solicitud,correo_comprador,venta_id FROM compra WHERE clave=? FOR UPDATE", dto.clave());
         Long id = ((Number)fila.get("id")).longValue();
         verificar(id, secreto);
@@ -82,6 +82,28 @@ public class CompraPublicaService {
         return compras.consultar(id);
     }
 
+    @Transactional(readOnly=true)
+    public CompraService.Compra porClave(String clave, String secreto) {
+        hash(secreto);
+        var ids = jdbc.queryForList("SELECT id FROM compra WHERE clave=?", Long.class, clave);
+        if (ids.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La compra aún no fue registrada");
+        return obtener(ids.getFirst(), secreto);
+    }
+
+    public Map<String, Object> invitadosDebug(int pagina) {
+        acceso.administrador();
+        if (pagina < 0 || pagina > 100000) throw new IllegalArgumentException("Página inválida");
+        var filas = jdbc.queryForList("""
+            SELECT c.id, c.venta_id, c.nombre_comprador, c.rut_comprador, c.correo_comprador,
+                   v.fecha_venta, v.estado, v.monto_total
+            FROM compra c JOIN venta v ON v.id_venta=c.venta_id
+            WHERE c.origen = 'INVITADO' ORDER BY c.id DESC LIMIT 20 OFFSET ?
+            """, pagina * 20);
+        for (var fila : filas) fila.put("tickets", tickets.listar(((Number)fila.get("venta_id")).longValue()));
+        Long total = jdbc.queryForObject("SELECT COUNT(*) FROM compra WHERE origen = 'INVITADO' AND venta_id IS NOT NULL", Long.class);
+        return Map.of("compras", filas, "total", total, "pagina", pagina);
+    }
+
     @Transactional
     public CompraService.Compra confirmar(Long id, String secreto) {
         verificar(id, secreto);
@@ -94,7 +116,10 @@ public class CompraPublicaService {
         if (!"COMPLETADA".equals(compra.estado()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "La compra aún no está completada");
         Long total = jdbc.queryForObject("SELECT monto_total FROM venta WHERE id_venta=?", Long.class, compra.venta_id());
+        var comprador = jdbc.queryForMap("SELECT nombre_comprador, rut_comprador FROM compra WHERE id=?", id);
         return Map.of("venta_id", compra.venta_id(), "total", total, "tickets", tickets.listar(compra.venta_id()),
+                "comprador", comprador,
+                "medio_pago", jdbc.queryForObject("SELECT medio_pago FROM venta WHERE id_venta=?", String.class, compra.venta_id()),
                 "correo", jdbc.queryForObject("SELECT correo_comprador FROM compra WHERE id=?", String.class, id),
                 "correo_enviado", false);
     }

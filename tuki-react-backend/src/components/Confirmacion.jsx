@@ -13,9 +13,6 @@ function Confirmacion({ compra }) {
         <p className="texto_secundario">
           Compra registrada y entradas emitidas. El pago fue simulado, sin cobro bancario.
         </p>
-        {!compra.correoEnviado && <p className="texto_secundario">
-          Guarda tus códigos. El envío al correo aún no está habilitado.
-        </p>}
       </header>
       <div className="flex_H panel confirmacion_tarjeta">
         <div className="flex_V confirmacion_acceso">
