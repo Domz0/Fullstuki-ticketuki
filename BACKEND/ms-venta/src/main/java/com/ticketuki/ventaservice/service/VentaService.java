@@ -204,6 +204,20 @@ public class VentaService {
     }
 
     @Transactional(readOnly = true)
+    public List<VentaResponseDTO> miHistorial(String rut) {
+        var actor = acceso.actor();
+        if (!"CLIENTE".equals(actor.rol()) || actor.usuarioId() == null)
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN,
+                    "El historial requiere una cuenta con perfil personal");
+        acceso.titular(rut);
+        String normalizado = rut.replace(".", "").replace("-", "").replaceAll("\\s", "").toUpperCase(java.util.Locale.ROOT);
+        return ventaRepository.buscarHistorial(actor.usuarioId(), normalizado).stream()
+                .map(v -> toResponseDTO(v, detalleVentaRepository.findByVenta_id_venta(v.getId_venta()).stream()
+                        .map(this::mapDetalleToDTO).toList()))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<VentaResponseDTO> listarPorPeriodo(LocalDateTime inicio, LocalDateTime fin) {
         acceso.administrador();
         return ventaRepository.findByFecha_ventaBetween(inicio, fin).stream()

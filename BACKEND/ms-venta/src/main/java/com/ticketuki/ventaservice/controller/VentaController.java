@@ -21,6 +21,11 @@ public class VentaController {
 
     private final VentaService ventaService;
 
+    @GetMapping("/ventas/mis-compras")
+    public ResponseEntity<List<VentaResponseDTO>> miHistorial(@RequestParam String rut) {
+        return ResponseEntity.ok(ventaService.miHistorial(rut));
+    }
+
     @GetMapping("/ventas")
     public ResponseEntity<List<VentaResponseDTO>> listarVentas() {
         return ResponseEntity.ok(ventaService.listarVentas());

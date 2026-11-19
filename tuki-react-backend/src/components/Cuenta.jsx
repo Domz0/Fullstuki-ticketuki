@@ -1,6 +1,7 @@
 ﻿import { navegar } from "../utils/navegacion";
 import Perfil from "./Perfil";
 import MisEntradas from "./MisEntradas";
+import HistorialCuenta from "./HistorialCuenta";
 import "./Cuenta.css";
 
 function Cuenta({ usuario, seccion = "datos", onCerrarSesion, onActualizarUsuario }) {
@@ -45,6 +46,14 @@ function Cuenta({ usuario, seccion = "datos", onCerrarSesion, onActualizarUsuari
         </button>
         <button
           type="button"
+          className={`cuenta_seccion ${seccion === "historial" ? "is-activo" : ""}`}
+          aria-pressed={seccion === "historial"}
+          onClick={() => navegar("/cuenta/historial")}
+        >
+          Historial
+        </button>
+        <button
+          type="button"
           className="cuenta_seccion cuenta_seccion_salir"
           onClick={onCerrarSesion}
         >
@@ -53,6 +62,8 @@ function Cuenta({ usuario, seccion = "datos", onCerrarSesion, onActualizarUsuari
       </nav>
       {seccion === "datos" ? (
         <Perfil usuario={usuario} onActualizarUsuario={onActualizarUsuario} />
+      ) : seccion === "historial" ? (
+        <HistorialCuenta key={usuario.usuarioId} usuario={usuario} />
       ) : (
         <MisEntradas key={usuario.usuarioId} usuario={usuario} />
       )}

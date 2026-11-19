@@ -77,7 +77,7 @@ function App() {
   else if (pantalla === "login") contenido = <PaginaLogin onIniciarSesion={setUsuario} registroExitoso={parametros.get("registro") === "ok"} contrasenaActualizada={parametros.get("contrasena") === "ok"} />;
   else if (pantalla === "cuenta" && usuario)
     contenido = (
-      <PaginaCuenta usuario={usuario} onCerrarSesion={salir} onActualizarUsuario={setUsuario} seccion={id === "entradas" ? "entradas" : "datos"} />
+      <PaginaCuenta usuario={usuario} onCerrarSesion={salir} onActualizarUsuario={setUsuario} seccion={["entradas", "historial"].includes(id) ? id : "datos"} />
     );
   else if (pantalla === "cuenta") contenido = null;
   else if (pantalla === "transferir")
