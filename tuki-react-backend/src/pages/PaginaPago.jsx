@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import PasosCompra from "../components/PasosCompra";
-import FormularioPago from "../components/FormularioPago";
-import ResumenPago from "../components/ResumenPago";
+import PasosCompra from "../components/comunes/PasosCompra";
+import FormularioPago from "../components/compras/FormularioPago";
+import ResumenPago from "../components/compras/ResumenPago";
 import { leerCompra, guardarCompra, rechazarCompra } from "../utils/compra";
 import { tarjetaVencida } from "../utils/validarPago";
 import { prepararCompra, procesarCompra, consultarCompra } from "../services/compras";

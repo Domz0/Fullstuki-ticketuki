@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import PasosCompra from "../components/PasosCompra";
+import PasosCompra from "../components/comunes/PasosCompra";
 import { cargarPerfil } from "../utils/sesion";
 import { cargarMisEntradas } from "../services/entradas";
 import { buscarDestinatario, regalarEntrada } from "../services/transferencias";
@@ -192,7 +192,7 @@ function PaginaTransferir({ usuario }) {
         <div className="transferir_resumen" role="status">
           <h2>{entrada.nombre}</h2>
           <p>La entrada ahora pertenece a {destinatario.nombre} ({destinatario.correo}).</p>
-          <p>El destinatario puede verla en “Mis entradas” al iniciar sesión. Ya no aparecerá entre tus entradas.</p>
+          <p>El destinatario puede verla en "Mis entradas" al iniciar sesión. Ya no aparecerá entre tus entradas.</p>
         </div>
       )}
 

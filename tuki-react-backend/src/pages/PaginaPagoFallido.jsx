@@ -1,5 +1,5 @@
-import PasosCompra from "../components/PasosCompra";
-import PagoFallido from "../components/PagoFallido";
+import PasosCompra from "../components/comunes/PasosCompra";
+import PagoFallido from "../components/compras/PagoFallido";
 import { calcularTotales, leerCompra } from "../utils/compra";
 import { navegar } from "../utils/navegacion";
 

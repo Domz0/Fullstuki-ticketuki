@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ElegirEntradas from "../components/ElegirEntradas";
+import ElegirEntradas from "../components/compras/ElegirEntradas";
 import { useEventoDisponible } from "../hooks/useEventoDisponible";
 import { cargarEventoDisponible } from "../services/eventos";
 import { guardarCompra, crearSeleccion, leerCompra } from "../utils/compra";

@@ -1,4 +1,4 @@
-import FormularioLogin from "../components/FormularioLogin";
+import FormularioLogin from "../components/acceso/FormularioLogin";
 import { iniciarSesion } from "../utils/sesion";
 import { navegar } from "../utils/navegacion";
 

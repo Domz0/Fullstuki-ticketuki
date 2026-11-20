@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import ResumenPago from "../src/components/ResumenPago";
+import ResumenPago from "../src/components/compras/ResumenPago";
 import { calcularTotales } from "../src/utils/compra";
 
 const props = {

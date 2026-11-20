@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import GestionEventos from "../src/components/GestionEventos";
+import GestionEventos from "../src/components/admin/GestionEventos";
 import {
   actualizarEvento,
   guardarEvento,

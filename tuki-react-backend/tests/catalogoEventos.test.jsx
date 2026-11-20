@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import CatalogoEventos from "../src/components/CatalogoEventos";
+import CatalogoEventos from "../src/components/eventos/CatalogoEventos";
 
 function evento(id, nombre, categoria) {
   return {

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import Header from "../src/components/Header";
+import Header from "../src/components/comunes/Header";
 
 describe("Header según la sesión", () => {
   it("muestra registro y login", () => {

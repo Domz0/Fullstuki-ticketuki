@@ -1,4 +1,4 @@
-import FormularioRegistro from "../components/FormularioRegistro";
+import FormularioRegistro from "../components/acceso/FormularioRegistro";
 import { peticionApi } from "../services/api";
 import { navegar } from "../utils/navegacion";
 

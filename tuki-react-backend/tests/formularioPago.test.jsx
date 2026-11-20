@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import FormularioPago from "../src/components/FormularioPago";
+import FormularioPago from "../src/components/compras/FormularioPago";
 
 function escribir(etiqueta, valor) {
   fireEvent.change(screen.getByLabelText(etiqueta), { target: { value: valor } });

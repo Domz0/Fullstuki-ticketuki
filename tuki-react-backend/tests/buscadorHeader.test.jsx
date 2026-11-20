@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import Header from "../src/components/Header";
+import Header from "../src/components/comunes/Header";
 
 function buscar(texto) {
   fireEvent.change(screen.getByRole("searchbox"), { target: { value: texto } });

@@ -1,0 +1,95 @@
+.esqueleto_aviso {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.esqueleto .esqueleto_bloque {
+  position: relative;
+  overflow: hidden;
+  min-height: 14px;
+  width: 100%;
+  border-radius: 6px;
+  background: var(--color-linea, #272730);
+}
+
+.esqueleto_bloque::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, .06) 50%, transparent 80%);
+  transform: translateX(-100%);
+  animation: esqueleto_brillo 1.8s ease-in-out infinite;
+}
+
+.esqueleto_textos {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+}
+.esqueleto .esqueleto_titulo {
+  min-height: 28px;
+  width: 80%;
+}
+.esqueleto .esqueleto_corto {
+  width: 45%;
+}
+.esqueleto .esqueleto_boton {
+  min-height: 44px;
+  margin: 20px 0;
+}
+.esqueleto .esqueleto_portada {
+  position: absolute;
+  inset: 0;
+}
+.esqueleto .portada_texto {
+  max-width: 650px;
+}
+.esqueleto .portada_texto .esqueleto_titulo {
+  min-height: 52px;
+}
+.esqueleto_seccion {
+  margin-top: 28px;
+}
+.esqueleto .esqueleto_fecha {
+  min-height: 70px;
+  margin-top: 18px;
+}
+.esqueleto .esqueleto_mapa {
+  min-height: 220px;
+}
+.esqueleto_filtros {
+  display: grid;
+  gap: 32px;
+  padding: 18px;
+  border: 1px solid var(--color-linea);
+  border-radius: 14px;
+}
+.esqueleto .resultados_barra {
+  min-height: 42px;
+}
+.esqueleto .resultado_compra {
+  width: 100%;
+}
+
+@keyframes esqueleto_brillo {
+  to {
+  transform: translateX(100%);
+} }
+
+@media (max-width: 860px) {
+  .esqueleto .esqueleto_portada {
+    position: relative;
+    height: 260px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esqueleto_bloque::after {
+    animation: none;
+  }
+}

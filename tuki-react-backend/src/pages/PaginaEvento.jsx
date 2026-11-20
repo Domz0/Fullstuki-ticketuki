@@ -1,5 +1,5 @@
-import EsqueletoEventos from "../components/EsqueletoEventos";
-import DetalleEvento from "../components/DetalleEvento";
+import EsqueletoEventos from "../components/comunes/EsqueletoEventos";
+import DetalleEvento from "../components/eventos/DetalleEvento";
 import { useEventoDisponible } from "../hooks/useEventoDisponible";
 import { categorias } from "../utils/eventos";
 

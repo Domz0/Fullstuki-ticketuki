@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import EsqueletoEventos from "../components/EsqueletoEventos";
-import CatalogoEventos from "../components/CatalogoEventos";
+import EsqueletoEventos from "../components/comunes/EsqueletoEventos";
+import CatalogoEventos from "../components/eventos/CatalogoEventos";
 import { cargarCatalogo } from "../services/eventos";
 
 // carga el catalogo con los filtros

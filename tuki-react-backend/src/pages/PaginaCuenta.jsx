@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Cuenta from "../components/Cuenta";
+import Cuenta from "../components/cuenta/Cuenta";
 import { cargarPerfil } from "../utils/sesion";
 
 // consulta al perfil antes de mostrar

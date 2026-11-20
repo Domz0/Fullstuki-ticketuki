@@ -22,7 +22,7 @@ function CantidadEntradas({ cantidad, onCambiar }) {
           disabled={cantidad === 1}
           onClick={() => cambiarCantidad(-1)}
         >
-          −
+          -
         </button>
         <output
           className="cantidad_valor"

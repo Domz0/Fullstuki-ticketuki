@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import EsqueletoEventos from "../components/EsqueletoEventos";
-import Portada from "../components/Portada";
-import Evento from "../components/Evento";
+import EsqueletoEventos from "../components/comunes/EsqueletoEventos";
+import Portada from "../components/eventos/Portada";
+import Evento from "../components/eventos/Evento";
 import { cargarCatalogo } from "../services/eventos";
 
 // carga catalogo y los eventos de inicio

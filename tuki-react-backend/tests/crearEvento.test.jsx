@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import CrearEvento from "../src/components/CrearEvento";
+import CrearEvento from "../src/components/admin/CrearEvento";
 import PaginaCatalogo from "../src/pages/PaginaCatalogo";
 
 function completar(fecha) {

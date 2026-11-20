@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import PasosCompra from "../components/PasosCompra";
-import Confirmacion from "../components/Confirmacion";
+import PasosCompra from "../components/comunes/PasosCompra";
+import Confirmacion from "../components/compras/Confirmacion";
 import { leerCompra, guardarCompra } from "../utils/compra";
 import { consultarResultado } from "../services/compras";
 

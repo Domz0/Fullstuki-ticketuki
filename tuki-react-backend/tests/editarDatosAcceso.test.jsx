@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import EditarDatosAcceso from "../src/components/EditarDatosAcceso";
+import EditarDatosAcceso from "../src/components/cuenta/EditarDatosAcceso";
 
 const usuario = { correo: "ana@duoc.cl" };
 

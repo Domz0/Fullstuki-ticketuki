@@ -1,0 +1,75 @@
+.admin_selector_evento {
+  position: relative;
+  min-width: 0;
+}
+
+.admin_eventos_desplegable {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  border: 1px solid var(--color-linea-suave);
+  border-radius: 10px;
+  background: var(--color-fondo-alto);
+  box-shadow: 0 12px 28px #0006;
+}
+
+.admin_eventos_desplegable > p {
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.admin_eventos_desplegable ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 6px 6px;
+  max-height: min(250px, 40dvh);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-linea-suave) transparent;
+}
+
+.admin_eventos_desplegable li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.admin_eventos_desplegable li[aria-selected="true"] {
+  background: var(--color-morado-fondo);
+  border-color: var(--color-morado-borde);
+}
+
+.admin_eventos_desplegable span {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-texto-apagado);
+}
+
+.admin .admin_eventos_desplegable strong {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-texto);
+}
+
+.admin .admin_evento_elegido strong {
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.admin_evento_elegido {
+  margin: 0;
+  padding: 8px 10px;
+  border-left: 3px solid var(--color-morado);
+  background: var(--color-morado-fondo);
+  border-radius: 6px;
+}
