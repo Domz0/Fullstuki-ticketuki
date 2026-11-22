@@ -2,6 +2,7 @@ import PasosCompra from "../comunes/PasosCompra";
 import SeleccionEntradas from "./SeleccionEntradas";
 import MapaRecinto from "../eventos/MapaRecinto";
 import { obtenerPlano } from "../../data/planosRecintos";
+import { textoFecha } from "../../utils/compra";
 import "./ElegirEntradas.css";
 
 function ElegirEntradas({ evento, seleccion, fechaElegida, sectores, onElegir, onCambiarCantidad, onContinuar }) {
@@ -20,7 +21,7 @@ function ElegirEntradas({ evento, seleccion, fechaElegida, sectores, onElegir, o
         <h2 id="elegir_entradas_titulo" className="cabeza_titulo">{evento.nombre}</h2>
         <p role="status">Capacidad total: {evento.capacidadTotal} · Entradas disponibles: {evento.disponibles}</p>
         {!evento.ventaHabilitada && <p>{evento.estado}</p>}
-        <p className="cabeza_detalle">{fecha.dia} {fecha.mes}{fecha.horario && ` · ${fecha.horario}`} · {evento.recinto}</p>
+        <p className="cabeza_detalle">{textoFecha(fecha)} · {evento.recinto}</p>
       </header>
       <div className="entradas_columnas">
         <section className="plano" aria-label="Elegir sector">

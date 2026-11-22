@@ -182,10 +182,10 @@ export default function AdminCodigos() {
             <tbody>
               {codigos.datos.map(item => (
                 <tr key={item.codigo}>
-                  <td><strong>{item.codigo}</strong></td>
-                  <td>{nombreEvento(item.evento_id)}</td>
-                  <td>{item.descuento}%</td>
-                  <td>{item.fecha_expiracion}</td>
+                  <td data-label="Código"><strong>{item.codigo}</strong></td>
+                  <td data-label="Evento">{nombreEvento(item.evento_id)}</td>
+                  <td data-label="Descuento">{item.descuento}%</td>
+                  <td data-label="Vence">{item.fecha_expiracion}</td>
                 </tr>
               ))}
             </tbody>

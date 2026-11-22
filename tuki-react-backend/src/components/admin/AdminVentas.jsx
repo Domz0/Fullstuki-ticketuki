@@ -110,10 +110,10 @@ export function DashboardReal() {
               <tbody>
                 {devoluciones.map(reembolso => (
                   <tr key={reembolso.ticket_id}>
-                    <td>#{reembolso.ticket_id}</td>
-                    <td>TKI-{reembolso.venta_id}</td>
-                    <td>{new Date(reembolso.creado_en).toLocaleString("es-CL")}</td>
-                    <td>{pesos(reembolso.monto)}</td>
+                    <td data-label="Entrada">#{reembolso.ticket_id}</td>
+                    <td data-label="Orden">TKI-{reembolso.venta_id}</td>
+                    <td data-label="Fecha de devolución">{new Date(reembolso.creado_en).toLocaleString("es-CL")}</td>
+                    <td data-label="Reembolso simulado">{pesos(reembolso.monto)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -149,11 +149,11 @@ export function HistorialAdminReal() {
             <tbody>
               {ventasOrdenadas.map(venta => (
                 <tr key={venta.id_venta}>
-                  <td>TKI-{venta.id_venta}</td>
-                  <td>{new Date(venta.fecha_venta).toLocaleString("es-CL")}</td>
-                  <td>{venta.estado_venta?.nombre}</td>
-                  <td>{venta.detalles.reduce((total, detalle) => total + detalle.cantidad_ticket, 0)}</td>
-                  <td>{pesos(venta.monto_total)}</td>
+                  <td data-label="Orden">TKI-{venta.id_venta}</td>
+                  <td data-label="Fecha">{new Date(venta.fecha_venta).toLocaleString("es-CL")}</td>
+                  <td data-label="Estado">{venta.estado_venta?.nombre}</td>
+                  <td data-label="Entradas">{venta.detalles.reduce((total, detalle) => total + detalle.cantidad_ticket, 0)}</td>
+                  <td data-label="Total">{pesos(venta.monto_total)}</td>
                 </tr>
               ))}
             </tbody>

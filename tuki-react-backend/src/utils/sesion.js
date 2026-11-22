@@ -102,3 +102,16 @@ export async function cambiarContrasena(datos) {
   });
   cerrarSesion();
 }
+
+// nombre e iniciales
+export function nombreVisible(usuario) {
+  const completo = unirNombres(usuario.nombre, usuario.apellido);
+  return completo || usuario.username;
+}
+
+export function inicialesUsuario(usuario) {
+  const nombre = usuario.nombre?.trim();
+  const apellido = usuario.apellido?.trim();
+  if (nombre && apellido) return (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
+  return (nombre || usuario.username || "").slice(0, 2).toUpperCase();
+}

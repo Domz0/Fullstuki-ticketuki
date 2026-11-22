@@ -47,12 +47,12 @@ function PaginaInvitados({ pagina, cambiarPagina }) {
                       <tbody>
                         {compra.tickets.map(entrada => (
                           <tr key={entrada.id_ticket}>
-                            <td>#{entrada.id_ticket}</td>
-                            <td>{nombreEvento(entrada.evento_id_evento)}</td>
-                            <td>#{entrada.sector_id_sector}</td>
-                            <td>{entrada.nombre_titular}<br />{entrada.run_titular}</td>
-                            <td><code>{entrada.cod_qr}</code></td>
-                            <td>{estadosEntrada[entrada.estado_ticket_id_estado] || "Por confirmar"}</td>
+                            <td data-label="Entrada">#{entrada.id_ticket}</td>
+                            <td data-label="Evento">{nombreEvento(entrada.evento_id_evento)}</td>
+                            <td data-label="Sector">#{entrada.sector_id_sector}</td>
+                            <td data-label="Titular actual">{entrada.nombre_titular}<br />{entrada.run_titular}</td>
+                            <td data-label="Código"><code>{entrada.cod_qr}</code></td>
+                            <td data-label="Estado">{estadosEntrada[entrada.estado_ticket_id_estado] || "Por confirmar"}</td>
                           </tr>
                         ))}
                       </tbody>

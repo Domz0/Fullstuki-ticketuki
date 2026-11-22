@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PasosCompra from "../components/comunes/PasosCompra";
 import Confirmacion from "../components/compras/Confirmacion";
-import { leerCompra, guardarCompra } from "../utils/compra";
+import { leerCompra, guardarCompra, textoFecha } from "../utils/compra";
 import { consultarResultado } from "../services/compras";
 
 function PaginaConfirmacion({ evento, fecha }) {
@@ -116,18 +116,11 @@ function PaginaConfirmacion({ evento, fecha }) {
     credito: "Crédito",
     transferencia: "Transferencia bancaria",
   };
-  const diaEvento = evento.fechaInicio?.slice(0, 10) || "";
-  let fechaVisible = diaEvento;
-
-  if (fecha.horario) {
-    fechaVisible = diaEvento ? diaEvento + " · " + fecha.horario : fecha.horario;
-  }
-
   const datosConfirmacion = {
     ...compra,
     evento: evento.nombre,
     recinto: evento.recinto,
-    fecha: fechaVisible,
+    fecha: textoFecha(fecha),
     metodoPago: metodosPago[compra.metodo],
   };
 

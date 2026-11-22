@@ -1,5 +1,6 @@
 import BuscadorEventos from "../eventos/BuscadorEventos";
 import { categorias } from "../../utils/eventos";
+import { inicialesUsuario, nombreVisible } from "../../utils/sesion";
 
 import "./Header.css";
 
@@ -7,10 +8,7 @@ function Header({ categoria, usuario, onCerrarSesion }) {
   const esAdministrador = usuario?.rol === "admin";
   const rutaCuenta = esAdministrador ? "#/admin/dashboard" : "#/cuenta/datos";
   const textoCuenta = esAdministrador ? "Administración" : "Mi cuenta";
-  let iniciales = "";
-  if (usuario) {
-    iniciales = (usuario.nombre.charAt(0) + usuario.apellido.charAt(0)).toUpperCase();
-  }
+  const iniciales = usuario ? inicialesUsuario(usuario) : "";
 
   return (
     <header className="header">
@@ -32,7 +30,7 @@ function Header({ categoria, usuario, onCerrarSesion }) {
               <a
                 className="menu_cuenta"
                 href={rutaCuenta}
-                aria-label={`Mi cuenta: ${usuario.nombre} ${usuario.apellido}`}
+                aria-label={`Mi cuenta: ${nombreVisible(usuario)}`}
               >
                 <span className="menu_avatar" aria-hidden="true">
                   {iniciales}

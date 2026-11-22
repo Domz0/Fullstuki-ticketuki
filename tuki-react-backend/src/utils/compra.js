@@ -81,9 +81,14 @@ export function guardarCompra(compra) {
   return guardada;
 }
 
+// ej: "14 nov 2026 puntito 20:00"
+export function textoFecha(fecha) {
+  const dia = [fecha.dia, fecha.mes, fecha.anio].filter(Boolean).join(" ") || "Fecha por confirmar";
+  return fecha.horario ? `${dia} · ${fecha.horario}` : dia;
+}
+
 export function crearSeleccion(evento, fecha, sector, cantidad) {
-  let fechaVisible = `${fecha.dia} ${fecha.mes}`;
-  if (fecha.horario) fechaVisible += ` · ${fecha.horario}`;
+  const fechaVisible = textoFecha(fecha);
 
   return {
     compraId: crypto.randomUUID(),

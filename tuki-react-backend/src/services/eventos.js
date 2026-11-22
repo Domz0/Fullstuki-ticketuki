@@ -1,6 +1,15 @@
 import { peticionApi } from "./api";
 import { eventoConcluido } from "../utils/estadoEvento";
 
+const meses = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+
+// mes, año fechaa
+function partesFecha(fecha) {
+  const [anio, mes, dia] = (fecha || "").split("-");
+  if (!anio || !mes || !dia) return { dia: "", mes: "", anio: "" };
+  return { dia: String(Number(dia)), mes: meses[Number(mes) - 1] || "", anio };
+}
+
 const estadosEvento = {
   1: "Agendado",
   2: "Disponible",
@@ -37,8 +46,7 @@ export function adaptarEvento(evento) {
     detalle: `${recinto} · ${fechaVisible}`,
     fechas: [{
       id: "principal",
-      dia: fecha?.slice(8) || "",
-      mes: fecha?.slice(0, 7) || "",
+      ...partesFecha(fecha),
       horario,
       estado,
     }],

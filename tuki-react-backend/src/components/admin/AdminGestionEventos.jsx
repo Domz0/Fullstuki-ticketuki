@@ -82,14 +82,14 @@ export default function AdminGestionEventos() {
 
                 return (
                   <tr key={evento.id_evento}>
-                    <td>
+                    <td data-label="Evento">
                       {evento.nombre_evento}
                       {evento.destacado && !concluido && <span className="admin_destacado">Destacado</span>}
                     </td>
-                    <td>{evento.fecha_evento} {evento.horario}</td>
-                    <td>{concluido ? "Concluido" : estadosEvento[evento.estado_evento_id_estado]}</td>
-                    <td>{evento.aforo_evento}</td>
-                    <td>
+                    <td data-label="Fecha">{evento.fecha_evento} {evento.horario}</td>
+                    <td data-label="Estado">{concluido ? "Concluido" : estadosEvento[evento.estado_evento_id_estado]}</td>
+                    <td data-label="Capacidad">{evento.aforo_evento}</td>
+                    <td data-label="Acciones">
                       <div className="admin_acciones">
                         <a href={`#/admin/editar-evento?id=${evento.id_evento}`}>Editar</a>
                         <a href={`#/evento/${evento.id_evento}`}>Ver evento</a>

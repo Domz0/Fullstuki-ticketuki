@@ -2,11 +2,12 @@ import { navegar } from "../../utils/navegacion";
 import Perfil from "./Perfil";
 import MisEntradas from "./MisEntradas";
 import HistorialCuenta from "./HistorialCuenta";
+import { inicialesUsuario, nombreVisible } from "../../utils/sesion";
 import "./Cuenta.css";
 
 function Cuenta({ usuario, seccion = "datos", onCerrarSesion, onActualizarUsuario }) {
 
-  const iniciales = usuario.username.slice(0, 2).toUpperCase();
+  const iniciales = inicialesUsuario(usuario);
 
   // la seccion de la ruta determina que datos se muestran
   function mostrarSeccion() {
@@ -27,7 +28,7 @@ function Cuenta({ usuario, seccion = "datos", onCerrarSesion, onActualizarUsuari
         </span>
         <div>
           <h2 className="cuenta_nombre">
-            {usuario.username}
+            {nombreVisible(usuario)}
           </h2>
           <p className="cuenta_datos">
             {usuario.correo || usuario.username}

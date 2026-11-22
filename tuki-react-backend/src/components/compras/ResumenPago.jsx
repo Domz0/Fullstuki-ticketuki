@@ -1,4 +1,4 @@
-import { calcularTotales } from "../../utils/compra";
+import { calcularTotales, textoFecha } from "../../utils/compra";
 import "./ResumenPago.css";
 
 function ResumenPago({ evento, fecha, seleccion, cantidad, bloqueado = false }) {
@@ -17,7 +17,7 @@ function ResumenPago({ evento, fecha, seleccion, cantidad, bloqueado = false }) 
         <div className="resumen_evento_texto">
           <b>{evento.nombre}</b>
           <p>
-            {fecha.dia} {fecha.mes}{fecha.horario && ` · ${fecha.horario}`}
+            {textoFecha(fecha)}
             <br />
             {evento.recinto}
           </p>

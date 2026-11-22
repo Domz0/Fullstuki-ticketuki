@@ -204,8 +204,8 @@ export default function AdminFormularioEvento({ evento }) {
                       <tbody>
                         {sectores.map(sector => (
                           <tr key={sector.id_sector}>
-                            <td>{sector.nombre_sector}</td>
-                            <td>
+                            <td data-label="Sector">{sector.nombre_sector}</td>
+                            <td data-label="Cupos">
                               {editando ? sector.capacidad : (
                                 <input
                                   aria-label={`Cupos ${sector.nombre_sector}`}
@@ -215,7 +215,7 @@ export default function AdminFormularioEvento({ evento }) {
                                 />
                               )}
                             </td>
-                            <td>
+                            <td data-label="Precio por entrada">
                               {editando ? pesos(sector.precio) : (
                                 <input
                                   aria-label={`Precio ${sector.nombre_sector}`}
