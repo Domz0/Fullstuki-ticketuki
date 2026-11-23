@@ -24,7 +24,7 @@ Proyecto de venta y transferencia de entradas para eventos, con un frontend en R
 
 `ms-tuki-compartido` es un módulo de código compartido para validaciones, seguridad, comunicación y auditoría; no se ejecuta como un microservicio independiente.
 
-## Frontend (tuki-react-backend)
+## Frontend (FRONTEND)
 
 Nombre contraintuitivo pero aqui esta el frontend
 
