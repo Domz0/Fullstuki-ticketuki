@@ -10,7 +10,7 @@ const eventos = [
 function mockCodigos(respuestaPost = Response.json({ codigo: "MUSICA15" }, { status: 201 })) {
   return vi.spyOn(globalThis, "fetch").mockImplementation(async (url, opciones = {}) => {
     if (opciones.method === "POST") return respuestaPost;
-    if (url === "/api/eventos") return Response.json(eventos);
+    if (url === "/api/v1/eventos") return Response.json(eventos);
     return Response.json([]);
   });
 }
@@ -44,7 +44,7 @@ describe("Códigos de descuento del administrador", () => {
 
     expect(await screen.findByText("Código creado. Ya se puede utilizar en el pago de este evento.")).toBeInTheDocument();
     const [url, opciones] = llamadaPost(fetchMock);
-    expect(url).toBe("/api/compras/codigos");
+    expect(url).toBe("/api/v1/compras/codigos");
     expect(opciones.headers.Authorization).toBe("Bearer token-prueba");
     expect(JSON.parse(opciones.body)).toEqual({ evento: 1, codigo: "MUSICA15", porcentaje: 15 });
   });

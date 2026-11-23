@@ -12,10 +12,18 @@ import PaginaFlujoCompra from "./pages/PaginaFlujoCompra";
 import PaginaTransferir from "./pages/PaginaTransferir";
 import PaginaNoEncontrada from "./pages/PaginaNoEncontrada";
 import PaginaAdmin from "./pages/PaginaAdmin";
-import { obtenerUsuario, cerrarSesion } from "./utils/sesion";
+import { obtenerUsuario, cerrarSesion, renovarSesion } from "./utils/sesion";
 import { leerRuta, navegar } from "./utils/navegacion";
 import { expirarSesion, limpiarDatosPrivados, sesionGuardada } from "./utils/controlSesion";
 import "./App.css";
+
+const MARGEN_RENOVACION = 2 * 60 * 1000;
+
+const LIMITE_TEMPORIZADOR = 2147483647;
+
+function esperarHasta(momento) {
+  return Math.max(0, Math.min(momento - Date.now(), LIMITE_TEMPORIZADOR));
+}
 
 function App() {
   const [usuario, setUsuario] = useState(obtenerUsuario);
@@ -46,25 +54,52 @@ function App() {
       setUsuario(null);
     }
 
+    let activo = true;
+    let temporizadorVencimiento;
+    let temporizadorRenovacion;
+
     function revisarVencimiento() {
+      clearTimeout(temporizadorVencimiento);
       const actual = sesionGuardada();
-      if (actual?.token && actual.expiraEn <= Date.now()) {
+      if (!actual?.token) return;
+      if (actual.expiraEn <= Date.now()) {
         expirarSesion(actual.token);
+        return;
       }
+
+      temporizadorVencimiento = setTimeout(revisarVencimiento, esperarHasta(actual.expiraEn));
+    }
+
+    function programarRenovacion() {
+      clearTimeout(temporizadorRenovacion);
+      const actual = sesionGuardada();
+      if (!actual?.token) return;
+      temporizadorRenovacion = setTimeout(async () => {
+        try {
+          if (await renovarSesion() && activo) {
+            programarRenovacion();
+            revisarVencimiento();
+          }
+        } catch {
+          // si no se puede renovar, la sesión vence a su hora
+        }
+      }, esperarHasta(actual.expiraEn - MARGEN_RENOVACION));
     }
 
     function sincronizarSesion(evento) {
-      // storage avisa cuando otra pestaña modifica los datos del navegador
+
       if (evento.key !== "sesionBackend" && evento.key !== null) return;
 
+
       const actual = sesionGuardada();
-      if (actual?.token !== sesionInicial?.token) {
+      if (actual?.usuario?.authId !== sesionInicial?.usuario?.authId) {
         limpiarDatosPrivados();
         setUsuario(null);
         navegar("/login?sesion=cambiada");
         return;
       }
       revisarVencimiento();
+      programarRenovacion();
     }
 
     window.addEventListener("sesion-vencida", mostrarSesionVencida);
@@ -72,17 +107,13 @@ function App() {
     window.addEventListener("storage", sincronizarSesion);
     window.addEventListener("focus", revisarVencimiento);
 
-    let temporizador;
-    if (sesionInicial?.token) {
-      const tiempoRestante = sesionInicial.expiraEn - Date.now();
-      // setTimeout admite como máximo este número de milisegundos
-      const limiteTemporizador = 2147483647;
-      const espera = Math.max(0, Math.min(tiempoRestante, limiteTemporizador));
-      temporizador = setTimeout(revisarVencimiento, espera);
-    }
+    revisarVencimiento();
+    programarRenovacion();
 
     return () => {
-      clearTimeout(temporizador);
+      activo = false;
+      clearTimeout(temporizadorVencimiento);
+      clearTimeout(temporizadorRenovacion);
       window.removeEventListener("sesion-vencida", mostrarSesionVencida);
       window.removeEventListener("sesion-cerrada", quitarUsuario);
       window.removeEventListener("storage", sincronizarSesion);

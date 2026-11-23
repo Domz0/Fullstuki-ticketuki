@@ -22,4 +22,10 @@ public class AuthController {
         log.info("POST /auth/login - Autenticando usuario");
         return ResponseEntity.ok(authService.login(dto));
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponseDTO> refresh(@RequestHeader(value = "Authorization", required = false) String authorization) {
+        log.info("POST /auth/refresh - Renovando token");
+        return ResponseEntity.ok(authService.renovar(authorization));
+    }
 }

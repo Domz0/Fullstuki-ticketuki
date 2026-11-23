@@ -12,7 +12,7 @@ const sectoresRecinto = [
 function mockCrear() {
   return vi.spyOn(globalThis, "fetch").mockImplementation(async (url, opciones = {}) => {
     if (opciones.method === "POST") return Response.json({ id_evento: 99 }, { status: 201 });
-    if (url === "/api/recintos") return Response.json(recintos);
+    if (url === "/api/v1/recintos") return Response.json(recintos);
     return Response.json(sectoresRecinto);
   });
 }
@@ -58,7 +58,7 @@ describe("Crear evento desde el admin", () => {
 
     expect(await screen.findByRole("status")).toHaveTextContent("Evento guardado.");
     expect(screen.getByRole("link", { name: "Ver evento" })).toHaveAttribute("href", "#/evento/99");
-    expect(fetchMock).toHaveBeenCalledWith("/api/eventos", expect.objectContaining({ method: "POST" }));
+    expect(fetchMock).toHaveBeenCalledWith("/api/v1/eventos", expect.objectContaining({ method: "POST" }));
     expect(cuerpoPost(fetchMock, "POST")).toMatchObject({
       nombre_evento: "Concierto de tukis",
       categoria: "musica",
@@ -111,8 +111,8 @@ describe("Editar evento desde el admin", () => {
     };
     const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (url, opciones = {}) => {
       if (opciones.method === "PUT") return Response.json({ ...evento, nombre_evento: "Nombre nuevo" });
-      if (url === "/api/eventos/7") return Response.json(evento);
-      if (url === "/api/recintos") return Response.json(recintos);
+      if (url === "/api/v1/eventos/7") return Response.json(evento);
+      if (url === "/api/v1/recintos") return Response.json(recintos);
       return Response.json(sectoresRecinto);
     });
     render(<EditarEvento id="7" />);
@@ -124,7 +124,7 @@ describe("Editar evento desde el admin", () => {
     fireEvent.click(screen.getByRole("button", { name: "Guardar cambios" }));
 
     expect(await screen.findByRole("status")).toHaveTextContent("Evento guardado.");
-    expect(fetchMock).toHaveBeenCalledWith("/api/eventos/7", expect.objectContaining({ method: "PUT" }));
+    expect(fetchMock).toHaveBeenCalledWith("/api/v1/eventos/7", expect.objectContaining({ method: "PUT" }));
     const enviado = cuerpoPost(fetchMock, "PUT");
     expect(enviado).toMatchObject({ nombre_evento: "Nombre nuevo", recinto_id_recinto: 1 });
     expect(enviado.sectores).toBeUndefined();

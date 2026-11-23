@@ -8,6 +8,10 @@ export function sesionGuardada() {
   }
 }
 
+export function mismaSesion(sesion, token) {
+  return Boolean(token) && (sesion?.token === token || sesion?.tokenAnterior === token);
+}
+
 export function limpiarDatosPrivados() {
   sessionStorage.removeItem("compraActual");
 }

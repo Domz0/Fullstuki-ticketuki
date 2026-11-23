@@ -10,6 +10,8 @@ spring:
         webflux:
           # Enrutamiento centralizado: cada predicate Path decide a qué microservicio
           # se reenvía la petición. El cliente solo conoce el gateway (puerto 8009).
+          # Las rutas públicas llevan versión (/v1/auth/..., /v1/eventos/...): VersionApiFilter
+          # quita el prefijo /v1 antes de evaluar estos predicates.
           routes:
             - id: ms-auth
               uri: ${MS_AUTH_URL:http://localhost:8002}

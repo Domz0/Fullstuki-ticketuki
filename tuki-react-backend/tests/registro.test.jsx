@@ -26,7 +26,7 @@ describe("Formulario de registro", () => {
 
     await vi.waitFor(() => expect(window.location.hash).toBe("#/login?registro=ok"));
     const [url, opciones] = fetchMock.mock.calls[0];
-    expect(url).toBe("/api/auth/registro");
+    expect(url).toBe("/api/v1/auth/registro");
     expect(JSON.parse(opciones.body)).toEqual({
       username: "test",
       password: "clave123",

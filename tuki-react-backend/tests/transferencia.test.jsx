@@ -20,10 +20,10 @@ const evento = { id_evento: 7, nombre_evento: "Festival de rock en vivo", fecha_
 function mockTransferencia({ entradas = [ticket], buscarDestinatario = Response.json(destinatario) } = {}) {
   return vi.spyOn(globalThis, "fetch").mockImplementation(async (url, opciones = {}) => {
     if (opciones.method === "PUT") return Response.json({ ...ticket, nombre_titular: "Camila Soto" });
-    if (url.startsWith("/api/usuarios/destinatario")) return buscarDestinatario;
-    if (url === "/api/usuarios/4") return Response.json(perfil);
-    if (url.startsWith("/api/tickets/titular/")) return Response.json(entradas);
-    if (url === "/api/eventos/7/sectores") return Response.json([{ id_sector: 2, nombre_sector: "Cancha General" }]);
+    if (url.startsWith("/api/v1/usuarios/destinatario")) return buscarDestinatario;
+    if (url === "/api/v1/usuarios/4") return Response.json(perfil);
+    if (url.startsWith("/api/v1/tickets/titular/")) return Response.json(entradas);
+    if (url === "/api/v1/eventos/7/sectores") return Response.json([{ id_sector: 2, nombre_sector: "Cancha General" }]);
     return Response.json(evento);
   });
 }
@@ -56,7 +56,7 @@ describe("Transferencia de entradas", () => {
     expect(await screen.findByRole("heading", { name: "Entrada transferida" }, { timeout: 3000 })).toBeInTheDocument();
     expect(screen.getByText(/ahora pertenece a Camila Soto/)).toBeInTheDocument();
     const [url, opciones] = fetchMock.mock.calls.find(([, op]) => op?.method === "PUT");
-    expect(url).toBe("/api/tickets/21/regalar");
+    expect(url).toBe("/api/v1/tickets/21/regalar");
     expect(JSON.parse(opciones.body)).toEqual({ destinatario: 9, correo: "camila@gmail.com" });
   });
 

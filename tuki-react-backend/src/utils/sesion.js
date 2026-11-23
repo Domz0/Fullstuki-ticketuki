@@ -1,5 +1,5 @@
 import { peticionApi } from "../services/api";
-import { expirarSesion, limpiarDatosPrivados, sesionGuardada } from "./controlSesion";
+import { expirarSesion, limpiarDatosPrivados, mismaSesion, sesionGuardada } from "./controlSesion";
 
 function sesionVigente(sesion) {
   return Boolean(
@@ -45,6 +45,26 @@ export async function iniciarSesion(datos) {
   return usuario;
 }
 
+
+export async function renovarSesion() {
+  const sesion = leerSesion();
+  const respuesta = await peticionApi("/auth/refresh", { method: "POST", token: sesion.token });
+  if (!respuesta?.token || !(respuesta.expiraEnMs > 0)) {
+    throw new Error("El servidor devolvió una sesión inválida.");
+  }
+
+  // no reemplaza una sesion que se cerro o cambio mientras se renovaba
+  if (sesionGuardada()?.token !== sesion.token) return null;
+  const renovada = {
+    ...sesion,
+    token: respuesta.token,
+    tokenAnterior: sesion.token,
+    expiraEn: Date.now() + respuesta.expiraEnMs,
+  };
+  localStorage.setItem("sesionBackend", JSON.stringify(renovada));
+  return renovada;
+}
+
 export function cerrarSesion() {
   localStorage.removeItem("sesionBackend");
   limpiarDatosPrivados();
@@ -79,10 +99,11 @@ export async function cargarPerfil() {
   };
 
   // no guarda un perfil si el usuario cerro o cambio su sesion
-  if (sesionGuardada()?.token !== sesion.token) {
+  const actual = sesionGuardada();
+  if (!mismaSesion(actual, sesion.token)) {
     throw new Error("La sesión cambió. Vuelve a cargar tu perfil.");
   }
-  localStorage.setItem("sesionBackend", JSON.stringify({ ...sesion, usuario }));
+  localStorage.setItem("sesionBackend", JSON.stringify({ ...actual, usuario }));
   return usuario;
 }
 

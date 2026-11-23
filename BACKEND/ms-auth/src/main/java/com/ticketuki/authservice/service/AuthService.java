@@ -19,6 +19,7 @@ public class AuthService {
     private final UsuarioAuthRepository usuarioAuthRepository;
     private final JwtUtil jwtUtil;
     private final com.ticketuki.authservice.client.LoginUsuarioClient perfiles;
+    private final SesionService sesiones;
 
     @Transactional(readOnly = true)
     public LoginResponseDTO login(LoginRequestDTO dto) {
@@ -42,6 +43,23 @@ public class AuthService {
         String token = jwtUtil.generarToken(usuario);
         log.info("Login exitoso para usuario: {}", usuario.getUsername());
 
+        return new LoginResponseDTO(token, "Bearer", usuario.getUsername(),
+                jwtUtil.getExpiracionMs(), usuario.getId_usuario_auth(),
+                usuario.getUsuarioId(), usuario.getRol());
+    }
+
+
+    @Transactional(readOnly = true)
+    public LoginResponseDTO renovar(String authorization) {
+        UsuarioAuth usuario = sesiones.autenticar(authorization);
+        var claims = jwtUtil.validar(authorization.substring(7));
+        long inicio = claims.get("inicio") instanceof Number n ? n.longValue() : claims.getIssuedAt().getTime();
+        if (System.currentTimeMillis() - inicio > jwtUtil.getSesionMaximaMs()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.UNAUTHORIZED, "La sesión superó el tiempo máximo. Inicia sesión nuevamente.");
+        }
+        String token = jwtUtil.generarToken(usuario, inicio);
+        log.info("Token renovado para usuario: {}", usuario.getUsername());
         return new LoginResponseDTO(token, "Bearer", usuario.getUsername(),
                 jwtUtil.getExpiracionMs(), usuario.getId_usuario_auth(),
                 usuario.getUsuarioId(), usuario.getRol());

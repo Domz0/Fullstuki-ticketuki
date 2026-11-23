@@ -21,6 +21,7 @@ public final class PoliticaRoles {
         if (rol == null || !Set.of("ADMIN", "CLIENTE").contains(rol)) return false;
         if (path.contains("..") || path.contains(";") || path.contains("//") || path.contains("\\")) return false;
         if (path.equals("/auth/me")) return method == HttpMethod.GET;
+        if (path.equals("/auth/refresh")) return method == HttpMethod.POST;
         if (path.equals("/auth/contrasena")) return method == HttpMethod.PATCH;
         if (path.matches("/auth/cuentas(/[0-9]+/(activo|rol))?"))
             return "ADMIN".equals(rol) && (method == HttpMethod.GET || method == HttpMethod.PATCH);

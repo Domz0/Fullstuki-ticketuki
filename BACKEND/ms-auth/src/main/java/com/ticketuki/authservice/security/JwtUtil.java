@@ -20,6 +20,9 @@ public class JwtUtil {
     @Value("${jwt.expiration-ms}")
     private long expiracionMs;
 
+    @Value("${jwt.sesion-maxima-ms:28800000}")
+    private long sesionMaximaMs;
+
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
@@ -32,8 +35,17 @@ public class JwtUtil {
         return expiracionMs;
     }
 
+    public long getSesionMaximaMs() {
+        return sesionMaximaMs;
+    }
+
     // Genera un JWT firmado con los datos del usuario (subject = username, claim rol).
     public String generarToken(UsuarioAuth usuario) {
+        return generarToken(usuario, System.currentTimeMillis());
+    }
+
+    // "inicio" guarda la hora del login original: al renovar se conserva para limitar la sesión.
+    public String generarToken(UsuarioAuth usuario, long inicio) {
         Date ahora = new Date();
         Date vencimiento = new Date(ahora.getTime() + expiracionMs);
 
@@ -43,6 +55,7 @@ public class JwtUtil {
                 .claim("rol", usuario.getRol().name())
                 .claim("usuarioId", usuario.getUsuarioId())
                 .claim("version", usuario.getTokenVersion())
+                .claim("inicio", inicio)
                 .issuedAt(ahora)
                 .expiration(vencimiento)
                 .signWith(getKey())

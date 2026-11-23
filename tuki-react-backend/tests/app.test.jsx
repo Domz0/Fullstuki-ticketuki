@@ -29,14 +29,14 @@ describe("Navegación y protección de vistas", () => {
     mockEventosVacios();
   });
 
-  it("redirige al login si se abre la cuenta sin sesión", async () => {
+  it("redirige al login si se abre la cuenta sin sesion", async () => {
     abrir("/cuenta/datos");
 
     await waitFor(() => expect(window.location.hash).toBe("#/login"));
     expect(await screen.findByRole("button", { name: /Iniciar sesión/i })).toBeInTheDocument();
   });
 
-  it("no deja entrar a un cliente al panel de administración", async () => {
+  it("no deja entrar a un cliente al panel de administracion", async () => {
     guardarSesion({ rol: "cliente" });
     abrir("/admin/dashboard");
 
@@ -53,7 +53,7 @@ describe("Fin de la sesión", () => {
   it("cierra la sesion cuando el backend responde 401", async () => {
     let responder401;
     vi.spyOn(globalThis, "fetch").mockImplementation(url => {
-      if (url !== "/api/usuarios/4") return Promise.resolve(Response.json([]));
+      if (url !== "/api/v1/usuarios/4") return Promise.resolve(Response.json([]));
       return new Promise(resolver => {
         responder401 = () => resolver(Response.json({ message: "Sesión inválida o vencida" }, { status: 401 }));
       });

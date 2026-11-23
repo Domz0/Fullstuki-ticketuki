@@ -1,3 +1,4 @@
+import { mismaSesion } from "../utils/controlSesion";
 import { peticionApi } from "./api";
 import { cargarDetalleEvento } from "./eventos";
 import { leerSesion } from "../utils/sesion";
@@ -14,14 +15,14 @@ export async function cargarMisEntradas(rut, signal) {
     throw new Error("No se pudieron interpretar tus entradas.");
   }
 
-  // se consulta una sola vez el evento
+
   const idsEventos = [...new Set(tickets.map(ticket => ticket.evento_id_evento))];
   const detallesEventos = await Promise.all(
     idsEventos.map(id => cargarDetalleEvento(id, signal)),
   );
 
   signal?.throwIfAborted();
-  if (leerSesion().token !== token) {
+  if (!mismaSesion(leerSesion(), token)) {
     throw new Error("La sesión cambió. Vuelve a cargar tus entradas.");
   }
 

@@ -58,9 +58,9 @@ function completarComprador() {
 // el pago consulta cupos, confirma el pago simulado y pide el resultado
 function mockCompraExitosa() {
   return vi.spyOn(globalThis, "fetch").mockImplementation(async url => {
-    if (url === "/api/compras/publicas") return Response.json({ id: 10, estado: "PENDIENTE_PAGO", reserva_estado: "RESERVADA" });
-    if (url === "/api/compras/publicas/10/confirmar-simulado") return Response.json({ id: 10, estado: "COMPLETADA" });
-    if (url === "/api/compras/publicas/10/resultado") {
+    if (url === "/api/v1/compras/publicas") return Response.json({ id: 10, estado: "PENDIENTE_PAGO", reserva_estado: "RESERVADA" });
+    if (url === "/api/v1/compras/publicas/10/confirmar-simulado") return Response.json({ id: 10, estado: "COMPLETADA" });
+    if (url === "/api/v1/compras/publicas/10/resultado") {
       return Response.json({
         venta_id: 55,
         total: 116100,
@@ -68,7 +68,7 @@ function mockCompraExitosa() {
         tickets: [{ id_ticket: 1, cod_qr: "TKI-A" }, { id_ticket: 2, cod_qr: "TKI-B" }],
       });
     }
-    if (url === "/api/tickets/disponibilidad/evento/7") return Response.json(disponibilidadApi);
+    if (url === "/api/v1/tickets/disponibilidad/evento/7") return Response.json(disponibilidadApi);
     return Response.json(eventoApi);
   });
 }
@@ -83,7 +83,7 @@ describe("Pago aprobado", () => {
     pagarConCredito(container, "12/99");
 
     await vi.waitFor(() => expect(window.location.hash).toBe("#/confirmacion/7?fecha=principal"));
-    const [, opciones] = fetchMock.mock.calls.find(([url]) => url === "/api/compras/publicas");
+    const [, opciones] = fetchMock.mock.calls.find(([url]) => url === "/api/v1/compras/publicas");
     expect(opciones.method).toBe("POST");
     expect(JSON.parse(opciones.body)).toMatchObject({
       evento: 7,
@@ -96,6 +96,6 @@ describe("Pago aprobado", () => {
     });
 
     expect(leerCompra()).toMatchObject({ estado: "confirmada", operacionBackend: { id: 10, estado: "COMPLETADA" } });
-    expect(fetchMock).toHaveBeenCalledWith("/api/compras/publicas/10/resultado", expect.anything());
+    expect(fetchMock).toHaveBeenCalledWith("/api/v1/compras/publicas/10/resultado", expect.anything());
   });
 });

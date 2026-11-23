@@ -58,7 +58,7 @@ describe("Cambio de contraseña", () => {
 
     await vi.waitFor(() => expect(window.location.hash).toBe("#/login?contrasena=ok"));
     const [url, opciones] = fetchMock.mock.calls[0];
-    expect(url).toBe("/api/auth/contrasena");
+    expect(url).toBe("/api/v1/auth/contrasena");
     expect(opciones.method).toBe("PATCH");
     expect(opciones.headers.Authorization).toBe("Bearer token-prueba");
     expect(JSON.parse(opciones.body)).toEqual({ actual: "clave123", nueva: "otra1234" });

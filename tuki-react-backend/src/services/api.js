@@ -1,4 +1,7 @@
-import { expirarSesion, sesionGuardada } from "../utils/controlSesion";
+import { expirarSesion, mismaSesion, sesionGuardada } from "../utils/controlSesion";
+
+
+export const VERSION_API = "v1";
 
 // punto para mandar JSON, agregar el token y comunicar errores
 export async function peticionApi(ruta, opciones = {}) {
@@ -15,7 +18,7 @@ export async function peticionApi(ruta, opciones = {}) {
   if (token) headers.Authorization = `Bearer ${token}`;
   if (accesoCompra) headers["X-Compra-Token"] = accesoCompra;
 
-  const url = `/api/${ruta.replace(/^\/+/, "")}`;
+  const url = `/api/${VERSION_API}/${ruta.replace(/^\/+/, "")}`;
   let respuesta;
   try {
     respuesta = await fetch(url, {
@@ -33,7 +36,7 @@ export async function peticionApi(ruta, opciones = {}) {
   if (token && respuesta.status === 401) {
     expirarSesion(token);
   }
-  if (token && sesionGuardada()?.token !== token) {
+  if (token && !mismaSesion(sesionGuardada(), token)) {
     // no se pasan datos a sesiones cerradas
     throw new DOMException("La sesión cambió", "AbortError");
   }

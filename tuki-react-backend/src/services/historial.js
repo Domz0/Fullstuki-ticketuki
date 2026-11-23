@@ -1,3 +1,4 @@
+import { mismaSesion } from "../utils/controlSesion";
 import { peticionApi } from "./api";
 import { cargarDetalleEvento } from "./eventos";
 import { leerSesion } from "../utils/sesion";
@@ -24,7 +25,7 @@ export async function cargarHistorial(rut, signal) {
   }));
 
   signal?.throwIfAborted();
-  if (leerSesion().token !== token) {
+  if (!mismaSesion(leerSesion(), token)) {
     throw new Error("La sesión cambió. Vuelve a cargar el historial.");
   }
 

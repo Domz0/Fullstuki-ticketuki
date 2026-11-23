@@ -29,7 +29,7 @@ describe("Formulario de login", () => {
 
     await vi.waitFor(() => expect(onIniciarSesion).toHaveBeenCalled());
     const [url, opciones] = fetchMock.mock.calls[0];
-    expect(url).toBe("/api/auth/login");
+    expect(url).toBe("/api/v1/auth/login");
     expect(JSON.parse(opciones.body)).toEqual({ username: "ana", password: "clave123" });
     expect(onIniciarSesion).toHaveBeenCalledWith(expect.objectContaining({ username: "pepe", rol: "cliente" }));
     expect(JSON.parse(localStorage.getItem("sesionBackend")).token).toBe("jwt-cliente");
