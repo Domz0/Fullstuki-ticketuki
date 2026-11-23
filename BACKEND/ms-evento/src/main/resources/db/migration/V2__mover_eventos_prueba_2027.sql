@@ -1,0 +1,22 @@
+
+UPDATE evento SET fecha_evento = '2027-06-15' WHERE id_evento = 1 AND fecha_evento = '2026-06-15';
+UPDATE evento SET fecha_evento = '2027-07-15' WHERE id_evento = 2 AND fecha_evento = '2026-07-15';
+UPDATE evento SET fecha_evento = '2027-08-20' WHERE id_evento = 3 AND fecha_evento = '2026-08-20';
+UPDATE evento SET fecha_evento = '2027-09-10' WHERE id_evento = 4 AND fecha_evento = '2026-09-10';
+UPDATE evento SET fecha_evento = '2027-11-14', fecha_visible = 'Dom 14 nov, 20:00' WHERE id_evento = 101 AND fecha_evento = '2026-11-14';
+UPDATE evento SET fecha_evento = '2027-11-20', fecha_visible = 'Sáb 20 nov, 22:00' WHERE id_evento = 102 AND fecha_evento = '2026-11-20';
+UPDATE evento SET fecha_evento = '2027-11-28', fecha_visible = 'Dom 28 nov, 19:00' WHERE id_evento = 103 AND fecha_evento = '2026-11-28';
+UPDATE evento SET fecha_evento = '2027-12-03', fecha_visible = 'Vie 3 dic, 21:00' WHERE id_evento = 104 AND fecha_evento = '2026-12-03';
+UPDATE evento SET fecha_evento = '2027-12-12', fecha_visible = 'Dom 12 dic, 18:00' WHERE id_evento = 105 AND fecha_evento = '2026-12-12';
+UPDATE evento SET fecha_evento = '2027-11-12', fecha_visible = 'Vie 12 nov, 19:30' WHERE id_evento = 106 AND fecha_evento = '2026-11-12';
+UPDATE evento SET fecha_evento = '2027-11-28', fecha_visible = 'Dom 28 nov, 19:00' WHERE id_evento = 107 AND fecha_evento = '2026-11-28';
+UPDATE evento SET fecha_evento = '2027-12-05', fecha_visible = 'Dom 5 dic, 20:00' WHERE id_evento = 108 AND fecha_evento = '2026-12-05';
+UPDATE evento SET fecha_evento = '2027-12-14', fecha_visible = 'Mar 14 dic, 19:30' WHERE id_evento = 109 AND fecha_evento = '2026-12-14';
+UPDATE evento SET fecha_evento = '2027-11-16', fecha_visible = 'Mar 16 nov, 16:00' WHERE id_evento = 110 AND fecha_evento = '2026-11-16';
+UPDATE evento SET fecha_evento = '2027-11-22', fecha_visible = 'Lun 22 nov, 18:00' WHERE id_evento = 111 AND fecha_evento = '2026-11-22';
+UPDATE evento SET fecha_evento = '2027-12-02', fecha_visible = '2 al 8 dic, 10:00' WHERE id_evento = 112 AND fecha_evento = '2026-12-02';
+UPDATE evento SET fecha_evento = '2027-12-07', fecha_visible = 'Mar 7 dic, 08:00' WHERE id_evento = 113 AND fecha_evento = '2026-12-07';
+UPDATE evento SET fecha_evento = '2027-11-21', fecha_visible = '21 al 23 nov, 11:00' WHERE id_evento = 114 AND fecha_evento = '2026-11-21';
+UPDATE evento SET fecha_evento = '2027-11-29', fecha_visible = 'Lun 29 nov, 12:00' WHERE id_evento = 115 AND fecha_evento = '2026-11-29';
+UPDATE evento SET fecha_evento = '2027-12-05', fecha_visible = '5 al 14 dic, 11:00' WHERE id_evento = 116 AND fecha_evento = '2026-12-05';
+UPDATE evento SET fecha_evento = '2027-12-06', fecha_visible = '6 al 8 dic, 10:00' WHERE id_evento = 117 AND fecha_evento = '2026-12-06';

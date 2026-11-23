@@ -6,6 +6,7 @@ import GestionEventos from "../components/admin/GestionEventos";
 import EditarEvento from "../components/admin/EditarEvento";
 import EntradasInvitadoDebug from "../components/admin/EntradasInvitadoDebug";
 import AdminCodigos from "../components/admin/AdminCodigos";
+import AdminUsuarios from "../components/admin/AdminUsuarios";
 import "./PaginaAdmin.css";
 
 function PaginaAdmin({ seccion, eventoId, onCerrarSesion }) {
@@ -65,6 +66,11 @@ function PaginaAdmin({ seccion, eventoId, onCerrarSesion }) {
       contenido = <EditarEvento id={eventoId} />;
       seccionActiva = "eventos";
       break;
+    case "usuarios":
+      titulo = "Usuarios";
+      contenido = <AdminUsuarios />;
+      seccionActiva = "usuarios";
+      break;
     case "historial":
       titulo = "Historial de movimientos";
       contenido = <HistorialCompras />;
@@ -79,6 +85,7 @@ function PaginaAdmin({ seccion, eventoId, onCerrarSesion }) {
     { seccion: "crear-evento", nombre: "Crear evento" },
     { seccion: "eventos", nombre: "Gestionar eventos" },
     { seccion: "codigos", nombre: "Códigos de descuento" },
+    { seccion: "usuarios", nombre: "Usuarios" },
     { seccion: "historial", nombre: "Historial de movimientos" },
     { seccion: "entradas-invitado", nombre: "Entradas invitado (debug)" },
   ];

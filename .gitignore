@@ -1,1 +1,8 @@
 /docs/
+
+# macOS
+.DS_Store
+
+# IntelliJ IDEA (configuración y ejecuciones personales de cada integrante)
+.idea/
+BACKEND/.run/

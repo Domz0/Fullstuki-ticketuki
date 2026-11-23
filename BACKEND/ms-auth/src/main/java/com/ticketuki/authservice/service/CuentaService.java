@@ -27,8 +27,8 @@ public class CuentaService {
     @Transactional(readOnly = true)
     public Page<CuentaDTO> listar(Long actor, int pagina, int cantidad) {
         administrador(actor);
-        return repository.findAll(PageRequest.of(Math.max(0, pagina), Math.max(1, Math.min(100, cantidad)),
-            Sort.by("id_usuario_auth"))).map(CuentaDTO::from);
+        return repository.listarCuentas(PageRequest.of(Math.max(0, pagina), Math.max(1, Math.min(100, cantidad))))
+            .map(CuentaDTO::from);
     }
 
     @Transactional

@@ -1,61 +1,82 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import PaginaTransferir from "../src/pages/PaginaTransferir";
-import { obtenerEntradas } from "../src/utils/entradas";
 
-const usuario = { rut: "12345678-5" };
+const perfil = { id_usuario: 4, run: "12345678-5", p_nombre: "Ana", a_paterno: "Rojas", email: "ana@duoc.cl" };
+const ticket = {
+  id_ticket: 21,
+  evento_id_evento: 7,
+  sector_id_sector: 2,
+  estado_ticket_id_estado: 1,
+  cod_qr: "TKI-ABC",
+  venta_id_venta: 55,
+  nombre_titular: "Ana Rojas",
+};
+const destinatario = { id: 9, nombre: "Camila Soto", correo: "camila@gmail.com" };
 
-describe("Formulario de transferencia", () => {
+const evento = { id_evento: 7, nombre_evento: "Festival de rock en vivo", fecha_evento: "2099-11-14", horario: "20:00", estado_evento_id_estado: 2 };
+
+
+function mockTransferencia({ entradas = [ticket], buscarDestinatario = Response.json(destinatario) } = {}) {
+  return vi.spyOn(globalThis, "fetch").mockImplementation(async (url, opciones = {}) => {
+    if (opciones.method === "PUT") return Response.json({ ...ticket, nombre_titular: "Camila Soto" });
+    if (url.startsWith("/api/usuarios/destinatario")) return buscarDestinatario;
+    if (url === "/api/usuarios/4") return Response.json(perfil);
+    if (url.startsWith("/api/tickets/titular/")) return Response.json(entradas);
+    if (url === "/api/eventos/7/sectores") return Response.json([{ id_sector: 2, nombre_sector: "Cancha General" }]);
+    return Response.json(evento);
+  });
+}
+
+async function elegirEntradaYBuscar(correo) {
+  fireEvent.click(await screen.findByRole("radio", { name: /Festival de rock en vivo/ }));
+  fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+  fireEvent.change(screen.getByLabelText("Correo del destinatario"), { target: { value: correo } });
+  fireEvent.click(screen.getByRole("button", { name: "Buscar destinatario" }));
+}
+
+describe("Transferencia de entradas", () => {
   beforeEach(() => {
-    localStorage.setItem(
-      "compras",
-      JSON.stringify([
-        {
-          orden: "TKI-ORDEN",
-          codigo: "TKI-ABC",
-          estado: "confirmada",
-          eventoId: "1",
-          evento: "Festival de rock en vivo",
-          recinto: "Estadio Nacional",
-          fecha: "14 nov",
-          area: "Cancha General",
-          cantidad: 2,
-          titularRut: "12345678-5",
-        },
-      ]),
-    );
+    localStorage.setItem("sesionBackend", JSON.stringify({
+      token: "token-prueba",
+      expiraEn: Date.now() + 60 * 60 * 1000,
+      usuario: { username: "ana", nombre: "Ana", apellido: "Rojas", correo: "ana@duoc.cl", rol: "cliente", authId: 3, usuarioId: 4 },
+    }));
   });
 
-  it("muestra errores y no transfiere con datos inválidos", () => {
-    render(<PaginaTransferir usuario={usuario} codigo="TKI-ABC" />);
-    fireEvent.change(screen.getByLabelText("RUT"), {
-      target: { value: "12.345.678-5" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Transferir entrada" }));
+  it("transfiere una entrada vigente al destinatario encontrado", async () => {
+    const fetchMock = mockTransferencia();
+    render(<PaginaTransferir usuario={{ usuarioId: 4 }} />);
 
-    expect(screen.getByText("Ingresa el nombre del nuevo titular")).toBeInTheDocument();
-    expect(screen.getByText("No puedes transferirte la entrada a ti mismo")).toBeInTheDocument();
-    expect(screen.getByText("Ingresa el correo del nuevo titular")).toBeInTheDocument();
-    expect(obtenerEntradas(usuario)[0].estado).toBe("proximas");
+    await elegirEntradaYBuscar("camila@gmail.com");
+    fireEvent.click(await screen.findByRole("button", { name: "Elegir destinatario" }));
+    expect(screen.getByText("Entrada TKI-ABC")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Confirmar transferencia" }));
+
+    expect(await screen.findByRole("heading", { name: "Entrada transferida" }, { timeout: 3000 })).toBeInTheDocument();
+    expect(screen.getByText(/ahora pertenece a Camila Soto/)).toBeInTheDocument();
+    const [url, opciones] = fetchMock.mock.calls.find(([, op]) => op?.method === "PUT");
+    expect(url).toBe("/api/tickets/21/regalar");
+    expect(JSON.parse(opciones.body)).toEqual({ destinatario: 9, correo: "camila@gmail.com" });
   });
 
-  it("transfiere la entrada y la marca como transferida", () => {
-    render(<PaginaTransferir usuario={usuario} codigo="TKI-ABC" />);
-    fireEvent.change(screen.getByLabelText("Nombre"), {
-      target: { value: "Camila Soto" },
-    });
-    fireEvent.change(screen.getByLabelText("RUT"), {
-      target: { value: "11.111.111-1" },
-    });
-    fireEvent.change(screen.getByLabelText("Correo electrónico"), {
-      target: { value: "camila@gmail.com" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Transferir entrada" }));
+  it("valida el correo antes de buscar al destinatario", async () => {
+    const fetchMock = mockTransferencia();
+    render(<PaginaTransferir usuario={{ usuarioId: 4 }} />);
 
-    expect(screen.getByRole("status")).toHaveTextContent("Camila Soto");
-    expect(obtenerEntradas(usuario)[0]).toMatchObject({
-      estado: "transferidas",
-      rotulo: "Transferida a camila@gmail.com",
-    });
+    await elegirEntradaYBuscar("camila@otro.com");
+
+    expect(screen.getByRole("alert")).toHaveTextContent("Ingresa un correo de duoc.cl");
+    expect(fetchMock.mock.calls.some(([url]) => url.includes("/usuarios/destinatario"))).toBe(false);
+  });
+
+  it("no permite transferirse la entrada a uno mismo", async () => {
+    mockTransferencia({ buscarDestinatario: Response.json({ id: 4, nombre: "Ana Rojas", correo: "ana@duoc.cl" }) });
+    render(<PaginaTransferir usuario={{ usuarioId: 4 }} />);
+
+    await elegirEntradaYBuscar("ana@duoc.cl");
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("No puedes transferirte una entrada a ti mismo.");
+    expect(screen.queryByRole("button", { name: "Elegir destinatario" })).not.toBeInTheDocument();
   });
 });

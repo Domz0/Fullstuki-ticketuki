@@ -1,37 +1,63 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import PaginaRegistro from "../src/pages/PaginaRegistro";
 
+function escribir(etiqueta, valor) {
+  fireEvent.change(screen.getByLabelText(etiqueta), { target: { value: valor } });
+}
+
+function completarFormulario() {
+  escribir("Primer nombre", "test");
+  escribir("Apellido paterno", "testin");
+  escribir("Nombre de usuario", "test");
+  escribir("RUT", "12345678-5");
+  escribir("Correo electrónico", "test@duoc.cl");
+  escribir("Contraseña", "clave123");
+  escribir("Confirmación de contraseña", "clave123");
+}
+
 describe("Formulario de registro", () => {
-  it("guarda una cuenta válida y lleva al login", () => {
+  it("envía la cuenta al backend y lleva al login", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(null, { status: 201 }));
     render(<PaginaRegistro />);
-    fireEvent.change(screen.getByLabelText(/^Nombre$/i), {
-      target: { value: "test" },
-    });
-    fireEvent.change(screen.getByLabelText(/^Apellido$/i), {
-      target: { value: "testin" },
-    });
-    fireEvent.change(screen.getByLabelText(/^RUT$/i), {
-      target: { value: "12345678-5" },
-    });
-    fireEvent.change(screen.getByLabelText(/Correo electrónico/i), {
-      target: { value: "test@duoc.cl" },
-    });
-    fireEvent.change(screen.getByLabelText(/Contraseña/i), {
-      target: { value: "clave123" },
-    });
-    fireEvent.click(screen.getByRole("checkbox"));
+
+    completarFormulario();
     fireEvent.click(screen.getByRole("button", { name: "Crear cuenta" }));
 
-    expect(localStorage.getItem("nombre")).toBe("test");
-    expect(localStorage.getItem("correo")).toBe("test@duoc.cl");
-    expect(localStorage.getItem("password")).toBe("clave123");
-    expect(localStorage.getItem("sesionIniciada")).toBe("false");
-    expect(window.location.hash).toBe("#/login?registro=ok");
+    await vi.waitFor(() => expect(window.location.hash).toBe("#/login?registro=ok"));
+    const [url, opciones] = fetchMock.mock.calls[0];
+    expect(url).toBe("/api/auth/registro");
+    expect(JSON.parse(opciones.body)).toEqual({
+      username: "test",
+      password: "clave123",
+      usuario: {
+        run: "12345678-5",
+        p_nombre: "test",
+        a_paterno: "testin",
+        email: "test@duoc.cl",
+      },
+    });
   });
 
-  it("muestra errores al enviar vacío y no guarda una cuenta", () => {
+  it("muestra junto al campo el error que devuelve el backend", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json({
+      message: "Revisa los datos ingresados",
+      errors: { "usuario.run": "El RUT ya está registrado" },
+    }, { status: 409 }));
     render(<PaginaRegistro />);
+
+    completarFormulario();
+    fireEvent.click(screen.getByRole("button", { name: "Crear cuenta" }));
+
+    expect(await screen.findByText("El RUT ya está registrado")).toBeInTheDocument();
+    expect(screen.getByLabelText("RUT")).toHaveAttribute("aria-invalid", "true");
+    expect(window.location.hash).toBe("");
+  });
+
+  it("muestra errores al enviar vacío y no llama al backend", () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch");
+    render(<PaginaRegistro />);
+
     fireEvent.click(screen.getByRole("button", { name: "Crear cuenta" }));
 
     expect(screen.getByText("Ingresa tu nombre")).toBeInTheDocument();
@@ -39,8 +65,7 @@ describe("Formulario de registro", () => {
     expect(screen.getByText("Ingresa tu RUT")).toBeInTheDocument();
     expect(screen.getByText("Ingresa tu correo")).toBeInTheDocument();
     expect(screen.getByText("Ingresa una contraseña")).toBeInTheDocument();
-    expect(screen.getByText("Debes aceptar los términos")).toBeInTheDocument();
-    expect(localStorage.getItem("correo")).toBeNull();
-    expect(window.location.hash).toBe("");
+    expect(screen.getByText("Confirma tu contraseña")).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

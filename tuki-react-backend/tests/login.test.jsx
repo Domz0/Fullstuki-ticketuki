@@ -1,52 +1,64 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import PaginaLogin from "../src/pages/PaginaLogin";
 
-describe("Formulario de login", () => {
-  beforeEach(() => {
-    localStorage.setItem("nombre", "pepe");
-    localStorage.setItem("apellido", "nacho");
-    localStorage.setItem("rut", "11111111-3");
-    localStorage.setItem("correo", "chispops@duoc.cl");
-    localStorage.setItem("password", "clave123");
-    localStorage.setItem("sesionIniciada", "false");
-  });
+function ingresar(usuario, contrasena) {
+  fireEvent.change(screen.getByLabelText("Nombre de usuario o correo"), { target: { value: usuario } });
+  fireEvent.change(screen.getByLabelText("Contraseña"), { target: { value: contrasena } });
+  fireEvent.click(screen.getByRole("button", { name: "Iniciar sesión" }));
+}
 
-  it("inicia sesión al enviar las credenciales correctas", () => {
+const loginCliente = {
+  token: "jwt-cliente",
+  tipo: "Bearer",
+  username: "pepe",
+  expiraEnMs: 3600000,
+  authId: 3,
+  usuarioId: 4,
+  rol: "CLIENTE",
+};
+
+describe("Formulario de login", () => {
+  it("inicia sesion con el token del backend y lo guarda", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json(loginCliente));
     const onIniciarSesion = vi.fn();
     render(<PaginaLogin onIniciarSesion={onIniciarSesion} />);
-    const correo = screen.getByLabelText(/Correo electrónico/i);
-    const password = screen.getByLabelText(/Contraseña/i);
-    const boton = screen.getByRole("button", { name: /Iniciar sesión/i });
 
-    fireEvent.change(correo, { target: { value: "chispops@duoc.cl" } });
-    fireEvent.change(password, { target: { value: "clave123" } });
-    fireEvent.click(boton);
 
-    expect(onIniciarSesion).toHaveBeenCalledWith(
-      expect.objectContaining({ correo: "chispops@duoc.cl", rol: "cliente" }),
-    );
-    expect(localStorage.getItem("sesionIniciada")).toBe("true");
+    ingresar(" Ana ", "clave123");
+
+    await vi.waitFor(() => expect(onIniciarSesion).toHaveBeenCalled());
+    const [url, opciones] = fetchMock.mock.calls[0];
+    expect(url).toBe("/api/auth/login");
+    expect(JSON.parse(opciones.body)).toEqual({ username: "ana", password: "clave123" });
+    expect(onIniciarSesion).toHaveBeenCalledWith(expect.objectContaining({ username: "pepe", rol: "cliente" }));
+    expect(JSON.parse(localStorage.getItem("sesionBackend")).token).toBe("jwt-cliente");
     expect(window.location.hash).toBe("#/inicio");
   });
 
-  it("muestra un error y no inicia sesión con una contraseña incorrecta", () => {
+  it("muestra el error del backend y no guarda sesión con una contraseña incorrecta", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      Response.json({ message: "Usuario o contraseña incorrectos" }, { status: 401 }),
+    );
     const onIniciarSesion = vi.fn();
     render(<PaginaLogin onIniciarSesion={onIniciarSesion} />);
-    const correo = screen.getByLabelText(/Correo electrónico/i);
-    const password = screen.getByLabelText(/Contraseña/i);
-    const boton = screen.getByRole("button", { name: /Iniciar sesión/i });
 
-    fireEvent.change(correo, { target: { value: "chispops@duoc.cl" } });
-    fireEvent.change(password, { target: { value: "incorrecta" } });
-    fireEvent.click(boton);
+    ingresar("chispops@duoc.cl", "incorrecta");
 
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "Correo o contraseña incorrectos.",
-    );
-    expect(password).toHaveAttribute("aria-invalid", "true");
+    expect(await screen.findByRole("status")).toHaveTextContent("Usuario o contraseña incorrectos");
+    expect(screen.getByLabelText("Contraseña")).toHaveAttribute("aria-invalid", "true");
     expect(onIniciarSesion).not.toHaveBeenCalled();
-    expect(localStorage.getItem("sesionIniciada")).toBe("false");
-    expect(window.location.hash).toBe("");
+    expect(localStorage.getItem("sesionBackend")).toBeNull();
+  });
+
+  it("valida los campos antes de llamar al backend", () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch");
+    render(<PaginaLogin onIniciarSesion={vi.fn()} />);
+
+    ingresar("", "");
+
+    expect(screen.getByText("Ingresa tu nombre de usuario o correo")).toBeInTheDocument();
+    expect(screen.getByText("Ingresa tu contraseña")).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

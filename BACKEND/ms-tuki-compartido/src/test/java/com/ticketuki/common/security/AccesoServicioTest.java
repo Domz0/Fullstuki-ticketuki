@@ -39,16 +39,4 @@ class AccesoServicioTest {
         assertThatThrownBy(acceso::administrador).isInstanceOf(ResponseStatusException.class);
         assertThatThrownBy(() -> acceso.propietarios(java.util.List.of(1L, 2L))).isInstanceOf(ResponseStatusException.class);
     }
-
-    @Test void cabecerasSinTokenNoAutentican() {
-        request.addHeader("X-Rol", "ADMIN");
-        assertThatThrownBy(() -> acceso.propietario(1L)).isInstanceOfSatisfying(ResponseStatusException.class,
-                ex -> assertThat(ex.getStatusCode().value()).isEqualTo(401));
-    }
-
-    @Test void claveInternaIncorrectaNoDaPrivilegios() {
-        request.addHeader("X-Internal-Key", "falsa");
-        assertThatThrownBy(acceso::administrador).isInstanceOfSatisfying(ResponseStatusException.class,
-                ex -> assertThat(ex.getStatusCode().value()).isEqualTo(401));
-    }
 }

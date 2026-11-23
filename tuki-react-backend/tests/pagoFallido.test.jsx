@@ -1,16 +1,43 @@
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import PaginaPago from "../src/pages/PaginaPago";
-import PaginaPagoFallido from "../src/pages/PaginaPagoFallido";
+import { adaptarEvento } from "../src/services/eventos";
 import { crearSeleccion, guardarCompra, leerCompra } from "../src/utils/compra";
-import { leerCompras } from "../src/utils/entradas";
 
-const evento = { id: "prueba", nombre: "Evento de prueba", recinto: "Estadio Nacional" };
-const fecha = { id: "principal", dia: "14", mes: "nov", horario: "20:00" };
-const sector = { id: "cancha", nombre: "Cancha General", precio: 10000 };
+const eventoApi = {
+  id_evento: 7,
+  nombre_evento: "Evento de prueba",
+  fecha_evento: "2099-11-14",
+  horario: "20:00",
+  estado_evento_id_estado: 2,
+  categoria: "musica",
+  recinto_catalogo: "Estadio Nacional",
+  descripcion: "Evento usado en las pruebas",
+};
+const disponibilidadApi = {
+  evento_id: 7,
+  capacidad_total: 300,
+  disponibles: 200,
+  venta_habilitada: true,
+  estado: "DISPONIBLE",
+  sectores: [
+    { id: 1, nombre: "Cancha Preferencial", plano_id: "cancha-preferencial", precio: 85000, capacidad: 100, disponibles: 100 },
+    { id: 2, nombre: "Cancha General", plano_id: "cancha-general", precio: 45000, capacidad: 100, disponibles: 100 },
+    { id: 3, nombre: "Tribuna Pacífico", plano_id: "tribuna-pacifico", precio: 30000, capacidad: 100, disponibles: 0 },
+  ],
+};
+
+const evento = adaptarEvento(eventoApi);
+const fecha = evento.fechas[0];
+const canchaGeneral = disponibilidadApi.sectores[1];
 
 function escribir(etiqueta, valor) {
   fireEvent.change(screen.getByLabelText(etiqueta), { target: { value: valor } });
+}
+
+function abrirPago() {
+  const resultado = render(<PaginaPago evento={evento} fecha={fecha} />);
+  return resultado.container;
 }
 
 function pagarConCredito(container, vencimiento) {
@@ -21,46 +48,54 @@ function pagarConCredito(container, vencimiento) {
   fireEvent.submit(container.querySelector("#formulario_pago"));
 }
 
-function rechazarPago() {
-  guardarCompra(crearSeleccion(evento, fecha, sector, 2));
-  const { container } = render(<PaginaPago evento={evento} fecha={fecha} />);
-  escribir("Nombre", "Ana");
-  escribir("Apellido", "Rojas");
+function completarComprador() {
+  escribir("Primer nombre", "Ana");
+  escribir("Apellido paterno", "Rojas");
   escribir("RUT", "12345678-5");
   escribir("Correo electrónico", "ana@duoc.cl");
-  pagarConCredito(container, "12/25");
-  cleanup();
 }
 
-describe("Pago rechazado", () => {
-  it("rechaza una tarjeta vencida sin guardar entradas", () => {
-    rechazarPago();
-
-    expect(leerCompra()).toMatchObject({
-      estado: "rechazada",
-      motivo: "Tarjeta vencida",
-      total: 22000,
-    });
-    expect(leerCompra().comprador.nombre).toBe("Ana");
-    expect(leerCompras()).toHaveLength(0);
-    expect(window.location.hash).toBe("#/pago-fallido/prueba?fecha=principal");
+// el pago consulta cupos, confirma el pago simulado y pide el resultado
+function mockCompraExitosa() {
+  return vi.spyOn(globalThis, "fetch").mockImplementation(async url => {
+    if (url === "/api/compras/publicas") return Response.json({ id: 10, estado: "PENDIENTE_PAGO", reserva_estado: "RESERVADA" });
+    if (url === "/api/compras/publicas/10/confirmar-simulado") return Response.json({ id: 10, estado: "COMPLETADA" });
+    if (url === "/api/compras/publicas/10/resultado") {
+      return Response.json({
+        venta_id: 55,
+        total: 116100,
+        correo_enviado: true,
+        tickets: [{ id_ticket: 1, cod_qr: "TKI-A" }, { id_ticket: 2, cod_qr: "TKI-B" }],
+      });
+    }
+    if (url === "/api/tickets/disponibilidad/evento/7") return Response.json(disponibilidadApi);
+    return Response.json(eventoApi);
   });
+}
 
-  it("reintentar conserva los datos, pide la tarjeta y guarda una sola entrada", () => {
-    rechazarPago();
-    render(<PaginaPagoFallido evento={evento} fecha={fecha} />);
-    fireEvent.click(screen.getByRole("button", { name: "Reintentar pago" }));
-    expect(window.location.hash).toBe("#/pago/prueba?fecha=principal");
-    cleanup();
+describe("Pago aprobado", () => {
+  it("registra la compra en el backend y muestra la confirmación", async () => {
+    const fetchMock = mockCompraExitosa();
+    guardarCompra(crearSeleccion(evento, fecha, canchaGeneral, 2));
+    const container = abrirPago();
 
-    const { container } = render(<PaginaPago evento={evento} fecha={fecha} />);
-    expect(screen.getByLabelText("Nombre")).toHaveValue("Ana");
-    fireEvent.click(screen.getByRole("radio", { name: /Crédito/ }));
-    expect(screen.getByLabelText("Dígitos de tarjeta")).toHaveValue("");
+    completarComprador();
     pagarConCredito(container, "12/99");
 
-    expect(leerCompra().estado).toBe("confirmada");
-    expect(leerCompra().motivo).toBeUndefined();
-    expect(leerCompras()).toHaveLength(1);
+    await vi.waitFor(() => expect(window.location.hash).toBe("#/confirmacion/7?fecha=principal"));
+    const [, opciones] = fetchMock.mock.calls.find(([url]) => url === "/api/compras/publicas");
+    expect(opciones.method).toBe("POST");
+    expect(JSON.parse(opciones.body)).toMatchObject({
+      evento: 7,
+      sector: 2,
+      cantidad: 2,
+      nombre: "Ana Rojas",
+      rut: "12.345.678-5",
+      correo: "ana@duoc.cl",
+      medio: "CREDITO",
+    });
+
+    expect(leerCompra()).toMatchObject({ estado: "confirmada", operacionBackend: { id: 10, estado: "COMPLETADA" } });
+    expect(fetchMock).toHaveBeenCalledWith("/api/compras/publicas/10/resultado", expect.anything());
   });
 });
